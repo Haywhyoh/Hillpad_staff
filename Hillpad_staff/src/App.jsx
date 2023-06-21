@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <div>Hillpad Staff</div>
+      <div>Hillpad Staff Dev</div>
     </>
   )
 }
