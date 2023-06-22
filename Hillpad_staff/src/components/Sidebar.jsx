@@ -16,7 +16,17 @@ import '../assets/js/config.js';
 
 import hillpadLogo from '../assets/img/hillpad/logos/hillpad-transparent.png';
 
+import MenuItem from './MenuItem.jsx';
+
 function Sidebar() {
+
+    const entries = [
+        ["Courses", "bx-book-open"],
+        ["Schools", "bxs-school"],
+        ["Disciplines", "bx-cabinet"],
+        ["DegreeTypes", "bxs-graduation"],
+        ["Countries", "bx-globe"]
+    ];
     
     return (
         <>
@@ -48,46 +58,14 @@ function Sidebar() {
                         <span className="menu-header-text">Entries</span>
                     </li>
 
-                    <li id="menu-item-courses" className="menu-item">
-                        <a href="/" className="menu-link">
-                            <i className="menu-icon tf-icons bx bx-book-open"></i>
-                            <div data-i18n="Courses">
-                                Courses
-                            </div>
-                        </a>
-                    </li>
-                    <li id="menu-item-schools" className="menu-item">
-                        <a href="/" className="menu-link">
-                            <i className="menu-icon tf-icons bx bxs-school"></i>
-                            <div data-i18n="Schools">
-                                Schools
-                            </div>
-                        </a>
-                    </li>
-                    <li id="menu-item-disciplines" className="menu-item">
-                        <a href="/" className="menu-link">
-                            <i className="menu-icon tf-icons bx bx-cabinet"></i>
-                            <div data-i18n="Disciplines">
-                                Disciplines
-                            </div>
-                        </a>
-                    </li>
-                    <li id="menu-item-degree-types" className="menu-item">
-                        <a href="/" className="menu-link">
-                            <i className="menu-icon tf-icons bx bxs-graduation"></i>
-                            <div data-i18n="Degree Types">
-                                Degree Types
-                            </div>
-                        </a>
-                    </li>
-                    <li id="menu-item-countries" className="menu-item">
-                        <a href="/" className="menu-link">
-                            <i className="menu-icon tf-icons bx bx-globe"></i>
-                            <div data-i18n="Countries">
-                                Countries
-                            </div>
-                        </a>
-                    </li>
+                    {entries.map(entry => 
+                        <MenuItem 
+                            key={entries.indexOf(entry)}
+                            itemName={entry[0]}
+                            iconName={entry[1]}
+                        />
+                    )}
+
                     
                     {/* Account */}
                     <li className="menu-header small text-uppercase">
