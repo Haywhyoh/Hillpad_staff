@@ -1,4 +1,5 @@
 import NavBar from "./NavBar";
+import Dashboard from "./Dashboard";
 
 
 function MainBody() {
@@ -7,6 +8,7 @@ function MainBody() {
         <>
             <div className="layout-page">
                 <NavBar />
+                <Dashboard />
             </div>
         </>
     );

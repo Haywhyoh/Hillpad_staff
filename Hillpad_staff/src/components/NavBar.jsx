@@ -90,7 +90,7 @@ function NavBar() {
                                     </li>
                                 </ul>
                             </li>
-                            
+
                         </ul>
                     </div>
                 </nav>
