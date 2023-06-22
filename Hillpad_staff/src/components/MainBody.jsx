@@ -1,3 +1,4 @@
+import NavBar from "./NavBar";
 
 
 function MainBody() {
@@ -5,7 +6,7 @@ function MainBody() {
     return (
         <>
             <div className="layout-page">
-
+                <NavBar />
             </div>
         </>
     );
