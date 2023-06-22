@@ -1,18 +1,4 @@
-// Boxicon CSS
-import '../assets/vendor/fonts/boxicons.css';
 
-// Core CSS
-import '../assets/vendor/css/core.css';
-import '../assets/vendor/css/theme-default.css';
-import '../assets/css/demo.css';
-
-// Vendors CSS
-import '../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css';
-
-// Helpers JS
-import '../assets/vendor/js/helpers.js';
-// Template config JS
-import '../assets/js/config.js';
 
 import hillpadLogo from '../assets/img/hillpad/logos/hillpad-transparent.png';
 
@@ -33,7 +19,7 @@ function Sidebar() {
             <aside id="layout-menu" className="layout-menu menu-vertical menu bg-menu-theme">
                 <div className="app-brand demo">
                     <a href="/" className="app-brand-link">
-                        <img width="150px" src={ hillpadLogo } className="d-block" alt="HillPad logo" />
+                        <img width="80%" src={ hillpadLogo } className="d-block" alt="HillPad logo" />
                     </a>
 
                     <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
