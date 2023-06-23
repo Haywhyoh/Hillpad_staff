@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 
 import avatar1 from '../assets/img/avatars/1.png';
