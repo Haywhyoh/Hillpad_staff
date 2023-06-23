@@ -41,6 +41,7 @@ import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
 import Schools from './components/Schools';
 import Disciplines from './components/Disciplines';
+import DegreeTypes from './components/DegreeTypes';
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/schools" element={<Schools />} />
                     <Route path="/disciplines" element={<Disciplines />} />
+                    <Route path="/degree-types" element={<DegreeTypes />} />
                     <Route path="/" element={<Dashboard />} />
                 </Routes>
             </div>
