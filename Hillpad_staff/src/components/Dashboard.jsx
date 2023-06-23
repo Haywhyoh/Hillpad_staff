@@ -6,6 +6,9 @@ import schoolsImage from '../assets/img/icons/unicons/schools.svg';
 import settingsImage from '../assets/img/icons/notifications/settings.svg';
 import messagesImage from '../assets/img/icons/notifications/messages.svg';
 
+// import '../assets/js/dashboards-analytics.js';
+
+
 
 function Dashboard() {
 
