@@ -44,6 +44,7 @@ import Disciplines from './components/Disciplines';
 import DegreeTypes from './components/DegreeTypes';
 import Countries from './components/Countries';
 import Notifications from './components/Notifications';
+import Footer from './components/Footer';
 
 
 function App() {
@@ -56,17 +57,26 @@ function App() {
             <Sidebar />
             <div className="layout-page">
                 <NavBar />
-                <Routes>
-                    <Route path="/courses" element={<Courses />} />
-                    <Route path="/schools" element={<Schools />} />
-                    <Route path="/disciplines" element={<Disciplines />} />
-                    <Route path="/degree-types" element={<DegreeTypes />} />
-                    <Route path="/countries" element={<Countries />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/" element={<Dashboard />} />
-                </Routes>
+                <div className="content-wrapper">
+
+                    <Routes>
+                        <Route path="/courses" element={<Courses />} />
+                        <Route path="/schools" element={<Schools />} />
+                        <Route path="/disciplines" element={<Disciplines />} />
+                        <Route path="/degree-types" element={<DegreeTypes />} />
+                        <Route path="/countries" element={<Countries />} />
+                        <Route path="/notifications" element={<Notifications />} />
+                        <Route path="/" element={<Dashboard />} />
+                    </Routes>
+
+                    <Footer />
+
+                    <div className="content-backdrop fade"></div>
+                </div>
+
             </div>
         </div>
+        <div className="layout-overlay layout-menu-toggle"></div>
       </div>
     </>
   )
