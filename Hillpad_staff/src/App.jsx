@@ -40,6 +40,7 @@ import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
 import Schools from './components/Schools';
+import Disciplines from './components/Disciplines';
 
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
                 <Routes>
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/schools" element={<Schools />} />
+                    <Route path="/disciplines" element={<Disciplines />} />
                     <Route path="/" element={<Dashboard />} />
                 </Routes>
             </div>
