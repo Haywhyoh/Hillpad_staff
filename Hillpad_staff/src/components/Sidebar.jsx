@@ -10,14 +10,6 @@ import MenuItem from './MenuItem.jsx';
 class Sidebar extends Component {
      
     render() {
-        const entries = [
-            {name: "Courses", url: "/courses", icon: "bx-book-open"},
-            {name: "Schools", url: "/schools", icon: "bxs-school"},
-            {name: "Disciplines", url: "/disciplines", icon: "bx-cabinet"},
-            {name: "DegreeTypes", url: "/degreetypes", icon: "bxs-graduation"},
-            {name: "Countries", url: "/countries", icon: "bx-globe"}
-        ];
-        
         return (
             <>
                 <aside id="layout-menu" className="layout-menu menu-vertical menu bg-menu-theme">
@@ -47,55 +39,27 @@ class Sidebar extends Component {
                         <li className="menu-header small text-uppercase">
                             <span className="menu-header-text">Entries</span>
                         </li>
-
-                        {entries.map(entry => 
-                            <MenuItem 
-                                key={entries.indexOf(entry)}
-                                entryName={entry.name}
-                                entryURL={entry.url}
-                                entryIcon={entry.icon}
-                            />
-                        )}
+                        <MenuItem entryName="Courses" entryURL="/courses" entryIcon="bx-book-open" />
+                        <MenuItem entryName="Schools" entryURL="/schools" entryIcon="bxs-school" />
+                        <MenuItem entryName="Disciplines" entryURL="/disciplines" entryIcon="bx-cabinet" />
+                        <MenuItem entryName="Degree types" entryURL="/degree-types" entryIcon="bxs-graduation" />
+                        <MenuItem entryName="Countries" entryURL="/countries" entryIcon="bx-globe" />
 
                         
                         {/* Account */}
                         <li className="menu-header small text-uppercase">
                             <span className="menu-header-text">Account</span>
                         </li>
-
-                        <li id="menu-item-notifications" className="menu-item">
-                            <a href="/" className="menu-link">
-                                <i className="menu-icon tf-icons bx bx-bell"></i>
-                                <div data-i18n="Notifications">Notifications</div>
-                            </a>
-                        </li>
-                        <li id="menu-item-chat" className="menu-item">
-                            <a href="#" className="menu-link">
-                                <i className="menu-icon tf-icons bx bx-message-rounded-dots"></i>
-                                <div data-i18n="Chat">Chat</div>
-                            </a>
-                        </li>
-
+                        <MenuItem entryName="Notifications" entryURL="/notifications" entryIcon="bx-bell" />
+                        <MenuItem entryName="Chat" entryURL="/chat" entryIcon="bx-message-rounded-dots" />
 
                         {/* Misc */}
                         <li className="menu-header small text-uppercase">
                             <span className="menu-header-text">Misc</span>
                         </li>
-                        <li id="menu-item-support" className="menu-item">
-                            <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank" rel="noreferrer" className="menu-link">
-                                <i className="menu-icon tf-icons bx bx-support"></i>
-                                <div data-i18n="Support">Support</div>
-                            </a>
-                        </li>
-                        <li id="menu-item-privacy-policy" className="menu-item">
-                            <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                                target="_blank" rel="noreferrer" className="menu-link">
-                                <i className="menu-icon tf-icons bx bx-file"></i>
-                                <div data-i18n="Privacy Policy">
-                                    Privacy Policy
-                                </div>
-                            </a>
-                        </li>
+                        <MenuItem entryName="Support" entryURL="/support" entryIcon="bx-support" />
+                        <MenuItem entryName="Privacy Policy" entryURL="/privacy-policy" entryIcon="bx-file" />
+
                     </ul>
 
                 </aside>

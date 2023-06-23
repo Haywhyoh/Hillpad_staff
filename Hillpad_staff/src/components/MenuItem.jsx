@@ -14,7 +14,7 @@ class MenuItem extends Component {
                 <li className="menu-item">
                     <Link to={entryURL} className="menu-link">
                         <i className={`menu-icon tf-icons bx ${entryIcon}`}></i>
-                        <div data-i18n="Courses">{entryName}</div>
+                        <div data-i18n={entryName}>{entryName}</div>
                     </Link>
                 </li>
             </>
