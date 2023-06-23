@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import avatar5 from '../../assets/img/avatars/5.png';
 import avatar6 from '../../assets/img/avatars/6.png';
@@ -16,11 +17,11 @@ class ListCourses extends Component {
                         <h4 className="fw-bold py-3 mb-4">
                             Courses
                         </h4>
-                        <a href="#">
+                        <Link to="create">
                             <button type="button" className="btn btn-secondary mb-4">
                                 <span className="tf-icons bx bx-plus"></span>&nbsp; Add Course
                             </button>
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="card">

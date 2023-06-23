@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class CreateCourse extends Component {
     render() {
@@ -8,7 +9,7 @@ class CreateCourse extends Component {
                 <div className="container-xxl flex-grow-1 container-p-y">
                     <div className="d-flex justify-content-between align-items-center">
                         <h4 className="fw-bold py-3 mb-4">Create Course</h4>
-                        <a href="{% url 'staff_courses_listing' %}">
+                        <Link to="..">
                             <button
                                 type="button"
                                 className="btn btn-secondary mb-4"
@@ -16,7 +17,7 @@ class CreateCourse extends Component {
                                 <span className="tf-icons bx bx-arrow-back"></span>
                                 &nbsp; Back
                             </button>
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="card mb-4">
