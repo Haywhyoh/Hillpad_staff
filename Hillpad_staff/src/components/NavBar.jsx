@@ -1,11 +1,14 @@
+import React, { Component } from 'react';
+
 import avatar1 from '../assets/img/avatars/1.png';
 
 
-function NavBar() {
-
-    return (
-        <>
-            <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+class NavBar extends Component {
+    
+    render() { 
+        return (
+            <>
+                <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
                     id="layout-navbar">
                     <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                         <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
@@ -94,8 +97,10 @@ function NavBar() {
                         </ul>
                     </div>
                 </nav>
-        </>
-    );
+            </>
+
+        );
+    }
 }
 
 export default NavBar;
