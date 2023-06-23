@@ -1,0 +1,8 @@
+.notification-list--read {
+    background-color:ghostwhite;
+}
+.notification-list--unread {
+    border-left: 4px solid #29B6F6;
+    font-weight: bold;
+    color: darkslategrey;
+}

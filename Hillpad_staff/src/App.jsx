@@ -43,6 +43,7 @@ import Schools from './components/Schools';
 import Disciplines from './components/Disciplines';
 import DegreeTypes from './components/DegreeTypes';
 import Countries from './components/Countries';
+import Notifications from './components/Notifications';
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
                     <Route path="/disciplines" element={<Disciplines />} />
                     <Route path="/degree-types" element={<DegreeTypes />} />
                     <Route path="/countries" element={<Countries />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="/" element={<Dashboard />} />
                 </Routes>
             </div>
