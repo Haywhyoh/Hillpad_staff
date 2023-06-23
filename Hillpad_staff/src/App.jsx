@@ -38,13 +38,13 @@ import { Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
 import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
-import Courses from './components/Courses';
 import Schools from './components/Schools';
 import Disciplines from './components/Disciplines';
 import DegreeTypes from './components/DegreeTypes';
 import Countries from './components/Countries';
 import Notifications from './components/Notifications';
 import Footer from './components/Footer';
+import CourseRoutes from './components/course/CourseRoutes';
 
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
                 <div className="content-wrapper">
 
                     <Routes>
-                        <Route path="/courses" element={<Courses />} />
+                        <Route path="/course/*" element={<CourseRoutes />} />
                         <Route path="/schools" element={<Schools />} />
                         <Route path="/disciplines" element={<Disciplines />} />
                         <Route path="/degree-types" element={<DegreeTypes />} />

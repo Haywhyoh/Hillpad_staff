@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 
-import avatar5 from '../assets/img/avatars/5.png';
-import avatar6 from '../assets/img/avatars/6.png';
-import avatar7 from '../assets/img/avatars/7.png';
+import avatar5 from '../../assets/img/avatars/5.png';
+import avatar6 from '../../assets/img/avatars/6.png';
+import avatar7 from '../../assets/img/avatars/7.png';
 
 
-class Courses extends Component {
+class ListCourses extends Component {
     state = {  } 
     render() { 
         return (
@@ -767,4 +767,4 @@ class Courses extends Component {
     }
 }
  
-export default Courses;
+export default ListCourses;

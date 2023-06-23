@@ -39,7 +39,7 @@ class Sidebar extends Component {
                         <li className="menu-header small text-uppercase">
                             <span className="menu-header-text">Entries</span>
                         </li>
-                        <MenuItem entryName="Courses" entryURL="/courses" entryIcon="bx-book-open" />
+                        <MenuItem entryName="Courses" entryURL="/course" entryIcon="bx-book-open" />
                         <MenuItem entryName="Schools" entryURL="/schools" entryIcon="bxs-school" />
                         <MenuItem entryName="Disciplines" entryURL="/disciplines" entryIcon="bx-cabinet" />
                         <MenuItem entryName="Degree types" entryURL="/degree-types" entryIcon="bxs-graduation" />
