@@ -34,8 +34,12 @@ import './assets/vendor/libs/apex-charts/apexcharts.js'
 import './assets/js/main.js';
 // ------------------------------------------------------------------------------
 
+import { Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
-import MainBody from './components/MainBody';
+import NavBar from './components/NavBar';
+import Dashboard from './components/Dashboard';
+import Courses from './components/Courses';
+
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -45,7 +49,13 @@ function App() {
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
             <Sidebar />
-            <MainBody />
+            <div className="layout-page">
+                <NavBar />
+                <Routes>
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/" element={<Dashboard />} />
+                </Routes>
+            </div>
         </div>
       </div>
     </>

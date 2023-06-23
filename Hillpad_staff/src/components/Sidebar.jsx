@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import hillpadLogo from '../assets/img/hillpad/logos/hillpad-transparent.png';
 
@@ -10,20 +11,20 @@ class Sidebar extends Component {
      
     render() {
         const entries = [
-            ["Courses", "bx-book-open"],
-            ["Schools", "bxs-school"],
-            ["Disciplines", "bx-cabinet"],
-            ["DegreeTypes", "bxs-graduation"],
-            ["Countries", "bx-globe"]
+            {name: "Courses", url: "/courses", icon: "bx-book-open"},
+            {name: "Schools", url: "/schools", icon: "bxs-school"},
+            {name: "Disciplines", url: "/disciplines", icon: "bx-cabinet"},
+            {name: "DegreeTypes", url: "/degreetypes", icon: "bxs-graduation"},
+            {name: "Countries", url: "/countries", icon: "bx-globe"}
         ];
         
         return (
             <>
                 <aside id="layout-menu" className="layout-menu menu-vertical menu bg-menu-theme">
                     <div className="app-brand demo">
-                        <a href="/" className="app-brand-link">
+                        <Link to="/" className="app-brand-link">
                             <img width="80%" src={ hillpadLogo } className="d-block" alt="HillPad logo" />
-                        </a>
+                        </Link>
 
                         <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
                             <i className="bx bx-chevron-left bx-sm align-middle"></i>
@@ -36,10 +37,10 @@ class Sidebar extends Component {
                         
                         {/* Dashboard */}
                         <li id="menu-item-dashboard" className="menu-item mt-4">
-                            <a href="/" className="menu-link">
+                            <Link to="/" className="menu-link">
                                 <i className="menu-icon tf-icons bx bx-home-circle"></i>
                                 <div data-i18n="Analytics">Dashboard</div>
-                            </a>
+                            </Link>
                         </li>
 
                         {/* Entries */}
@@ -50,8 +51,9 @@ class Sidebar extends Component {
                         {entries.map(entry => 
                             <MenuItem 
                                 key={entries.indexOf(entry)}
-                                itemName={entry[0]}
-                                iconName={entry[1]}
+                                entryName={entry.name}
+                                entryURL={entry.url}
+                                entryIcon={entry.icon}
                             />
                         )}
 
