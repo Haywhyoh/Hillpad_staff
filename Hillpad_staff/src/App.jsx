@@ -39,6 +39,7 @@ import Sidebar from './components/Sidebar.jsx';
 import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
+import Schools from './components/Schools';
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                 <NavBar />
                 <Routes>
                     <Route path="/courses" element={<Courses />} />
+                    <Route path="/schools" element={<Schools />} />
                     <Route path="/" element={<Dashboard />} />
                 </Routes>
             </div>
