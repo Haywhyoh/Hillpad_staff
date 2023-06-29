@@ -4,7 +4,7 @@ import React from 'react';
 
 
 // eslint-disable-next-line react/prop-types
-const Select = ({ name, label, options, required=false }) => {
+const Select = ({ name, label, value, options, onChange, required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -16,8 +16,11 @@ const Select = ({ name, label, options, required=false }) => {
                     {required && <span className="text-danger"> *</span>}
                 </label>
                 <select
+                    name={name}
                     id={`${name}-field`}
                     className="form-select"
+                    value={value}
+                    onChange={onChange}
                     required={required}
                 >
                     <option value="0">Select {label}...</option>

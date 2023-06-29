@@ -3,7 +3,7 @@ import React from 'react';
 
 
 // eslint-disable-next-line react/prop-types
-const TextArea = ({ name, label, placeholder, rows=10, required=false }) => {
+const TextArea = ({ name, label, value, onChange, placeholder, rows=10, required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -17,6 +17,9 @@ const TextArea = ({ name, label, placeholder, rows=10, required=false }) => {
                     id={`${name}-field`}
                     className="form-control"
                     rows={rows}
+                    value={value}
+                    name={name}
+                    onChange={onChange}
                     placeholder={placeholder}
                     required={required}
                 ></textarea>

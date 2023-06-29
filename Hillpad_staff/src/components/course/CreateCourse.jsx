@@ -2,10 +2,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import CourseForm from "./CourseForm";
-import Input from "../common/form/Input";
-import TextArea from "../common/form/TextArea";
-import Select from "../common/form/Select";
-import CheckBox from "../common/form/CheckBox";
 
 
 class CreateCourse extends Component {

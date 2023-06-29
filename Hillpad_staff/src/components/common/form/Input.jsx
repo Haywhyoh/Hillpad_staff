@@ -3,7 +3,7 @@
 import React from 'react';
 
 
-const Input = ({ name, label, placeholder="", type="text", required=false }) => {
+const Input = ({ name, label, value, onChange, placeholder="", type="text", required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -17,6 +17,9 @@ const Input = ({ name, label, placeholder="", type="text", required=false }) => 
                     type={type}
                     className="form-control"
                     id={`${name}-field`}
+                    value={value}
+                    name={name}
+                    onChange={onChange}
                     placeholder={placeholder}
                     required={required}
                 />

@@ -3,7 +3,7 @@
 import React from 'react';
 
 
-const CheckBox = ({ name, label, options, required=false }) => {
+const CheckBox = ({ name, label, value, options, onChange, required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -21,7 +21,10 @@ const CheckBox = ({ name, label, options, required=false }) => {
                                 className="form-check-input"
                                 type="checkbox"
                                 id={`${name}-${option.value}`}
+                                name={name}
+                                onChange={onChange}
                                 value={option.value}
+                                checked={value.includes(option.value)}
                             />
                             <label
                                 className="form-check-label"
