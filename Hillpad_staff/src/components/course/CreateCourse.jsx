@@ -1,6 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import Input from "../common/form/Input";
+import TextArea from "../common/form/TextArea";
+import Select from "../common/form/Select";
+import CheckBox from "../common/form/CheckBox";
 
 class CreateCourse extends Component {
     render() {
@@ -26,460 +30,229 @@ class CreateCourse extends Component {
                         </div>
                         <div className="card-body">
                             <form>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label fw-bold"
-                                        htmlFor="course-name-field"
-                                    >
-                                        <span className="text-danger">* </span>Name
-                                        of course
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="course-name-field"
-                                        placeholder="Advanced Engineering"
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-about-field"
-                                    >
-                                        About
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="course-about-field"
-                                        placeholder="Short description of course"
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-overview-field"
-                                    >
-                                        Overview
-                                    </label>
-                                    <textarea
-                                        id="course-overview-field"
-                                        className="form-control"
-                                        rows={10}
-                                        placeholder="Course overview"
-                                    ></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-duration-field"
-                                    >
-                                        Duration of course (in months)
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        id="course-duration-field"
-                                        placeholder="Course duration months"
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-school-field"
-                                        className="form-label fw-bold"
-                                    >
-                                        <span className="text-danger">* </span>
-                                        School
-                                    </label>
-                                    <select
-                                        id="course-school-field"
-                                        className="form-select"
-                                        required
-                                    >
-                                        <option value="0">
-                                            Select school...
-                                        </option>
-                                        <option value="1">
-                                            Politecnico di Milano
-                                        </option>
-                                        <option value="2">
-                                            Toronto Metropolitan University
-                                        </option>
-                                        <option value="3">
-                                            University of Fairfax
-                                        </option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="disciplines-field"
-                                        className="form-label fw-bold"
-                                    >
-                                        <span className="text-danger">* </span>
-                                        Disciplines
-                                    </label>
-                                    <div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox1"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox1"
-                                            >
-                                                Agriculture &amp; Forestry
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox2"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox2"
-                                            >
-                                                Art, Design &amp; Architecture
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox1"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox1"
-                                            >
-                                                Business &amp; Management
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox2"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox2"
-                                            >
-                                                Computer Science &amp; IT
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox1"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox1"
-                                            >
-                                                Education &amp; Training
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox2"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox2"
-                                            >
-                                                Engineering &amp; Technology
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox1"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox1"
-                                            >
-                                                Natural Sciences &amp;
-                                                Mathematics
-                                            </label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="inlineCheckbox2"
-                                                value="option1"
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="inlineCheckbox2"
-                                            >
-                                                Environmental Sciences
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                                <Input
+                                    name="course"
+                                    label="Name of course"
+                                    placeholder="Industrial Chemistry"
+                                    required={true}
+                                />
+                                <Input
+                                    name="about"
+                                    label="About"
+                                    placeholder="Short description of course"
+                                />
+                                <TextArea
+                                    name="overview"
+                                    label="Overview"
+                                    placeholder="Course overview"
+                                />
+                                <Input
+                                    name="duration"
+                                    label="Duration of course"
+                                    placeholder="Course duration"
+                                    type="number"
+                                />
+                                <Select
+                                    name="school"
+                                    label="School"
+                                    required={true}
+                                    options={[
+                                        {
+                                            value: "1",
+                                            name: "Politecnico di Milano",
+                                        },
+                                        {
+                                            value: "2",
+                                            name: "Toronto Metropolitan University",
+                                        },
+                                        {
+                                            value: "3",
+                                            name: "University of Fairfax",
+                                        },
+                                    ]}
+                                />
+                                <CheckBox
+                                    name="disciplines"
+                                    label="Disciplines"
+                                    required={true}
+                                    options={[
+                                        {
+                                            value: "1",
+                                            name: "Agriculture & Forestry",
+                                        },
+                                        {
+                                            value: "2",
+                                            name: "Art, Design & Architecture",
+                                        },
+                                        {
+                                            value: "3",
+                                            name: "Business & Management",
+                                        },
+                                        {
+                                            value: "4",
+                                            name: "Computer Science & IT",
+                                        },
+                                        {
+                                            value: "5",
+                                            name: "Education & Training",
+                                        },
+                                        {
+                                            value: "6",
+                                            name: "Engineering & Technology",
+                                        },
+                                        {
+                                            value: "7",
+                                            name: "Natural Sciences & Mathematics",
+                                        },
+                                        {
+                                            value: "8",
+                                            name: "Environmental Sciences",
+                                        },
+                                    ]}
+                                />
+
                                 <small className="text-light fw-semibold">
                                     Important Dates
                                 </small>
-                                <div className="mt-2 mb-3">
-                                    <label
-                                        htmlFor="start-date-field"
-                                        className="form-label"
-                                    >
-                                        Start Date
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="month"
-                                        id="start-date-field"
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="application-deadline-field"
-                                        className="form-label"
-                                    >
-                                        Application Deadline
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="month"
-                                        id="application-deadline-field"
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-tuition-fee-field"
-                                    >
-                                        Tuition fee
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        id="course-tuition-fee-field"
-                                        placeholder="Tuition fee"
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-tuition-fee-base-field"
-                                        className="form-label"
-                                    >
-                                        Tuition fee base
-                                    </label>
-                                    <select
-                                        id="course-tuition-fee-base-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select tuition fee base...
-                                        </option>
-                                        <option value="1">Per semester</option>
-                                        <option value="2">Per year</option>
-                                        <option value="3">
-                                            Per full programme
-                                        </option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-tuition-currency-field"
-                                        className="form-label"
-                                    >
-                                        Tuition currency
-                                    </label>
-                                    <select
-                                        id="course-tuition-currency-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select tuition currency...
-                                        </option>
-                                        <option value="1">
-                                            British Pound (GBP)
-                                        </option>
-                                        <option value="2">Euro (EUR)</option>
-                                        <option value="3">
-                                            Nigerian Naira (NGN)
-                                        </option>
-                                        <option value="4">
-                                            US Dollar (USD)
-                                        </option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-format-field"
-                                        className="form-label"
-                                    >
-                                        Course format
-                                    </label>
-                                    <select
-                                        id="course-format-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select course format...
-                                        </option>
-                                        <option value="1">Part-time</option>
-                                        <option value="2">Full-time</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-attendance-field"
-                                        className="form-label"
-                                    >
-                                        Course attendance
-                                    </label>
-                                    <select
-                                        id="course-attendance-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select course attendance...
-                                        </option>
-                                        <option value="1">On-site</option>
-                                        <option value="2">Online</option>
-                                        <option value="3">Blended</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-attendance-field"
-                                        className="form-label"
-                                    >
-                                        Programme Type
-                                    </label>
-                                    <select
-                                        id="course-attendance-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select programme type...
-                                        </option>
-                                        <option value="1">Bachelors</option>
-                                        <option value="2">Masters</option>
-                                        <option value="3">Doctorates</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-attendance-field"
-                                        className="form-label"
-                                    >
-                                        Degree Type
-                                    </label>
-                                    <select
-                                        id="course-attendance-field"
-                                        className="form-select"
-                                    >
-                                        <option value="0">
-                                            Select degree type...
-                                        </option>
-                                        <option value="1">
-                                            B.Sc. Bachelor of Science
-                                        </option>
-                                        <option value="2">
-                                            B.A. Bachelor of Arts
-                                        </option>
-                                        <option value="3">
-                                            M.Sc. Master of Science
-                                        </option>
-                                        <option value="4">
-                                            M.A. Master of Arts
-                                        </option>
-                                        <option value="4">
-                                            M.Eng. Master of Engineering
-                                        </option>
-                                        <option value="4">
-                                            Ph.D. Doctor of Philosophy
-                                        </option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-language-field"
-                                        className="form-label fw-bold"
-                                    >
-                                        <span className="text-danger">* </span>
-                                        Language
-                                    </label>
-                                    <select
-                                        id="course-language-field"
-                                        className="form-select"
-                                        required
-                                    >
-                                        <option value="0">
-                                            Select course language...
-                                        </option>
-                                        <option value="1">English</option>
-                                        <option value="2">French</option>
-                                        <option value="3">German</option>
-                                    </select>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-programme-structure-field"
-                                    >
-                                        Programme structure
-                                    </label>
-                                    <textarea
-                                        id="course-programme-structure-field"
-                                        className="form-control"
-                                        rows={20}
-                                        placeholder="Course programme structure"
-                                    ></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="course-admission-requirements-field"
-                                    >
-                                        Admission requirements
-                                    </label>
-                                    <textarea
-                                        id="course-admission-requirements-field"
-                                        className="form-control"
-                                        rows={15}
-                                        placeholder="Course admission requirements"
-                                    ></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="course-official-programme-website-field"
-                                        className="form-label"
-                                    >
-                                        Official programme website
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        type="url"
-                                        placeholder="https://hillpaduni.edu/undergrad"
-                                        id="course-official-programme-website-field"
-                                    />
-                                </div>
+                                <Input
+                                    name="start-date"
+                                    label="Start Date"
+                                    type="month"
+                                />
+                                <Input
+                                    name="application-deadline"
+                                    label="Application Deadline"
+                                    type="month"
+                                />
+
+                                <Input
+                                    name="tuition-fee"
+                                    label="Tuition Fee"
+                                    type="number"
+                                    placeholder="Tuition fee"
+                                />
+                                <Select
+                                    name="tuition-fee-base"
+                                    label="Tuition Fee Base"
+                                    options={[
+                                        { value: "1", name: "Per semester" },
+                                        { value: "2", name: "Per year" },
+                                        {
+                                            value: "3",
+                                            name: "Per full programme",
+                                        },
+                                    ]}
+                                />
+                                <Select
+                                    name="tuition-currency"
+                                    label="Tuition Currency"
+                                    options={[
+                                        {
+                                            value: "1",
+                                            name: "British Pound (GBP)",
+                                        },
+                                        { value: "2", name: "Euro (EUR)" },
+                                        {
+                                            value: "3",
+                                            name: "Nigerian Naira (NGN)",
+                                        },
+                                        { value: "4", name: "US Dollar (USD)" },
+                                    ]}
+                                />
+
+                                <Select
+                                    name="course-format"
+                                    label="Course Format"
+                                    options={[
+                                        { value: "1", name: "Part-time" },
+                                        { value: "2", name: "Full-time" },
+                                    ]}
+                                />
+                                <Select
+                                    name="course-attendance"
+                                    label="Course Attendance"
+                                    options={[
+                                        { value: "1", name: "On-site" },
+                                        { value: "2", name: "Online" },
+                                        { value: "3", name: "Blended" },
+                                    ]}
+                                />
+
+                                <Select
+                                    name="programme-type"
+                                    label="Programme Type"
+                                    options={[
+                                        { value: "1", name: "Bachelors" },
+                                        { value: "2", name: "Masters" },
+                                        { value: "3", name: "Doctorates" },
+                                    ]}
+                                />
+                                <Select
+                                    name="degree-type"
+                                    label="Degree Type"
+                                    options={[
+                                        {
+                                            value: "1",
+                                            name: "B.Sc. Bachelor of Science",
+                                        },
+                                        {
+                                            value: "2",
+                                            name: "B.A. Bachelor of Arts",
+                                        },
+                                        {
+                                            value: "3",
+                                            name: "M.Sc. Master of Science",
+                                        },
+                                        {
+                                            value: "4",
+                                            name: "M.A. Master of Arts",
+                                        },
+                                        {
+                                            value: "5",
+                                            name: "M.Eng. Master of Engineering",
+                                        },
+                                        {
+                                            value: "6",
+                                            name: "Ph.D. Doctor of Philosophy",
+                                        },
+                                    ]}
+                                />
+
+                                <Select
+                                    name="language"
+                                    label="Language"
+                                    required={true}
+                                    options={[
+                                        { value: "1", name: "English" },
+                                        { value: "2", name: "French" },
+                                        { value: "3", name: "German" },
+                                    ]}
+                                />
+
+                                <TextArea
+                                    name="programme-structure"
+                                    label="Programme Structure"
+                                    placeholder="Course programme structure"
+                                    rows={20}
+                                />
+                                <TextArea
+                                    name="admission-requirements"
+                                    label="Admission Requirements"
+                                    placeholder="Course admission requirements"
+                                    rows={20}
+                                />
+                                <Input
+                                    name="programme-website"
+                                    label="Official Programme Website"
+                                    type="url"
+                                    placeholder="https://hillpaduniversity.edu/undergrad"
+                                />
+                                
                                 <div className="mt-4 text-end">
-                                    <button type="submit" className="btn btn-dark">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-dark me-2"
+                                    >
                                         Save and submit later
                                     </button>
                                     <button
