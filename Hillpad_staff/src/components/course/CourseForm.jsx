@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 
-import { getProgrammeTypes } from "../../services/api/programmeTypeService";
+import programmeTypeService from "../../services/api/programmeTypeService";
+import schoolService from "../../services/api/schoolService";
 
 import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
@@ -33,12 +34,23 @@ class CourseForm extends Component {
             admissionRequirements: "",
             programmeWebsite: ""
         },
+        schools: [],
         programmeTypes: []
     };
 
     async componentDidMount() {
-        const { data } = getProgrammeTypes();
-        console.log(data);
+        // Get schools
+        let { data } = await schoolService.getSchools();
+        const schools = data.results.map(item => (
+            {
+                value: item.id,
+                name: item.name
+            }
+        ));
+        this.setState({ schools });
+
+        // Get programme types
+        ({ data } = await programmeTypeService.getProgrammeTypes());
         const programmeTypes = data.results.map(item => (
             {
                 value: item.id,
@@ -75,7 +87,7 @@ class CourseForm extends Component {
 
     render() {
        const { formTitle } = this.props;
-       const { formData, programmeTypes } = this.state;
+       const { formData, schools, programmeTypes } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -140,20 +152,7 @@ class CourseForm extends Component {
                                 value={formData.school}
                                 onChange={this.handleChange}
                                 required={true}
-                                options={[
-                                    {
-                                        value: "1",
-                                        name: "Politecnico di Milano",
-                                    },
-                                    {
-                                        value: "2",
-                                        name: "Toronto Metropolitan University",
-                                    },
-                                    {
-                                        value: "3",
-                                        name: "University of Fairfax",
-                                    },
-                                ]}
+                                options={schools}
                             />
                             <CheckBox
                                 name="disciplines"
