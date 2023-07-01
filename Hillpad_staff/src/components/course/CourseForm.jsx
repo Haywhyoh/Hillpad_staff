@@ -1,10 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 
+import { getProgrammeTypes } from "../../services/api/programmeTypeService";
+
 import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import TextArea from "../common/form/TextArea";
+
 
 class CourseForm extends Component {
     state = {
@@ -29,8 +32,21 @@ class CourseForm extends Component {
             programmeStructure: "",
             admissionRequirements: "",
             programmeWebsite: ""
-        }
+        },
+        programmeTypes: []
     };
+
+    async componentDidMount() {
+        const { data } = getProgrammeTypes();
+        console.log(data);
+        const programmeTypes = data.results.map(item => (
+            {
+                value: item.id,
+                name: item.name
+            }
+        ));
+        this.setState({ programmeTypes });
+    }
 
     handleSubmit = e => {
         e.preventDefault();
@@ -59,7 +75,7 @@ class CourseForm extends Component {
 
     render() {
        const { formTitle } = this.props;
-       const { formData } = this.state;
+       const { formData, programmeTypes } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -267,11 +283,7 @@ class CourseForm extends Component {
                                 label="Programme Type"
                                 value={formData.programmeType}
                                 onChange={this.handleChange}
-                                options={[
-                                    { value: "1", name: "Bachelors" },
-                                    { value: "2", name: "Masters" },
-                                    { value: "3", name: "Doctorates" },
-                                ]}
+                                options={programmeTypes}
                             />
                             <Select
                                 name="degreeType"
