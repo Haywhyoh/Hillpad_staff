@@ -13,6 +13,7 @@ class CourseForm extends Component {
             about: "",
             overview: "",
             duration: "",
+            durationBase: "",
             school: "",
             disciplines: [],
             startDate: "",
@@ -33,6 +34,8 @@ class CourseForm extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
+
+        console.log(e);
 
         console.log("Submitted");
     }
@@ -94,6 +97,26 @@ class CourseForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Course duration"
                                 type="number"
+                            />
+                            <Select
+                                name="durationBase"
+                                label="Duration Base"
+                                value={formData.durationBase}
+                                onChange={this.handleChange}
+                                options={[
+                                    {
+                                        value: "1",
+                                        name: "Month",
+                                    },
+                                    {
+                                        value: "2",
+                                        name: "Semester",
+                                    },
+                                    {
+                                        value: "3",
+                                        name: "Year",
+                                    },
+                                ]}
                             />
                             <Select
                                 name="school"
