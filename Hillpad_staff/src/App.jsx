@@ -1,4 +1,6 @@
-// import { useState } from 'react'
+import { useEffect, useState } from 'react';
+
+import userService from './services/api/userService';
 
 // ==============================================================================
 // CSS Files
@@ -50,17 +52,30 @@ import LoginForm from './components/LoginForm';
 
 function App() {
   // const [count, setCount] = useState(0)
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    async function userDetail() {
+      try {
+        const response = await userService.getUser();
+        setUser(response.data);
+      } catch (ex) {
+        //
+      }
+    }
+    userDetail();
+  });
 
   return (
     <>
-      <Routes>
+      {/* <Routes>
         <Route path="/login" element={<LoginForm />} />
-      </Routes>
+      </Routes> */}
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
             <Sidebar />
             <div className="layout-page">
-                <NavBar />
+                <NavBar user={user} />
                 <div className="content-wrapper">
 
                     <Routes>

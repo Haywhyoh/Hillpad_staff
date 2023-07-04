@@ -1,12 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import avatar1 from '../assets/img/avatars/1.png';
 
 
 class NavBar extends Component {
-    
-    render() { 
+
+    render() {
+        const user = this.props.user;
         return (
             <>
                 <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -34,8 +36,8 @@ class NavBar extends Component {
                         <ul className="navbar-nav flex-row align-items-center ms-auto">
                             
                             <li className="nav-item me-3">
-                                <span className="h5 fw-bold text-muted">John Robinson</span>
-                                <span className="fw-bold text-muted"><a href="mailto:johnrobinson@hillpad.com">&nbsp;johnrobinson@hillpad.com</a></span>
+                                <span className="h5 fw-bold text-muted">{user.first_name} {user.last_name}</span>
+                                <span className="fw-bold text-muted"><Link to={"mailto:" + user.email}>&nbsp;{user.email}</Link></span>
                             </li>
 
                             {/* User */}
@@ -58,7 +60,7 @@ class NavBar extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="flex-grow-1">
-                                                    <span className="fw-semibold d-block">John Robinson</span>
+                                                    <span className="fw-semibold d-block">{user.first_name + " " + user.last_name}</span>
                                                     <small className="text-muted">Data Entry Specialist</small>
                                                 </div>
                                             </div>
