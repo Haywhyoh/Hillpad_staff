@@ -5,6 +5,7 @@ import schoolService from "../../services/api/schoolService";
 import disciplineService from "../../services/api/disciplineService";
 import currencyService from "../../services/api/currencyService";
 import programmeTypeService from "../../services/api/programmeTypeService";
+import degreeTypeService from "../../services/api/degreeTypeService";
 import languageService from "../../services/api/languageService";
 
 import CheckBox from "../common/form/CheckBox";
@@ -41,6 +42,7 @@ class CourseForm extends Component {
         disciplines: [],
         currencies: [],
         programmeTypes: [],
+        degreeTypes: [],
         languages: []
     };
 
@@ -85,6 +87,16 @@ class CourseForm extends Component {
         ));
         this.setState({ programmeTypes });
 
+        // Get degree types
+        ({ data } = await degreeTypeService.getDegreeTypes());
+        const degreeTypes = data.results.map(item => (
+            {
+                value: item.id,
+                name: `${item.name} (${item.short_name})`
+            }
+        ));
+        this.setState({ degreeTypes });
+
         // Get languages
         ({ data } = await languageService.getLanguages());
         const languages = data.results.map(item => (
@@ -127,7 +139,7 @@ class CourseForm extends Component {
 
     render() {
        const { formTitle } = this.props;
-       const { formData, schools, disciplines, currencies, programmeTypes, languages } = this.state;
+       const { formData, schools, disciplines, currencies, programmeTypes, degreeTypes, languages } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -285,32 +297,7 @@ class CourseForm extends Component {
                                 label="Degree Type"
                                 value={formData.degreeType}
                                 onChange={this.handleChange}
-                                options={[
-                                    {
-                                        value: "1",
-                                        name: "B.Sc. Bachelor of Science",
-                                    },
-                                    {
-                                        value: "2",
-                                        name: "B.A. Bachelor of Arts",
-                                    },
-                                    {
-                                        value: "3",
-                                        name: "M.Sc. Master of Science",
-                                    },
-                                    {
-                                        value: "4",
-                                        name: "M.A. Master of Arts",
-                                    },
-                                    {
-                                        value: "5",
-                                        name: "M.Eng. Master of Engineering",
-                                    },
-                                    {
-                                        value: "6",
-                                        name: "Ph.D. Doctor of Philosophy",
-                                    },
-                                ]}
+                                options={degreeTypes}
                             />
 
                             <Select
