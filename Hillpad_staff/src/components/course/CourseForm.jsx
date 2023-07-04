@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 
-import programmeTypeService from "../../services/api/programmeTypeService";
 import schoolService from "../../services/api/schoolService";
+import disciplineService from "../../services/api/disciplineService";
+import programmeTypeService from "../../services/api/programmeTypeService";
 
 import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
@@ -35,6 +36,7 @@ class CourseForm extends Component {
             programmeWebsite: ""
         },
         schools: [],
+        disciplines: [],
         programmeTypes: []
     };
 
@@ -48,6 +50,16 @@ class CourseForm extends Component {
             }
         ));
         this.setState({ schools });
+
+        // Get disciplines
+        ({ data } = await disciplineService.getDisciplines());
+        const disciplines = data.results.map(item => (
+            {
+                value: item.id,
+                name: item.name
+            }
+        ));
+        this.setState({ disciplines });
 
         // Get programme types
         ({ data } = await programmeTypeService.getProgrammeTypes());
@@ -74,20 +86,24 @@ class CourseForm extends Component {
         this.setState({ formData });
     }
 
-    handleCheckBoxChange = ({ currentTarget: input }) => {
+    handleCheckBoxChange = ({ target: input }) => {
         const formData = {...this.state.formData};
+        console.log(input);
+        console.log(input.checked);
         if (input.checked) {
+            console.log("the if");
             formData[input.name] = [...formData[input.name], input.value]
             this.setState({ formData });
         } else {
-            formData[input.name] = formData[input.name].filter((_) => _ !== input.value);
+            console.log("the else");
+            formData[input.name] = formData[input.name].filter(_ => _ !== input.value);
             this.setState({ formData });
         }
     }
 
     render() {
        const { formTitle } = this.props;
-       const { formData, schools, programmeTypes } = this.state;
+       const { formData, schools, disciplines, programmeTypes } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -160,40 +176,7 @@ class CourseForm extends Component {
                                 required={true}
                                 value={formData.disciplines}
                                 onChange={this.handleCheckBoxChange}
-                                options={[
-                                    {
-                                        value: "1",
-                                        name: "Agriculture & Forestry",
-                                    },
-                                    {
-                                        value: "2",
-                                        name: "Art, Design & Architecture",
-                                    },
-                                    {
-                                        value: "3",
-                                        name: "Business & Management",
-                                    },
-                                    {
-                                        value: "4",
-                                        name: "Computer Science & IT",
-                                    },
-                                    {
-                                        value: "5",
-                                        name: "Education & Training",
-                                    },
-                                    {
-                                        value: "6",
-                                        name: "Engineering & Technology",
-                                    },
-                                    {
-                                        value: "7",
-                                        name: "Natural Sciences & Mathematics",
-                                    },
-                                    {
-                                        value: "8",
-                                        name: "Environmental Sciences",
-                                    },
-                                ]}
+                                options={disciplines}
                             />
 
                             <small className="text-light fw-semibold">

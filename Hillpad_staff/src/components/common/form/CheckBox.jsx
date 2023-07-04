@@ -16,15 +16,16 @@ const CheckBox = ({ name, label, value, options, onChange, required=false }) => 
                 </label>
                 <div>
                     {options.map(option => (
-                        <div key={option.value} className="form-check form-check-inline">
+                        <div key={options.indexOf(option)} className="form-check form-check-inline">
                             <input
+                                key={options.indexOf(option)}
                                 className="form-check-input"
                                 type="checkbox"
                                 id={`${name}-${option.value}`}
                                 name={name}
                                 onChange={onChange}
                                 value={option.value}
-                                checked={value.includes(option.value)}
+                                // checked={value.includes(option.value)}
                             />
                             <label
                                 className="form-check-label"
