@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import schoolService from "../../services/api/schoolService";
 import disciplineService from "../../services/api/disciplineService";
 import programmeTypeService from "../../services/api/programmeTypeService";
+import languageService from "../../services/api/languageService";
 
 import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
@@ -37,7 +38,8 @@ class CourseForm extends Component {
         },
         schools: [],
         disciplines: [],
-        programmeTypes: []
+        programmeTypes: [],
+        languages: []
     };
 
     async componentDidMount() {
@@ -70,6 +72,16 @@ class CourseForm extends Component {
             }
         ));
         this.setState({ programmeTypes });
+
+        // Get languages
+        ({ data } = await languageService.getLanguages());
+        const languages = data.results.map(item => (
+            {
+                value: item.id,
+                name: item.name
+            }
+        ));
+        this.setState({ languages });
     }
 
     handleSubmit = e => {
@@ -103,7 +115,7 @@ class CourseForm extends Component {
 
     render() {
        const { formTitle } = this.props;
-       const { formData, schools, disciplines, programmeTypes } = this.state;
+       const { formData, schools, disciplines, programmeTypes, languages } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -306,11 +318,7 @@ class CourseForm extends Component {
                                 value={formData.language}
                                 onChange={this.handleChange}
                                 required={true}
-                                options={[
-                                    { value: "1", name: "English" },
-                                    { value: "2", name: "French" },
-                                    { value: "3", name: "German" },
-                                ]}
+                                options={languages}
                             />
 
                             <TextArea

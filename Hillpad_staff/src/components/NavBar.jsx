@@ -61,7 +61,7 @@ class NavBar extends Component {
                                                 </div>
                                                 <div className="flex-grow-1">
                                                     <span className="fw-semibold d-block">{user.first_name + " " + user.last_name}</span>
-                                                    <small className="text-muted">Data Entry Specialist</small>
+                                                    <small className="text-muted">{user.role}</small>
                                                 </div>
                                             </div>
                                         </a>

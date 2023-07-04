@@ -1,32 +1,33 @@
 import http from "../httpService";
 import config from "../../config.json";
 
-const apiEndPoint = `${config.apiURL}/academics/programme_type`;
+const apiEndPoint = `${config.apiURL}/academics/language`;
 
-function getProgrammeTypes() {
+
+function getLanguages() {
     const url = `${apiEndPoint}/list`;
     return http.get(url);
 }
 
-function getProgrammeType(id) {
+function getLanguage(id) {
     const url = `${apiEndPoint}/detail/${id}`;
     return http.get(url);
 }
 
-function createProgrammeType(data) {
-    const url = `${apiEndPoint}/create`;
+function createLanguage(data) {
+    const url = `${apiEndPoint}/create_draft`;
     return http.post(url, data);
 }
 
-function updateProgrammeType(id, data) {
+function updateLanguage(id, data) {
     const url = `${apiEndPoint}/update/${id}`;
     return http.patch(url, data);
 }
 
 
 export default {
-    getProgrammeTypes,
-    getProgrammeType,
-    createProgrammeType,
-    updateProgrammeType
+    getLanguages,
+    getLanguage,
+    createLanguage,
+    updateLanguage
 }
