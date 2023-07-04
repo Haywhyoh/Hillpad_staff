@@ -3,7 +3,7 @@
 import React from 'react';
 
 
-const Input = ({ name, label, value, onChange, placeholder="", type="text", required=false }) => {
+const Input = ({ name, label, value, onChange, placeholder="", type="text", required=false, autoFocus=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -22,6 +22,7 @@ const Input = ({ name, label, value, onChange, placeholder="", type="text", requ
                     onChange={onChange}
                     placeholder={placeholder}
                     required={required}
+                    autoFocus={autoFocus}
                 />
             </div>
         </>

@@ -11,6 +11,8 @@ axios.interceptors.response.use(null, error => {
     return Promise.reject(error);
 });
 
+axios.defaults.withCredentials = true;
+
 export default {
     get: axios.get,
     post: axios.post,

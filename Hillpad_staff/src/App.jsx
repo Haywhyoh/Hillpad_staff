@@ -29,7 +29,7 @@ import './assets/vendor/js/bootstrap.js';
 import './assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js';
 import './assets/vendor/js/menu.js';
 // Vendors JS
-import './assets/vendor/libs/apex-charts/apexcharts.js'
+import './assets/vendor/libs/apex-charts/apexcharts.js';
 // Main JS
 import './assets/js/main.js';
 // ------------------------------------------------------------------------------
@@ -45,6 +45,7 @@ import Countries from './components/Countries';
 import Notifications from './components/Notifications';
 import Footer from './components/Footer';
 import CourseRoutes from './components/course/CourseRoutes';
+import LoginForm from './components/LoginForm';
 
 
 function App() {
@@ -52,6 +53,9 @@ function App() {
 
   return (
     <>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+      </Routes>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
             <Sidebar />
