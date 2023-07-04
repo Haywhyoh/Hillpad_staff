@@ -3,6 +3,7 @@ import React, { Component } from "react";
 
 import schoolService from "../../services/api/schoolService";
 import disciplineService from "../../services/api/disciplineService";
+import currencyService from "../../services/api/currencyService";
 import programmeTypeService from "../../services/api/programmeTypeService";
 import languageService from "../../services/api/languageService";
 
@@ -38,6 +39,7 @@ class CourseForm extends Component {
         },
         schools: [],
         disciplines: [],
+        currencies: [],
         programmeTypes: [],
         languages: []
     };
@@ -62,6 +64,16 @@ class CourseForm extends Component {
             }
         ));
         this.setState({ disciplines });
+
+        // Get currencies
+        ({ data } = await currencyService.getCurrencies());
+        const currencies = data.results.map(item => (
+            {
+                value: item.id,
+                name: item.name
+            }
+        ));
+        this.setState({ currencies });
 
         // Get programme types
         ({ data } = await programmeTypeService.getProgrammeTypes());
@@ -115,7 +127,7 @@ class CourseForm extends Component {
 
     render() {
        const { formTitle } = this.props;
-       const { formData, schools, disciplines, programmeTypes, languages } = this.state;
+       const { formData, schools, disciplines, currencies, programmeTypes, languages } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -236,18 +248,7 @@ class CourseForm extends Component {
                                 label="Tuition Currency"
                                 value={formData.tuitionCurrency}
                                 onChange={this.handleChange}
-                                options={[
-                                    {
-                                        value: "1",
-                                        name: "British Pound (GBP)",
-                                    },
-                                    { value: "2", name: "Euro (EUR)" },
-                                    {
-                                        value: "3",
-                                        name: "Nigerian Naira (NGN)",
-                                    },
-                                    { value: "4", name: "US Dollar (USD)" },
-                                ]}
+                                options={currencies}
                             />
 
                             <Select
