@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AuthProvider } from './context/AuthContext';
 
 import userService from './services/api/userService';
 
@@ -37,39 +38,46 @@ import './assets/js/main.js';
 // ------------------------------------------------------------------------------
 
 import { Route, Routes } from 'react-router-dom';
-
+import RequireAuth from './components/common/RequireAuth';
 import ProtectedRoutes from './ProtectedRoutes';
 
 import LoginForm from './components/LoginForm';
 
 
-function App() {
-  // const [count, setCount] = useState(0)
-  const [user, setUser] = useState({});
+export default function App() {
+  // const [user, setUser] = useState({});
 
-  useEffect(() => {
-    async function userDetail() {
-      try {
-        const response = await userService.getUser();
-        setUser(response.data);
-      } catch (ex) {
-        if (ex.response.status === 400 || ex.response.status === 401 || ex.response.status === 403) {
-          setUser({});
-        }
-      }
-    }
-    userDetail();
-  });
+  // useEffect(() => {
+  //   async function userDetail() {
+  //     try {
+  //       const response = await userService.getUser();
+  //       setUser(response.data);
+  //     } catch (ex) {
+  //       if (ex.response.status === 400 || ex.response.status === 401 || ex.response.status === 403) {
+  //         setUser({});
+  //       }
+  //     }
+  //   }
+  //   userDetail();
+  // });
 
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/*" element={<ProtectedRoutes user={user} />} />
+        <Route
+          path="/*"
+          element={
+            <RequireAuth>
+              <ProtectedRoutes />
+            </RequireAuth>
+          }
+        />
+          
       </Routes>
       
-    </>
+    </AuthProvider>
   )
 }
 
-export default App
+

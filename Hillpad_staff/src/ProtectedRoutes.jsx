@@ -1,4 +1,5 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import useAuth from "./hooks/useAuth.js";
 
 import Sidebar from './components/Sidebar.jsx';
 import NavBar from './components/NavBar';
@@ -11,15 +12,16 @@ import Notifications from './components/Notifications';
 import Footer from './components/Footer';
 import CourseRoutes from './components/course/CourseRoutes';
 
-function ProtectedRoutes({ user }) {
-    
+function ProtectedRoutes() {
+    let auth = useAuth();
+
     return (
         <>
             <div className="layout-wrapper layout-content-navbar">
                 <div className="layout-container">
                     <Sidebar />
                     <div className="layout-page">
-                        <NavBar user={user} />
+                        <NavBar user={auth.user} />
                         <div className="content-wrapper">
 
 
