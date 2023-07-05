@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 
+import courseService from "../../services/api/courseService";
 import schoolService from "../../services/api/schoolService";
 import disciplineService from "../../services/api/disciplineService";
 import currencyService from "../../services/api/currencyService";
@@ -17,15 +18,15 @@ import TextArea from "../common/form/TextArea";
 class CourseForm extends Component {
     state = {
         formData: {
-            course: "",
+            name: "",
             about: "",
             overview: "",
             duration: "",
             durationBase: "",
-            school: "",
-            disciplines: [],
             startDate: "",
             applicationDeadline: "",
+            school: "",
+            disciplines: [],
             tuitionFee: "",
             tuitionFeeBase: "",
             tuitionCurrency: "",
@@ -36,110 +37,163 @@ class CourseForm extends Component {
             language: "",
             programmeStructure: "",
             admissionRequirements: "",
-            programmeWebsite: ""
+            programmeWebsite: "",
         },
         schools: [],
         disciplines: [],
         currencies: [],
         programmeTypes: [],
         degreeTypes: [],
-        languages: []
+        languages: [],
+    };
+
+    options = {
+        tuitionFeeBase: [
+            { value: "SEMESTER", name: "Per semester" },
+            { value: "YEAR", name: "Per year" },
+            { value: "PROGRAMME", name: "Per full programme"},
+        ],
+        courseFormat: [
+            { value: "FULL", name: "Full-time" },
+            { value: "PART", name: "Part-time" },
+        ],
+        courseAttendance: [
+            { value: "SITE", name: "On-site"},
+            { value: "ONLINE", name: "Online"},
+            { value: "BLENDED", name: "Blended"},
+        ]
     };
 
     async componentDidMount() {
         // Get schools
         let { data } = await schoolService.getSchools();
-        const schools = data.results.map(item => (
-            {
-                value: item.id,
-                name: item.name
-            }
-        ));
+        const schools = data.results.map((item) => ({
+            value: item.id,
+            name: item.name,
+        }));
         this.setState({ schools });
 
         // Get disciplines
         ({ data } = await disciplineService.getDisciplines());
-        const disciplines = data.results.map(item => (
-            {
-                value: item.id,
-                name: item.name
-            }
-        ));
+        const disciplines = data.results.map((item) => ({
+            value: item.id,
+            name: item.name,
+        }));
         this.setState({ disciplines });
 
         // Get currencies
         ({ data } = await currencyService.getCurrencies());
-        const currencies = data.results.map(item => (
-            {
-                value: item.id,
-                name: item.name
-            }
-        ));
+        const currencies = data.results.map((item) => ({
+            value: item.id,
+            name: item.name,
+        }));
         this.setState({ currencies });
 
         // Get programme types
         ({ data } = await programmeTypeService.getProgrammeTypes());
-        const programmeTypes = data.results.map(item => (
-            {
-                value: item.id,
-                name: item.name
-            }
-        ));
+        const programmeTypes = data.results.map((item) => ({
+            value: item.id,
+            name: item.name,
+        }));
         this.setState({ programmeTypes });
 
         // Get degree types
         ({ data } = await degreeTypeService.getDegreeTypes());
-        const degreeTypes = data.results.map(item => (
-            {
-                value: item.id,
-                name: `${item.name} (${item.short_name})`
-            }
-        ));
+        const degreeTypes = data.results.map((item) => ({
+            value: item.id,
+            name: `${item.name} (${item.short_name})`,
+        }));
         this.setState({ degreeTypes });
 
         // Get languages
         ({ data } = await languageService.getLanguages());
-        const languages = data.results.map(item => (
-            {
-                value: item.id,
-                name: item.name
-            }
-        ));
+        const languages = data.results.map((item) => ({
+            value: item.id,
+            name: item.name,
+        }));
         this.setState({ languages });
     }
 
-    handleSubmit = e => {
+    handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log(e);
+        const data = this.mapToCourseModel(this.state.formData);
+        try {
+            const response = await courseService.createCourseDraft(data);
+            if (response.status === 201 && response.data) {
+                console.log("Submitted");
+                alert("Created successfully");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-        console.log("Submitted");
-    }
+    mapToCourseModel = (data) => {
+        const [startYear, startMonth] = data.startDate
+            ? data.startDate.split("-")
+            : ["", ""];
+        const [appDeadlineYear, appDeadlineMonth] = data.applicationDeadline
+            ? data.applicationDeadline.split("-")
+            : ["", ""];
+
+        return {
+            name: data.name,
+            about: data.about,
+            overview: data.overview,
+            duration: data.duration,
+            start_month: parseInt(startMonth),
+            start_year: parseInt(startYear),
+            deadline_month: parseInt(appDeadlineMonth),
+            deadline_year: parseInt(appDeadlineYear),
+            school: data.school,
+            disciplines: data.disciplines,
+            tuition_fee: data.tuitionFee,
+            tuition_fee_base: data.tuitionFeeBase,
+            tuition_currency: data.tuitionCurrency,
+            course_format: data.courseFormat,
+            attendance: data.courseAttendance,
+            programme_type: data.programmeType,
+            degree_type: data.degreeType,
+            language: data.language,
+            programme_structure: data.programmeStructure,
+            admission_requirements: data.admissionRequirements,
+            official_programme_website: data.programmeWebsite,
+        };
+    };
 
     handleChange = ({ currentTarget: input }) => {
-        const formData = {...this.state.formData};
+        const formData = { ...this.state.formData };
         formData[input.name] = input.value;
         this.setState({ formData });
-    }
+    };
 
     handleCheckBoxChange = ({ target: input }) => {
-        const formData = {...this.state.formData};
-        console.log(input);
-        console.log(input.checked);
+        const formData = { ...this.state.formData };
         if (input.checked) {
             console.log("the if");
-            formData[input.name] = [...formData[input.name], input.value]
+            formData[input.name] = [...formData[input.name], input.value];
             this.setState({ formData });
         } else {
             console.log("the else");
-            formData[input.name] = formData[input.name].filter(_ => _ !== input.value);
+            formData[input.name] = formData[input.name].filter(
+                (_) => _ !== input.value
+            );
             this.setState({ formData });
         }
-    }
+    };
 
     render() {
-       const { formTitle } = this.props;
-       const { formData, schools, disciplines, currencies, programmeTypes, degreeTypes, languages } = this.state;
+        const { formTitle } = this.props;
+        const {
+            formData,
+            schools,
+            disciplines,
+            currencies,
+            programmeTypes,
+            degreeTypes,
+            languages,
+        } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -149,9 +203,9 @@ class CourseForm extends Component {
                     <div className="card-body">
                         <form onSubmit={this.handleSubmit}>
                             <Input
-                                name="course"
+                                name="name"
                                 label="Name of course"
-                                value={formData.course}
+                                value={formData.name}
                                 onChange={this.handleChange}
                                 placeholder="Industrial Chemistry"
                                 required={true}
@@ -246,14 +300,7 @@ class CourseForm extends Component {
                                 label="Tuition Fee Base"
                                 value={formData.tuitionFeeBase}
                                 onChange={this.handleChange}
-                                options={[
-                                    { value: "1", name: "Per semester" },
-                                    { value: "2", name: "Per year" },
-                                    {
-                                        value: "3",
-                                        name: "Per full programme",
-                                    },
-                                ]}
+                                options={this.options.tuitionFeeBase}
                             />
                             <Select
                                 name="tuitionCurrency"
@@ -268,21 +315,14 @@ class CourseForm extends Component {
                                 label="Course Format"
                                 value={formData.courseFormat}
                                 onChange={this.handleChange}
-                                options={[
-                                    { value: "1", name: "Part-time" },
-                                    { value: "2", name: "Full-time" },
-                                ]}
+                                options={this.options.courseFormat}
                             />
                             <Select
                                 name="courseAttendance"
                                 label="Course Attendance"
                                 value={formData.courseAttendance}
                                 onChange={this.handleChange}
-                                options={[
-                                    { value: "1", name: "On-site" },
-                                    { value: "2", name: "Online" },
-                                    { value: "3", name: "Blended" },
-                                ]}
+                                options={this.options.courseAttendance}
                             />
 
                             <Select
