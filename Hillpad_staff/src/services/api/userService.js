@@ -14,15 +14,20 @@ function logout() {
     return http.post(url);
 }
 
-// School Draft routes
 function getUser() {
     const url = `${apiEndPoint}/detail`;
     return http.get(url);
 }
 
 
+function loginState() {
+    const url = `${apiEndPoint}/login-state`;
+    return http.get(url);
+}
+
 export default {
     login,
     logout,
-    getUser
+    getUser,
+    loginState
 }
