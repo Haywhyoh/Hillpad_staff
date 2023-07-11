@@ -6,7 +6,12 @@ const AuthContext = React.createContext();
 
 
 export function AuthProvider({ children }) {
-    let [user, setUser] = useState(null);
+    let [user, setUser] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+        role: ""
+    });
     let [loginError, setLoginError] = useState(null);
   
     let login = async (data, callback) => {
@@ -17,7 +22,8 @@ export function AuthProvider({ children }) {
                 const { data } = await userService.getUser();
                 setUser(data);
                 const token = response.data["access"];
-                // Cookies.set('hillpad_user', token, { expires: 7 });
+                console.log(token);
+                Cookies.set('hillpad_user', JSON.stringify(data), { expires: 7 });
                 callback();
             } else {
                 throw "Unknown error";

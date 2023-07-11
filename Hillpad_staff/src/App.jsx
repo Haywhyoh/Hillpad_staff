@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import { AuthProvider } from './context/AuthContext';
 import useAuth from './hooks/useAuth';
 import userService from './services/api/userService';
@@ -67,6 +68,10 @@ export default function App() {
   //   }
   //   userDetail();
   // });
+  
+  
+  
+  
 
   return (
     <AuthProvider>
