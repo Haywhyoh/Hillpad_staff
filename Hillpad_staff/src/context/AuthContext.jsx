@@ -21,8 +21,7 @@ export function AuthProvider({ children }) {
             if (response.status === 200) {
                 const { data } = await userService.getUser();
                 setUser(data);
-                const token = response.data["access"];
-                console.log(token);
+                // const token = response.data["access"];
                 Cookies.set('hillpad_user', JSON.stringify(data), { expires: 7 });
                 callback();
             } else {

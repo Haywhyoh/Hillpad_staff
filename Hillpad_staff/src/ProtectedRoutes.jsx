@@ -24,8 +24,6 @@ function ProtectedRoutes() {
                         <NavBar user={auth.user} />
                         <div className="content-wrapper">
 
-
-
                             <Routes>
                                 <Route
                                     path="/course/*"

@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import { AuthProvider } from './context/AuthContext';
-import useAuth from './hooks/useAuth';
-import userService from './services/api/userService';
 
 // ==============================================================================
 // CSS Files
@@ -46,32 +42,6 @@ import LoginForm from './components/LoginForm';
 
 
 export default function App() {
-  // const [user, setUser] = useState({});
-  let auth = useAuth();
-
-  // useEffect(() => {
-  //   async function userDetail() {
-
-  //     if (!auth.user) {
-  //         // Redirect them to the /login page, but save the current location they were
-  //         // trying to go to when they were redirected. This allows us to send them
-  //         // along to that page after they login, which is a nicer user experience
-  //         // than dropping them off on the home page.
-  //         try {
-  //             const { data } = await userService.getUser();
-  //             auth.setUser(data);
-  //         } catch (ex) {
-  //             console.log(ex);
-              
-  //         }
-  //     }
-  //   }
-  //   userDetail();
-  // });
-  
-  
-  
-  
 
   return (
     <AuthProvider>
@@ -85,9 +55,7 @@ export default function App() {
             </RequireAuth>
           }
         />
-          
       </Routes>
-      
     </AuthProvider>
   )
 }
