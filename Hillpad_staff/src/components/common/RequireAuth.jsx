@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { Navigate, useLocation } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
+import config from "../../config.json";
 
 
 const RequireAuth = ({ children }) => {
@@ -13,9 +14,11 @@ const RequireAuth = ({ children }) => {
     
     let auth = useAuth();
     let location = useLocation();
+
+    const userCookie = config.userCookie;
     
     useEffect(() => {
-        const userData = Cookies.get("hillpad_user");
+        const userData = Cookies.get(userCookie);
         if (userData && JSON.parse(userData)) {
             auth.setUser(JSON.parse(userData));
         }
