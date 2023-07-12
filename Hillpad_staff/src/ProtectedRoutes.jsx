@@ -11,6 +11,7 @@ import Countries from './components/Countries';
 import Notifications from './components/Notifications';
 import Footer from './components/Footer';
 import CourseRoutes from './components/course/CourseRoutes';
+import Logout from "./components/Logout.jsx";
 
 function ProtectedRoutes() {
     let auth = useAuth();
@@ -26,10 +27,17 @@ function ProtectedRoutes() {
 
                             <Routes>
                                 <Route
+                                    path="/logout"
+                                    element={<Logout />}
+                                />
+                                <Route
                                     path="/course/*"
                                     element={<CourseRoutes />}
                                 />
-                                <Route path="/schools" element={<Schools />} />
+                                <Route
+                                    path="/schools"
+                                    element={<Schools />}
+                                />
                                 <Route
                                     path="/disciplines"
                                     element={<Disciplines />}
@@ -46,7 +54,10 @@ function ProtectedRoutes() {
                                     path="/notifications"
                                     element={<Notifications />}
                                 />
-                                <Route path="/" element={<Dashboard />} />
+                                <Route
+                                    path="/"
+                                    element={<Dashboard />}
+                                />
                             </Routes>
 
                             <Footer />

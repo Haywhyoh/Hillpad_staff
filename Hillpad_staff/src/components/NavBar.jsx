@@ -122,15 +122,15 @@ function NavBar() {
                                     <div className="dropdown-divider"></div>
                                 </li>
                                 <li>
-                                    <a
+                                    <Link
                                         className="dropdown-item"
-                                        href="auth-login-basic.html"
+                                        to="/logout"
                                     >
                                         <i className="bx bx-power-off me-2"></i>
                                         <span className="align-middle">
                                             Log Out
                                         </span>
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </li>
