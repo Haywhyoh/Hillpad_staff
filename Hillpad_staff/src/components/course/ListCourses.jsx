@@ -29,7 +29,6 @@ function ListCourses() {
                 }
             } catch (ex) {
                 if (ex.response.status === 401) {
-                    console.log("I failed with 404 lol");
                     navigate("/login", {
                         state: { from: location },
                         replace: true

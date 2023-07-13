@@ -4,8 +4,8 @@ import useAuth from "./hooks/useAuth.js";
 import Sidebar from './components/Sidebar.jsx';
 import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
-import Schools from './components/Schools';
-import Disciplines from './components/Disciplines';
+import Schools from './components/school/ListSchools.jsx';
+import DisciplineRoutes from './components/discipline/DisciplineRoutes';
 import DegreeTypes from './components/DegreeTypes';
 import Countries from './components/Countries';
 import Notifications from './components/Notifications';
@@ -39,8 +39,8 @@ function ProtectedRoutes() {
                                     element={<Schools />}
                                 />
                                 <Route
-                                    path="/disciplines"
-                                    element={<Disciplines />}
+                                    path="/discipline/*"
+                                    element={<DisciplineRoutes />}
                                 />
                                 <Route
                                     path="/degree-types"
