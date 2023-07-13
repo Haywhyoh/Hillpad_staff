@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import CourseForm from "./CourseForm";
+import SchoolForm from "./SchoolForm";
 
 
-function CreateCourse() {
+function CreateSchool() {
 
     return (
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Create Course</h4>
+                    <h4 className="fw-bold py-3 mb-4">Create School</h4>
                     <Link to="..">
                         <button
                             type="button"
@@ -20,7 +20,7 @@ function CreateCourse() {
                     </Link>
                 </div>
 
-                <CourseForm formTitle="Create a new course" />
+                <SchoolForm formTitle="Create a new school" />
 
                 
             </div>
@@ -28,4 +28,4 @@ function CreateCourse() {
     );
 }
 
-export default CreateCourse;
+export default CreateSchool;

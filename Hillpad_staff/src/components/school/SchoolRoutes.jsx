@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 
 import ListSchools from './ListSchools';
-// import CreateSchool from './CreateSchool';
+import CreateSchool from './CreateSchool';
 
 
 function SchoolRoutes() {
@@ -10,7 +10,7 @@ function SchoolRoutes() {
         <>
             <Routes>
                 <Route path="/" element={<ListSchools />} />
-                {/* <Route path="/create" element={<CreateSchool />} /> */}
+                <Route path="/create" element={<CreateSchool />} />
             </Routes>
         </>
     );
