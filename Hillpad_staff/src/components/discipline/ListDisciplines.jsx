@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import disciplineService from "../../services/api/disciplineService";
 
@@ -23,7 +23,7 @@ function ListDisciplines() {
     useEffect(() => {
         async function fetchDisciplines() {
             try {
-                const response = await disciplineService.getDisciplines();
+                const response = await disciplineService.getDisciplineDrafts();
                 if (response.status === 200) {
                     setDisciplines(response.data.results);
                 }
@@ -118,7 +118,7 @@ function ListDisciplines() {
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">Disciplines</h4>
-                    <a href="{% url 'staff_discipline_create' %}">
+                    <Link to="create">
                         <button
                             type="button"
                             className="btn btn-secondary mb-4"
@@ -126,7 +126,7 @@ function ListDisciplines() {
                             <span className="tf-icons bx bx-plus"></span>&nbsp;
                             Add Discipline
                         </button>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="card">
