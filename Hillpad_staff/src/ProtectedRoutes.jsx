@@ -4,13 +4,13 @@ import useAuth from "./hooks/useAuth.js";
 import Sidebar from './components/Sidebar.jsx';
 import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
-import Schools from './components/school/ListSchools.jsx';
-import DisciplineRoutes from './components/discipline/DisciplineRoutes';
 import DegreeTypes from './components/DegreeTypes';
 import Countries from './components/Countries';
 import Notifications from './components/Notifications';
 import Footer from './components/Footer';
 import CourseRoutes from './components/course/CourseRoutes';
+import SchoolRoutes from './components/school/SchoolRoutes.jsx';
+import DisciplineRoutes from './components/discipline/DisciplineRoutes';
 import Logout from "./components/Logout.jsx";
 
 function ProtectedRoutes() {
@@ -35,8 +35,8 @@ function ProtectedRoutes() {
                                     element={<CourseRoutes />}
                                 />
                                 <Route
-                                    path="/schools"
-                                    element={<Schools />}
+                                    path="/school/*"
+                                    element={<SchoolRoutes />}
                                 />
                                 <Route
                                     path="/discipline/*"
