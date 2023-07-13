@@ -43,7 +43,7 @@ class Sidebar extends Component {
                         <MenuItem entryName="Schools" entryURL="/school" entryIcon="bxs-school" />
                         <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" />
                         <MenuItem entryName="Degree types" entryURL="/degree-types" entryIcon="bxs-graduation" />
-                        <MenuItem entryName="Countries" entryURL="/countries" entryIcon="bx-globe" />
+                        <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" />
 
                         
                         {/* Account */}

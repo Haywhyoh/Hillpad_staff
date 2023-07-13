@@ -14,6 +14,7 @@ function getCountry(id) {
     return http.get(url);
 }
 
+
 function createCountry(data) {
     const url = `${apiEndPoint}/create_draft`;
     return http.post(url, data);
@@ -25,9 +26,16 @@ function updateCountry(id, data) {
 }
 
 
+
+function getCountryDrafts() {
+    const url = `${apiEndPoint}/list_draft`;
+    return http.get(url);
+}
+
 export default {
     getCountries,
     getCountry,
     createCountry,
-    updateCountry
+    updateCountry,
+    getCountryDrafts
 }
