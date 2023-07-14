@@ -9,6 +9,7 @@ import avatar5 from '../../assets/img/avatars/5.png';
 const DegreeTypes = () => {
     
     const [degreeTypes, setDegreeTypes] = useState([]);
+    const [loading, setLoading] = useState(true);
     let location = useLocation();
     let navigate = useNavigate();
 
@@ -35,12 +36,39 @@ const DegreeTypes = () => {
                     });
                 }
             }
+            setLoading(false);
         }
         fetchDegreeTypes();
     });
 
     function renderDegreeType() {
-        if (degreeTypes.length === 0) {
+        if (loading) {
+            return (
+                <tr>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+        else if (degreeTypes.length === 0 && !loading) {
             return <h5 className="mx-4 my-3 text-danger">No degree types.</h5>
         } else {
             return (

@@ -9,6 +9,7 @@ import avatar5 from '../../assets/img/avatars/5.png';
 function ListDisciplines() {
     
     const [disciplines, setDisciplines] = useState([]);
+    const [loading, setLoading] = useState(true);
     let location = useLocation();
     let navigate = useNavigate();
 
@@ -35,12 +36,39 @@ function ListDisciplines() {
                     });
                 }
             }
+            setLoading(false);
         }
         fetchDisciplines();
     });
 
     function renderDisciplines() {
-        if (disciplines.length === 0) {
+        if (loading) {
+            return (
+                <tr>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+        else if (disciplines.length === 0 && !loading) {
             return <h5 className="mx-4 my-3 text-danger">No disciplines.</h5>
         } else {
             return (
@@ -72,7 +100,7 @@ function ListDisciplines() {
                                 </ul>
                             </td>
                             <td>
-                                <span className={`badge ${statusClass[discipline]} me-1`}>
+                                <span className={`badge ${statusClass[discipline.status]} me-1`}>
                                     {discipline.status}
                                 </span>
                             </td>

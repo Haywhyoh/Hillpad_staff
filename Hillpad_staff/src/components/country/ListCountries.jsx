@@ -7,6 +7,7 @@ import countryService from '../../services/api/countryService';
 const ListCountries = () => {
     
     const [countries, setCountries] = useState([]);
+    const [loading, setLoading] = useState(true);
     let location = useLocation();
     let navigate = useNavigate();
 
@@ -43,12 +44,39 @@ const ListCountries = () => {
                     });
                 }
             }
+            setLoading(false);
         }
         fetchCountries();
     });
 
     function renderCountries() {
-        if (countries.length === 0) {
+        if (loading) {
+            return (
+                <tr>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                    <td className="text-center">
+                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+        else if (countries.length === 0 && !loading) {
             return <h5 className="mx-4 my-3 text-danger">No countries.</h5>
         } else {
             return (
