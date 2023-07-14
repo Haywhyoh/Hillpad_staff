@@ -7,12 +7,12 @@ import Dashboard from './components/Dashboard';
 import Notifications from './components/Notifications';
 import Footer from './components/Footer';
 import Logout from "./components/Logout.jsx";
-import DegreeTypes from './components/DegreeTypes';
 
 import CourseRoutes from './components/course/CourseRoutes';
 import SchoolRoutes from './components/school/SchoolRoutes.jsx';
 import CountryRoutes from "./components/country/CountryRoutes.jsx";
 import DisciplineRoutes from './components/discipline/DisciplineRoutes';
+import DegreeTypeRoutes from "./components/degreeType/DegreeTypeRoutes.jsx";
 
 function ProtectedRoutes() {
     let auth = useAuth();
@@ -44,8 +44,8 @@ function ProtectedRoutes() {
                                     element={<DisciplineRoutes />}
                                 />
                                 <Route
-                                    path="/degree-types"
-                                    element={<DegreeTypes />}
+                                    path="/degree-types/*"
+                                    element={<DegreeTypeRoutes />}
                                 />
                                 <Route
                                     path="/country/*"
