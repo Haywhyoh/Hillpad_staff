@@ -103,19 +103,12 @@ const ListCountries = () => {
         }
     }
 
-
-
-
-
-
-
-
     return (
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">Countries</h4>
-                    <Link href="create">
+                    <Link to="create">
                         <button
                             type="button"
                             className="btn btn-secondary mb-4"

@@ -4,6 +4,7 @@ import config from "../../config.json";
 const apiEndPoint = `${config.apiURL}/academics/country`;
 
 
+// Country routes
 function getCountries() {
     const url = `${apiEndPoint}/list`;
     return http.get(url);
@@ -14,28 +15,44 @@ function getCountry(id) {
     return http.get(url);
 }
 
-
-function createCountry(data) {
-    const url = `${apiEndPoint}/create_draft`;
-    return http.post(url, data);
-}
-
-function updateCountry(id, data) {
-    const url = `${apiEndPoint}/update/${id}`;
-    return http.patch(url, data);
-}
-
-
-
+// Country Draft routes
 function getCountryDrafts() {
     const url = `${apiEndPoint}/list_draft`;
     return http.get(url);
 }
 
+function getCountryDraft(id) {
+    const url = `${apiEndPoint}/detail_draft/${id}`;
+    return http.get(url);
+}
+
+function createCountryDraft(data) {
+    const url = `${apiEndPoint}/create_draft`;
+    return http.post(url, data);
+}
+
+function updateCountryDraft(id, data) {
+    const url = `${apiEndPoint}/update_draft/${id}`;
+    return http.patch(url, data);
+}
+
+function submitCountryDraft(id, data) {
+    const url = `${apiEndPoint}/submit_draft/${id}`;
+    return http.patch(url, data);
+}
+
+function publishCountryDraft(id) {
+    const url = `${apiEndPoint}/publish_draft/${id}`;
+    return http.put(url);
+}
+
 export default {
     getCountries,
     getCountry,
-    createCountry,
-    updateCountry,
-    getCountryDrafts
+    getCountryDrafts,
+    getCountryDraft,
+    createCountryDraft,
+    updateCountryDraft,
+    submitCountryDraft,
+    publishCountryDraft
 }
