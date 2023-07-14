@@ -21,6 +21,8 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        auth.setLoginError(null);
 
         auth.login(formData, () => {
             navigate(from, { replace: true });
