@@ -69,7 +69,13 @@ function ListCourses() {
             )
         }
         else if (courses.length === 0 && !loading) {
-            return <h5 className="mx-4 my-3 text-danger">No courses.</h5>
+            return (
+                <tr>
+                    <td>
+                        <h5 className="mx-4 my-3 text-danger">No courses.</h5>
+                    </td>
+                </tr>
+            )
         } else {
             return (
                 <>

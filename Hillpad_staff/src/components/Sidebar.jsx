@@ -18,9 +18,9 @@ class Sidebar extends Component {
                             <img width="80%" src={ hillpadLogo } className="d-block" alt="HillPad logo" />
                         </Link>
 
-                        <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <Link to="/" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
                             <i className="bx bx-chevron-left bx-sm align-middle"></i>
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="menu-inner-shadow"></div>

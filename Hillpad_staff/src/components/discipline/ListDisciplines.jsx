@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import disciplineService from "../../services/api/disciplineService";
 
 import avatar5 from '../../assets/img/avatars/5.png';
+import EntryListTable from "../common/EntryListTable";
 
 
 function ListDisciplines() {
@@ -253,7 +254,17 @@ function ListDisciplines() {
                         </ul>
                     </nav>
                 </div>
+                
+                <EntryListTable
+                    listData={disciplines}
+                    columns={[
+                        { field: "id", label: "S/N" },
+                        { field: "name", label: "Discipline" },
+                        { field: "status", label: "Status" },
+                    ]}
+                />
             </div>
+
         </>
     );
     
