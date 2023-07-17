@@ -4,8 +4,8 @@ import config from "../../config.json";
 const apiEndPoint = `${config.apiURL}/academics/discipline`;
 
 // Discipline routes
-function getDisciplines() {
-    const url = `${apiEndPoint}/list`;
+function getDisciplines(query="") {
+    const url = `${apiEndPoint}/list?${query}`;
     return http.get(url);
 }
 

@@ -2,5 +2,6 @@
     "apiURL": "http://127.0.0.1:8000/api",
     "userCookie": "hillpad_user",
     "accessCookie": "hillpad_access_cookie",
-    "refreshCookie": "hillpad_refresh_cookie"
+    "refreshCookie": "hillpad_refresh_cookie",
+    "pageSize": 20
 }

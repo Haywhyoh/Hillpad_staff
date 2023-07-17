@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import disciplineService from "../../services/api/disciplineService";
-
 import Paginator from "../common/Paginator";
+import config from "../../config.json";
 
 
 function ListDisciplines() {
@@ -14,7 +14,7 @@ function ListDisciplines() {
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const pageSize = 20;
+    const pageSize = config.pageSize;
 
     let location = useLocation();
     let navigate = useNavigate();
@@ -48,7 +48,7 @@ function ListDisciplines() {
             setLoading(false);
         }
         fetchDisciplines();
-    }, [currentPage, dataCount, location, navigate]);
+    }, [currentPage, dataCount, location, navigate, pageSize]);
 
     function renderDisciplines() {
         if (loading) {
