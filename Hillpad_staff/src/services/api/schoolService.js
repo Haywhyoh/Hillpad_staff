@@ -4,8 +4,8 @@ import config from "../../config.json";
 const apiEndPoint = `${config.apiURL}/academics/school`;
 
 // School routes
-function getSchools() {
-    const url = `${apiEndPoint}/list`;
+function getSchools(query="") {
+    const url = `${apiEndPoint}/list?${query}`;
     return http.get(url);
 }
 
@@ -15,8 +15,8 @@ function getSchool(id) {
 }
 
 // School Draft routes
-function getSchoolDrafts() {
-    const url = `${apiEndPoint}/list_draft`;
+function getSchoolDrafts(query="") {
+    const url = `${apiEndPoint}/list_draft?${query}`;
     return http.get(url);
 }
 
