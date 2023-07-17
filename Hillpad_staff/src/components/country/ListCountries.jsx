@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
 import countryService from '../../services/api/countryService';
+import Paginator from "../common/Paginator";
+import config from "../../config.json";
 
 
 const ListCountries = () => {
     
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [dataCount, setDataCount] = useState(0);
+    const [pages, setPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const pageSize = config.pageSize;
+
     let location = useLocation();
     let navigate = useNavigate();
 
@@ -32,8 +40,11 @@ const ListCountries = () => {
     useEffect(() => {
         async function fetchCountries() {
             try {
-                const response = await countryService.getCountryDrafts();
+                const pageQuery = `page=${currentPage}`;
+                const response = await countryService.getCountryDrafts(pageQuery);
                 if (response.status === 200) {
+                    setDataCount(response.data.count);
+                    setPages(Math.ceil(dataCount / pageSize));
                     setCountries(response.data.results);
                 }
             } catch (ex) {
@@ -47,7 +58,7 @@ const ListCountries = () => {
             setLoading(false);
         }
         fetchCountries();
-    });
+    }, [currentPage, dataCount, location, navigate, pageSize]);
 
     function renderCountries() {
         if (loading) {
@@ -180,66 +191,11 @@ const ListCountries = () => {
                         </table>
                     </div>
 
-                    <nav aria-label="Page navigation" className="my-4">
-                        <ul className="pagination justify-content-center">
-                            <li className="page-item prev">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    <i className="tf-icon bx bx-chevrons-left"></i>
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    1
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    2
-                                </a>
-                            </li>
-                            <li className="page-item active">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    3
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    4
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    5
-                                </a>
-                            </li>
-                            <li className="page-item next">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    <i className="tf-icon bx bx-chevrons-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Paginator
+                        pages={pages}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
                 </div>
             </div>
         </>

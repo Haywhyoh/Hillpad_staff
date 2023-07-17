@@ -5,8 +5,8 @@ const apiEndPoint = `${config.apiURL}/academics/country`;
 
 
 // Country routes
-function getCountries() {
-    const url = `${apiEndPoint}/list`;
+function getCountries(query="") {
+    const url = `${apiEndPoint}/list?${query}`;
     return http.get(url);
 }
 
@@ -16,8 +16,8 @@ function getCountry(id) {
 }
 
 // Country Draft routes
-function getCountryDrafts() {
-    const url = `${apiEndPoint}/list_draft`;
+function getCountryDrafts(query="") {
+    const url = `${apiEndPoint}/list_draft?${query}`;
     return http.get(url);
 }
 
