@@ -119,10 +119,13 @@ class CourseForm extends Component {
 
         const data = this.mapToCourseModel(this.state.formData);
         try {
-            const response = await courseService.createCourseDraft(data);
-            if (response.status === 201 && response.data) {
-                console.log("Submitted");
-                alert("Created successfully");
+            const createResponse = await courseService.createCourseDraft(data);
+            if (createResponse.status === 201 && createResponse.data) {
+                const submitResponse = await courseService.submitCourseDraft(createResponse.data["id"]);
+                if (submitResponse.status === 200 && submitResponse.data) {
+                    console.log("Submitted");
+                    alert("Submitted successfully");
+                }
             }
         } catch (error) {
             console.log(error);
@@ -171,11 +174,9 @@ class CourseForm extends Component {
     handleCheckBoxChange = ({ target: input }) => {
         const formData = { ...this.state.formData };
         if (input.checked) {
-            console.log("the if");
             formData[input.name] = [...formData[input.name], input.value];
             this.setState({ formData });
         } else {
-            console.log("the else");
             formData[input.name] = formData[input.name].filter(
                 (_) => _ !== input.value
             );

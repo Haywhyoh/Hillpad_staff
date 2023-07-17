@@ -35,7 +35,7 @@ function updateCourseDraft(id, data) {
     return http.patch(url, data);
 }
 
-function submitCourseDraft(id, data) {
+function submitCourseDraft(id, data={}) {
     const url = `${apiEndPoint}/submit_draft/${id}`;
     return http.patch(url, data);
 }
