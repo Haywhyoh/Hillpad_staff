@@ -4,8 +4,8 @@ import config from "../../config.json";
 const apiEndPoint = `${config.apiURL}/academics/degree_type`;
 
 // Degree Type routes
-function getDegreeTypes() {
-    const url = `${apiEndPoint}/list`;
+function getDegreeTypes(query="") {
+    const url = `${apiEndPoint}/list?${query}`;
     return http.get(url);
 }
 
@@ -15,8 +15,8 @@ function getDegreeType(id) {
 }
 
 // Degree Type Draft routes
-function getDegreeTypeDrafts() {
-    const url = `${apiEndPoint}/list_draft`;
+function getDegreeTypeDrafts(query="") {
+    const url = `${apiEndPoint}/list_draft?${query}`;
     return http.get(url);
 }
 
