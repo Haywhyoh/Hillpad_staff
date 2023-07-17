@@ -6,7 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 // PrimeReact Core CSS
 import "primereact/resources/primereact.min.css";
 // PrimeReact Theme CSS
-import 'primereact/resources/themes/bootstrap4-light-purple/theme.css';
+import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
 // Boxicon CSS
 import './assets/vendor/fonts/boxicons.css';
 // Core CSS

@@ -3,14 +3,19 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import disciplineService from "../../services/api/disciplineService";
 
-import avatar5 from '../../assets/img/avatars/5.png';
-import EntryListTable from "../common/EntryListTable";
+import Paginator from "../common/Paginator";
 
 
 function ListDisciplines() {
     
     const [disciplines, setDisciplines] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [dataCount, setDataCount] = useState(0);
+    const [pages, setPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const pageSize = 20;
+
     let location = useLocation();
     let navigate = useNavigate();
 
@@ -25,8 +30,11 @@ function ListDisciplines() {
     useEffect(() => {
         async function fetchDisciplines() {
             try {
-                const response = await disciplineService.getDisciplineDrafts();
+                const pageQuery = `page=${currentPage}`;
+                const response = await disciplineService.getDisciplineDrafts(pageQuery);
                 if (response.status === 200) {
+                    setDataCount(response.data.count);
+                    setPages(Math.ceil(dataCount / pageSize));
                     setDisciplines(response.data.results);
                 }
             } catch (ex) {
@@ -40,7 +48,7 @@ function ListDisciplines() {
             setLoading(false);
         }
         fetchDisciplines();
-    });
+    }, [currentPage, dataCount, location, navigate]);
 
     function renderDisciplines() {
         if (loading) {
@@ -70,7 +78,7 @@ function ListDisciplines() {
             )
         }
         else if (disciplines.length === 0 && !loading) {
-            return <h5 className="mx-4 my-3 text-danger">No disciplines.</h5>
+            return <h5 className="mx-4 my-3 text-danger">No disciplines found.</h5>
         } else {
             return (
                 <>
@@ -83,23 +91,7 @@ function ListDisciplines() {
                                 </strong>
                             </td>
                             <td>23,450</td>
-                            <td>
-                                <ul className="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
-                                    <li
-                                        data-bs-toggle="tooltip"
-                                        data-popup="tooltip-custom"
-                                        data-bs-placement="top"
-                                        className="avatar avatar-xs pull-up"
-                                        title="Lilian Fuller"
-                                    >
-                                        <img
-                                            src={avatar5}
-                                            alt="Avatar"
-                                            className="rounded-circle"
-                                        />
-                                    </li>
-                                </ul>
-                            </td>
+                            
                             <td>
                                 <span className={`badge ${statusClass[discipline.status]} me-1`}>
                                     {discipline.status}
@@ -180,7 +172,6 @@ function ListDisciplines() {
                                 <tr>
                                     <th>Discipline</th>
                                     <th>Number of Courses</th>
-                                    <th>Author</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -193,76 +184,13 @@ function ListDisciplines() {
                         </table>
                     </div>
 
-                    <nav aria-label="Page navigation" className="my-4">
-                        <ul className="pagination justify-content-center">
-                            <li className="page-item prev">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    <i className="tf-icon bx bx-chevrons-left"></i>
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    1
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    2
-                                </a>
-                            </li>
-                            <li className="page-item active">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    3
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    4
-                                </a>
-                            </li>
-                            <li className="page-item">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    5
-                                </a>
-                            </li>
-                            <li className="page-item next">
-                                <a
-                                    className="page-link"
-                                    href="javascript:void(0);"
-                                >
-                                    <i className="tf-icon bx bx-chevrons-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Paginator
+                        pages={pages}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
                 </div>
                 
-                <EntryListTable
-                    listData={disciplines}
-                    columns={[
-                        { field: "id", label: "S/N" },
-                        { field: "name", label: "Discipline" },
-                        { field: "status", label: "Status" },
-                    ]}
-                />
             </div>
 
         </>

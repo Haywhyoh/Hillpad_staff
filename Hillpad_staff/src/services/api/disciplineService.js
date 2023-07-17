@@ -15,8 +15,8 @@ function getDiscipline(id) {
 }
 
 // Discipline Draft routes
-function getDisciplineDrafts() {
-    const url = `${apiEndPoint}/list_draft`;
+function getDisciplineDrafts(query="") {
+    const url = `${apiEndPoint}/list_draft?${query}`;
     return http.get(url);
 }
 
