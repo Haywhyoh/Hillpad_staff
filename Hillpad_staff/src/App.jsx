@@ -1,16 +1,14 @@
-import { AuthProvider } from './context/AuthContext';
-
 // ==============================================================================
 // CSS Files
 // ==============================================================================
-// Boxicon CSS
-import './assets/vendor/fonts/boxicons.css';
 // Core CSS
 import './assets/vendor/css/core.css';
 import './assets/vendor/css/theme-default.css';
 import './assets/css/demo.css';
 // Vendors CSS
 import './assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css';
+// Boxicon CSS
+import './assets/vendor/fonts/boxicons.css';
 // App CSS
 import './App.css'
 // -----------------------------------------------------------------------------
@@ -35,10 +33,11 @@ import './assets/js/main.js';
 // ------------------------------------------------------------------------------
 
 import { Route, Routes } from 'react-router-dom';
-import RequireAuth from './components/common/RequireAuth';
-import ProtectedRoutes from './ProtectedRoutes';
 
+import { AuthProvider } from './context/AuthContext';
+import RequireAuth from './components/common/RequireAuth';
 import LoginForm from './components/LoginForm';
+import ProtectedRoutes from './ProtectedRoutes';
 
 
 export default function App() {

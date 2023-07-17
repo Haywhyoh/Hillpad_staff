@@ -1,5 +1,6 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from "react";
+import { Component } from "react";
+import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 
 import courseService from "../../services/api/courseService";
 import schoolService from "../../services/api/schoolService";
@@ -14,6 +15,7 @@ import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import TextArea from "../common/form/TextArea";
 
+import "../../assets/css/custom.css"
 
 class CourseForm extends Component {
     state = {
@@ -45,6 +47,8 @@ class CourseForm extends Component {
         programmeTypes: [],
         degreeTypes: [],
         languages: [],
+
+        showLoadingModal: false,
     };
 
     options = {
@@ -117,6 +121,7 @@ class CourseForm extends Component {
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        this.setState({ showLoadingModal: true });
         const data = this.mapToCourseModel(this.state.formData);
         try {
             const createResponse = await courseService.createCourseDraft(data);
@@ -124,12 +129,13 @@ class CourseForm extends Component {
                 const submitResponse = await courseService.submitCourseDraft(createResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
-                    alert("Submitted successfully");
+                    // alert("Submitted successfully");
                 }
             }
         } catch (error) {
             console.log(error);
         }
+        this.setState({ showLoadingModal: false });
     };
 
     mapToCourseModel = (data) => {
@@ -194,6 +200,7 @@ class CourseForm extends Component {
             programmeTypes,
             degreeTypes,
             languages,
+            showLoadingModal,
         } = this.state;
         return (
             <>
@@ -392,6 +399,21 @@ class CourseForm extends Component {
                         </form>
                     </div>
                 </div>
+                
+                <Modal
+                    show={showLoadingModal}
+                    backdrop="static"
+                    keyboard={false}
+                    dialogClassName="alertModal"
+                    centered
+                >
+                    <Modal.Body>
+                        <Spinner animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </Modal.Body>
+                </Modal>
+            
             </>
         );
     }

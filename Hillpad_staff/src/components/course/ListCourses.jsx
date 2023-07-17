@@ -96,7 +96,7 @@ function ListCourses() {
                             </td>
                             <td>{course.school.name}</td>
                             <td>
-                                {course.degree_type.short_name}
+                                {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
                             </td>
                             <td>
                                 <span className={`badge ${statusClass[course.status]} me-1`}>{course.status}</span>
