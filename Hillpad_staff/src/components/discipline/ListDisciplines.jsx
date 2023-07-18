@@ -84,7 +84,7 @@ function ListDisciplines() {
                 <>
                     {disciplines.map(discipline => (
                         <tr key={discipline.id}>
-                            <td onClick="#">
+                            <td>
                                 <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                 <strong>
                                     {discipline.name}

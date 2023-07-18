@@ -84,7 +84,7 @@ const DegreeTypes = () => {
                 <>
                     {degreeTypes.map(degreeType => (
                         <tr key={degreeType.id}>
-                            <td onClick="#">
+                            <td>
                                 <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                 <strong>{degreeType.name}</strong>
                             </td>

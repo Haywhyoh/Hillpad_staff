@@ -94,7 +94,7 @@ const ListCountries = () => {
                 <>
                     {countries.map(country => (
                         <tr key={country.id}>
-                            <td onClick="#">
+                            <td>
                                 <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                 <strong>{country.name}</strong>
                             </td>

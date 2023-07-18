@@ -90,7 +90,7 @@ function ListCourses() {
                 <>
                     {courses.map(course => (
                         <tr key={course.id}>
-                            <td onClick="#">
+                            <td>
                                 <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                 <strong>{course.name}</strong>
                             </td>
