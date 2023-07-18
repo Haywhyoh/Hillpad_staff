@@ -35,7 +35,7 @@ function updateDisciplineDraft(id, data) {
     return http.patch(url, data);
 }
 
-function submitDisciplineDraft(id, data) {
+function submitDisciplineDraft(id, data={}) {
     const url = `${apiEndPoint}/submit_draft/${id}`;
     return http.patch(url, data);
 }
