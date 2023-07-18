@@ -165,7 +165,7 @@ class SchoolForm extends Component {
         
         return (
             <Modal.Body>
-                <Spinner animation="border" role="status" size="lg">
+                <Spinner variant="primary" animation="border" role="status" size="lg">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
             </Modal.Body>
