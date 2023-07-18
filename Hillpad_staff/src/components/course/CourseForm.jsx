@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -16,6 +17,8 @@ import Select from "../common/form/Select";
 import TextArea from "../common/form/TextArea";
 
 import "../../assets/css/custom.css"
+import { Navigate } from "react-router-dom";
+
 
 class CourseForm extends Component {
     state = {
@@ -48,7 +51,9 @@ class CourseForm extends Component {
         degreeTypes: [],
         languages: [],
 
-        showLoadingModal: false,
+        showStatusModal: false,
+        statusModal: "loading",
+        modalRedirect: false,
     };
 
     options = {
@@ -121,7 +126,7 @@ class CourseForm extends Component {
     handleSubmit = async (e) => {
         e.preventDefault();
 
-        this.setState({ showLoadingModal: true });
+        this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToCourseModel(this.state.formData);
         try {
             const createResponse = await courseService.createCourseDraft(data);
@@ -129,13 +134,20 @@ class CourseForm extends Component {
                 const submitResponse = await courseService.submitCourseDraft(createResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
-                    // alert("Submitted successfully");
+                    this.setState({ statusModal: "success" });
                 }
+                else {
+                    console.log("An error occured while trying to submit the course", submitResponse.status);
+                    this.setState({ statusModal: "error" })
+                }
+            } else {
+                console.log("An error occured while trying to create the course", createResponse.status);
+                this.setState({ statusModal: "error" });
             }
         } catch (error) {
             console.log(error);
+            this.setState({ statusModal: "error" });
         }
-        this.setState({ showLoadingModal: false });
     };
 
     mapToCourseModel = (data) => {
@@ -190,6 +202,65 @@ class CourseForm extends Component {
         }
     };
 
+    renderModal = () => {
+        if (this.state.statusModal === "success") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
+                            <h3>Awesome!</h3>
+                            <p>Course was submitted successfully.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button variant="success" onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/course" />}
+                </>
+            );
+        }
+
+        else if (this.state.statusModal === "error") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Error!</h3>
+                            <p>Submission failed. An error occured.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                </>
+            )
+        }
+        
+        return (
+            <Modal.Body>
+                <Spinner animation="border" role="status" size="lg">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Modal.Body>
+        );
+
+    };
+
     render() {
         const { formTitle } = this.props;
         const {
@@ -200,7 +271,7 @@ class CourseForm extends Component {
             programmeTypes,
             degreeTypes,
             languages,
-            showLoadingModal,
+            showStatusModal,
         } = this.state;
         return (
             <>
@@ -401,19 +472,15 @@ class CourseForm extends Component {
                 </div>
                 
                 <Modal
-                    show={showLoadingModal}
+                    show={showStatusModal}
                     backdrop="static"
                     keyboard={false}
                     dialogClassName="alertModal"
                     centered
                 >
-                    <Modal.Body>
-                        <Spinner animation="border" role="status" size="lg">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </Modal.Body>
+                    {this.renderModal()}
                 </Modal>
-            
+                                
             </>
         );
     }

@@ -107,14 +107,14 @@ function ListCourses() {
                                     <i className="bx bx-dots-vertical-rounded"></i>
                                 </button>
                                 <div className="dropdown-menu">
-                                    <a className="dropdown-item" href="#">
+                                    <Link className="dropdown-item" to="#">
                                         <i className="bx bx-edit-alt me-1"></i>
                                         Edit
-                                    </a>
-                                    <a className="dropdown-item" href="#" target="_blank">
+                                    </Link>
+                                    <Link className="dropdown-item" to="#">
                                         <i className="bx bx-window me-1"></i>
                                         View live
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             </td>
