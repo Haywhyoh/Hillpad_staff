@@ -36,7 +36,7 @@ function updateCountryDraft(id, data) {
     return http.patch(url, data);
 }
 
-function submitCountryDraft(id, data) {
+function submitCountryDraft(id, data={}) {
     const url = `${apiEndPoint}/submit_draft/${id}`;
     return http.patch(url, data);
 }
