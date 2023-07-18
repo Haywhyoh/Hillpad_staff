@@ -10,7 +10,7 @@ import './assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css';
 // Boxicon CSS
 import './assets/vendor/fonts/boxicons.css';
 // App CSS
-import './App.css'
+import './App.css';
 // -----------------------------------------------------------------------------
 
 // ==============================================================================

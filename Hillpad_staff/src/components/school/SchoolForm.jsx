@@ -1,10 +1,12 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from "react";
+import { Component } from "react";
+import { Navigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal"
+import Spinner from "react-bootstrap/Spinner";
 
 import schoolService from "../../services/api/schoolService";
 import countryService from "../../services/api/countryService";
 
-// import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import TextArea from "../common/form/TextArea";
@@ -27,7 +29,11 @@ class SchoolForm extends Component {
             banner: "",
             logo: "",
         },
-        countries: []
+        countries: [],
+
+        showStatusModal: false,
+        statusModal: "loading",
+        modalRedirect: false,
     };
 
     options = {
@@ -52,15 +58,27 @@ class SchoolForm extends Component {
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToSchoolModel(this.state.formData);
         try {
-            const response = await schoolService.createSchoolDraft(data);
-            if (response.status === 201 && response.data) {
-                console.log("Submitted");
-                alert("Created successfully");
+            const createResponse = await schoolService.createSchoolDraft(data);
+            if (createResponse.status === 201 && createResponse.data) {
+                const submitResponse = await schoolService.submitSchoolDraft(createResponse.data["id"]);
+                if (submitResponse.status === 200 && submitResponse.data) {
+                    console.log("Submitted");
+                    this.setState({ statusModal: "success" });
+                }
+                else {
+                    console.log("An error occured while trying to submit the school", submitResponse.status);
+                    this.setState({ statusModal: "error" })
+                }
+            } else {
+                console.log("An error occured while trying to create the school", createResponse.status);
+                this.setState({ statusModal: "error" });
             }
         } catch (error) {
             console.log(error);
+            this.setState({ statusModal: "error" });
         }
     };
 
@@ -91,17 +109,73 @@ class SchoolForm extends Component {
     };
 
     handleFileChange = ({ currentTarget: input}) => {
-        // console.log(input.fil);
         const formData = { ...this.state.formData };
-        // const filesOrder = ["banner", "logo"];
         formData[input.name] = input.files[0];
         this.setState({ formData });
     }
 
+    renderModal = () => {
+        if (this.state.statusModal === "success") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
+                            <h3>Awesome!</h3>
+                            <p>School was submitted successfully.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button variant="success" onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/school" />}
+                </>
+            );
+        }
+
+        else if (this.state.statusModal === "error") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Error!</h3>
+                            <p>Submission failed. An error occured.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                </>
+            )
+        }
+        
+        return (
+            <Modal.Body>
+                <Spinner animation="border" role="status" size="lg">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Modal.Body>
+        );
+
+    };
 
     render() {
         const { formTitle } = this.props;
-        const { formData, countries } = this.state;
+        const { formData, countries, showStatusModal } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -220,6 +294,16 @@ class SchoolForm extends Component {
                         </form>
                     </div>
                 </div>
+
+                <Modal
+                    show={showStatusModal}
+                    backdrop="static"
+                    keyboard={false}
+                    dialogClassName="alertModal"
+                    centered
+                >
+                    {this.renderModal()}
+                </Modal>
             </>
         );
     }

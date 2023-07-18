@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Navigate } from "react-router-dom";
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
@@ -15,9 +16,6 @@ import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import TextArea from "../common/form/TextArea";
-
-import "../../assets/css/custom.css"
-import { Navigate } from "react-router-dom";
 
 
 class CourseForm extends Component {

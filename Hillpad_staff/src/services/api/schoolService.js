@@ -35,7 +35,7 @@ function updateSchoolDraft(id, data) {
     return http.patch(url, data);
 }
 
-function submitSchoolDraft(id, data) {
+function submitSchoolDraft(id, data={}) {
     const url = `${apiEndPoint}/submit_draft/${id}`;
     return http.patch(url, data);
 }
