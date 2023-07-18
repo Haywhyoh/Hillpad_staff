@@ -1,4 +1,8 @@
 import { Component } from "react";
+import { Navigate } from "react-router-dom";
+import Button from "react-bootstrap/Button"
+import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 
 import degreeTypeService from "../../services/api/degreeTypeService";
 import programmeTypeService from "../../services/api/programmeTypeService";
@@ -14,7 +18,11 @@ class DegreeTypeForm extends Component {
             shortName: "",
             programmeType: ""
         },
-        programmeTypes: []
+        programmeTypes: [],
+
+        showStatusModal: false,
+        statusModal: "loading",
+        modalRedirect: false,
     };
 
     async componentDidMount() {
@@ -30,15 +38,27 @@ class DegreeTypeForm extends Component {
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToDegreeTypeModel(this.state.formData);
         try {
-            const response = await degreeTypeService.createDegreeTypeDraft(data);
-            if (response.status === 201 && response.data) {
-                console.log("Submitted");
-                alert("Created successfully");
+            const createResponse = await degreeTypeService.createDegreeTypeDraft(data);
+            if (createResponse.status === 201 && createResponse.data) {
+                const submitResponse = await degreeTypeService.submitDegreeTypeDraft(createResponse.data["id"]);
+                if (submitResponse.status === 200 && submitResponse.data) {
+                    console.log("Submitted");
+                    this.setState({ statusModal: "success" });
+                }
+                else {
+                    console.log("An error occured while trying to submit the degree type", submitResponse.status);
+                    this.setState({ statusModal: "error" })
+                }
+            } else {
+                console.log("An error occured while trying to create the degree type", createResponse.status);
+                this.setState({ statusModal: "error" });
             }
         } catch (error) {
             console.log(error);
+            this.setState({ statusModal: "error" });
         }
     };
 
@@ -59,10 +79,68 @@ class DegreeTypeForm extends Component {
         this.setState({ formData });
     };
 
+    renderModal = () => {
+        if (this.state.statusModal === "success") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
+                            <h3>Awesome!</h3>
+                            <p>Degree type was submitted successfully.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button variant="success" onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/degree-type" />}
+                </>
+            );
+        }
+
+        else if (this.state.statusModal === "error") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Error!</h3>
+                            <p>Submission failed. An error occured.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                </>
+            )
+        }
+        
+        return (
+            <Modal.Body>
+                <Spinner animation="border" role="status" size="lg">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Modal.Body>
+        );
+
+    };
 
     render() {
         const { formTitle } = this.props;
-        const { formData, programmeTypes } = this.state;
+        const { formData, programmeTypes, showStatusModal } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -112,6 +190,16 @@ class DegreeTypeForm extends Component {
                         </form>
                     </div>
                 </div>
+
+                <Modal
+                    show={showStatusModal}
+                    backdrop="static"
+                    keyboard={false}
+                    dialogClassName="alertModal"
+                    centered
+                >
+                    {this.renderModal()}
+                </Modal>
             </>
         );
     }

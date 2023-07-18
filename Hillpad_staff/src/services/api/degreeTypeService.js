@@ -35,7 +35,7 @@ function updateDegreeTypeDraft(id, data) {
     return http.patch(url, data);
 }
 
-function submitDegreeTypeDraft(id, data) {
+function submitDegreeTypeDraft(id, data={}) {
     const url = `${apiEndPoint}/submit_draft/${id}`;
     return http.patch(url, data);
 }

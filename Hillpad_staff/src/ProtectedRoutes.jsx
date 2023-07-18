@@ -44,7 +44,7 @@ function ProtectedRoutes() {
                                     element={<DisciplineRoutes />}
                                 />
                                 <Route
-                                    path="/degree-types/*"
+                                    path="/degree-type/*"
                                     element={<DegreeTypeRoutes />}
                                 />
                                 <Route
