@@ -9,8 +9,8 @@ import countryService from "../../services/api/countryService";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
-import TextArea from "../common/form/TextArea";
 import FileInput from "../common/form/FileInput";
+import QuillEditor from "../common/form/QuillEditor";
 
 
 class SchoolForm extends Component {
@@ -43,6 +43,18 @@ class SchoolForm extends Component {
             { value: "PublicPrivate", name: "Public/Private" },
             { value: "Religious", name: "Religious" },
         ]
+    };
+
+    quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline"],
+            [{ script:  "sub" }, { script:  "super" }],
+            [{ list:  "ordered" }, { list:  "bullet" }],
+            [{ indent:  "-1" }, { indent:  "+1" }],
+            ["link"],
+            ["clean"],
+        ],
     };
 
     async componentDidMount() {
@@ -111,6 +123,13 @@ class SchoolForm extends Component {
     handleFileChange = ({ currentTarget: input}) => {
         const formData = { ...this.state.formData };
         formData[input.name] = input.files[0];
+        this.setState({ formData });
+    }
+
+    handleAbout = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["about"] = value;
         this.setState({ formData });
     }
 
@@ -192,12 +211,11 @@ class SchoolForm extends Component {
                                 placeholder="HillPad University"
                                 required={true}
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="about"
                                 label="About"
-                                value={formData.about}
-                                onChange={this.handleChange}
-                                required={true}
+                                modules={this.quillModules}
+                                onChange={this.handleAbout}
                                 placeholder="Short description of school"
                             />
                             <small className="text-light fw-semibold">
