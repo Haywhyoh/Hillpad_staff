@@ -9,8 +9,8 @@ import currencyService from "../../services/api/currencyService";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
-import TextArea from "../common/form/TextArea";
 import FileInput from "../common/form/FileInput";
+import QuillEditor from "../common/form/QuillEditor";
 
 
 class CountryForm extends Component {
@@ -47,6 +47,18 @@ class CountryForm extends Component {
             { name: "South America", value: "SA" },
             { name: "Oceania", value: "OC" }
         ]
+    };
+
+    quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline"],
+            [{ script:  "sub" }, { script:  "super" }],
+            [{ list:  "ordered" }, { list:  "bullet" }],
+            [{ indent:  "-1" }, { indent:  "+1" }],
+            ["link"],
+            ["clean"],
+        ],
     };
 
     async componentDidMount() {
@@ -117,6 +129,34 @@ class CountryForm extends Component {
     handleFileChange = ({ currentTarget: input}) => {
         const formData = { ...this.state.formData };
         formData[input.name] = input.files[0];
+        this.setState({ formData });
+    }
+
+    handleCaption = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["caption"] = value;
+        this.setState({ formData });
+    }
+
+    handleAbout = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["about"] = value;
+        this.setState({ formData });
+    }
+
+    handleTriviaFacts = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["triviaFacts"] = value;
+        this.setState({ formData });
+    }
+
+    handleLivingCosts = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["livingCosts"] = value;
         this.setState({ formData });
     }
 
@@ -223,20 +263,18 @@ class CountryForm extends Component {
                                 options={this.options.continent}
                                 required={true}
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="caption"
                                 label="Short caption"
-                                value={formData.caption}
-                                onChange={this.handleChange}
-                                required={true}
-                                placeholder="Short caption about country."
+                                modules={this.quillModules}
+                                onChange={this.handleCaption}
+                                placeholder="Short caption about country"
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="about"
                                 label="About"
-                                value={formData.about}
-                                onChange={this.handleChange}
-                                required={true}
+                                modules={this.quillModules}
+                                onChange={this.handleAbout}
                                 placeholder="About"
                             />
 
@@ -285,18 +323,18 @@ class CountryForm extends Component {
                                 placeholder="e.g. https://en.wikipedia.org/wiki/Australia"
                                 required={true}
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="triviaFacts"
                                 label="Trivia and Fun Facts"
-                                value={formData.triviaFacts}
-                                onChange={this.handleChange}
+                                modules={this.quillModules}
+                                onChange={this.handleTriviaFacts}
                                 placeholder="Country trivia and fun facts"
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="livingCosts"
                                 label="Living costs"
-                                value={formData.livingCosts}
-                                onChange={this.handleChange}
+                                modules={this.quillModules}
+                                onChange={this.handleLivingCosts}
                                 placeholder="Average living costs in country"
                             />
                             <FileInput
