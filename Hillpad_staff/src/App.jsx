@@ -9,6 +9,8 @@ import './assets/css/demo.css';
 import './assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css';
 // Boxicon CSS
 import './assets/vendor/fonts/boxicons.css';
+// Quill CSS
+import 'react-quill/dist/quill.snow.css';
 // App CSS
 import './App.css';
 // -----------------------------------------------------------------------------

@@ -15,7 +15,7 @@ import languageService from "../../services/api/languageService";
 import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
-import TextArea from "../common/form/TextArea";
+import QuillEditor from "../common/form/QuillEditor";
 
 
 class CourseForm extends Component {
@@ -69,6 +69,18 @@ class CourseForm extends Component {
             { value: "ONLINE", name: "Online"},
             { value: "BLENDED", name: "Blended"},
         ]
+    };
+
+    quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline"],
+            [{ script:  "sub" }, { script:  "super" }],
+            [{ list:  "ordered" }, { list:  "bullet" }],
+            [{ indent:  "-1" }, { indent:  "+1" }],
+            ["link"],
+            ["clean"],
+        ],
     };
 
     async componentDidMount() {
@@ -200,6 +212,27 @@ class CourseForm extends Component {
         }
     };
 
+    handleOverview = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["overview"] = value;
+        this.setState({ formData });
+    }
+
+    handleProgrammeStructure = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["programmeStructure"] = value;
+        this.setState({ formData });
+    }
+
+    handleAdmissionRequirements = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["admissionRequirements"] = value;
+        this.setState({ formData });
+    }
+
     renderModal = () => {
         if (this.state.statusModal === "success") {
             return (
@@ -294,11 +327,11 @@ class CourseForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Short description of course"
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="overview"
                                 label="Overview"
-                                value={formData.overview}
-                                onChange={this.handleChange}
+                                modules={this.quillModules}
+                                onChange={this.handleOverview}
                                 placeholder="Course overview"
                             />
                             <Input
@@ -426,21 +459,19 @@ class CourseForm extends Component {
                                 options={languages}
                             />
 
-                            <TextArea
+                            <QuillEditor
                                 name="programmeStructure"
                                 label="Programme Structure"
-                                value={formData.programmeStructure}
-                                onChange={this.handleChange}
+                                modules={this.quillModules}
+                                onChange={this.handleProgrammeStructure}
                                 placeholder="Course programme structure"
-                                rows={20}
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="admissionRequirements"
                                 label="Admission Requirements"
-                                value={formData.admissionRequirements}
-                                onChange={this.handleChange}
+                                modules={this.quillModules}
+                                onChange={this.handleAdmissionRequirements}
                                 placeholder="Course admission requirements"
-                                rows={20}
                             />
                             <Input
                                 name="programmeWebsite"
@@ -450,6 +481,8 @@ class CourseForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="https://hillpaduniversity.edu/undergrad"
                             />
+
+                            
 
                             <div className="mt-4 text-end">
                                 <button

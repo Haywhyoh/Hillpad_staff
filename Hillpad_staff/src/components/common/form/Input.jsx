@@ -1,8 +1,3 @@
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
-
-
 const Input = ({ name, label, value, onChange, placeholder="", maxLength=524288, type="text", required=false, autoFocus=false }) => {
     return (
         <>
