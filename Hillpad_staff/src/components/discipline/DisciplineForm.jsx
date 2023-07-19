@@ -8,7 +8,7 @@ import disciplineService from "../../services/api/disciplineService";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
-import TextArea from "../common/form/TextArea";
+import QuillEditor from "../common/form/QuillEditor";
 
 
 class DisciplineForm extends Component {
@@ -32,6 +32,18 @@ class DisciplineForm extends Component {
             { value: "orange", name: "Orange" },
             { value: "yellow", name: "Yellow" }
         ]
+    };
+
+    quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline"],
+            [{ script:  "sub" }, { script:  "super" }],
+            [{ list:  "ordered" }, { list:  "bullet" }],
+            [{ indent:  "-1" }, { indent:  "+1" }],
+            ["link"],
+            ["clean"],
+        ],
     };
 
     handleSubmit = async (e) => {
@@ -78,6 +90,13 @@ class DisciplineForm extends Component {
         formData[input.name] = input.value;
         this.setState({ formData });
     };
+
+    handleAbout = (content) => {
+        const formData = { ...this.state.formData };
+        const value = content === "<p><br></p>" ? "" : content;
+        formData["about"] = value;
+        this.setState({ formData });
+    }
 
     renderModal = () => {
         if (this.state.statusModal === "success") {
@@ -156,12 +175,11 @@ class DisciplineForm extends Component {
                                 placeholder="Social Sciences"
                                 required={true}
                             />
-                            <TextArea
+                            <QuillEditor
                                 name="about"
                                 label="About"
-                                value={formData.about}
-                                onChange={this.handleChange}
-                                required={true}
+                                modules={this.quillModules}
+                                onChange={this.handleAbout}
                                 placeholder="Discipline description"
                             />
                             <small className="text-light fw-semibold">
