@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import useAuth from '../../hooks/useAuth';
 import schoolService from '../../services/api/schoolService';
 import Paginator from "../common/Paginator";
 import config from "../../config.json";
@@ -18,6 +19,7 @@ function ListSchools() {
 
     let location = useLocation();
     let navigate = useNavigate();
+    let auth = useAuth();
 
     const statusClass = {
         "PUBLISHED": "bg-label-success",
@@ -145,15 +147,16 @@ function ListSchools() {
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">Schools</h4>
-                    <Link to="create">
-                        <button
-                            type="button"
-                            className="btn btn-secondary mb-4"
-                        >
-                            <span className="tf-icons bx bx-plus"></span>&nbsp;
-                            Add School
-                        </button>
-                    </Link>
+                    {   
+                        auth.user &&
+                        auth.user.role === "SPECIALIST" &&
+                        <Link to="create">
+                            <button type="button" className="btn btn-secondary mb-4">
+                                <span className="tf-icons bx bx-plus"></span>&nbsp;
+                                Add School
+                            </button>
+                        </Link>
+                    }
                 </div>
 
                 <div className="card">
