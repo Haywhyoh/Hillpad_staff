@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import CourseForm from "./CourseForm";
+import Error405 from "../errorPages/Error405";
 
 
 function CreateCourse() {
+    let auth = useAuth();
+    if (auth.user && auth.user.role !== "SPECIALIST") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>

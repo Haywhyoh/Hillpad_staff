@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import useAuth from '../../hooks/useAuth';
 import courseService from '../../services/api/courseService';
 import Paginator from "../common/Paginator";
 import config from "../../config.json";
@@ -18,6 +19,7 @@ function ListCourses() {
 
     let location = useLocation();
     let navigate = useNavigate();
+    let auth = useAuth();
 
     const statusClass = {
         "PUBLISHED": "bg-label-success",
@@ -133,11 +135,15 @@ function ListCourses() {
                     <h4 className="fw-bold py-3 mb-4">
                         Courses
                     </h4>
-                    <Link to="create">
-                        <button type="button" className="btn btn-secondary mb-4">
-                            <span className="tf-icons bx bx-plus"></span>&nbsp; Add Course
-                        </button>
-                    </Link>
+                    {   
+                        auth.user &&
+                        auth.user.role === "SPECIALIST" &&
+                        <Link to="create">
+                            <button type="button" className="btn btn-secondary mb-4">
+                                <span className="tf-icons bx bx-plus"></span>&nbsp; Add Course
+                            </button>
+                        </Link>
+                    }
                 </div>
 
                 <div className="card">
