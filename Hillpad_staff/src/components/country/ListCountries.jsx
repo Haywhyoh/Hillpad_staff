@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import useAuth from '../../hooks/useAuth';
 import countryService from '../../services/api/countryService';
 import Paginator from "../common/Paginator";
 import config from "../../config.json";
@@ -18,6 +19,7 @@ const ListCountries = () => {
 
     let location = useLocation();
     let navigate = useNavigate();
+    let auth = useAuth();
 
     const statusClass = {
         "PUBLISHED": "bg-label-success",
@@ -147,15 +149,16 @@ const ListCountries = () => {
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">Countries</h4>
-                    <Link to="create">
-                        <button
-                            type="button"
-                            className="btn btn-secondary mb-4"
-                        >
-                            <span className="tf-icons bx bx-plus"></span>&nbsp;
-                            Add Country
-                        </button>
-                    </Link>
+                    {   
+                        auth.user &&
+                        auth.user.role === "SUPERVISOR" &&
+                        <Link to="create">
+                            <button type="button" className="btn btn-secondary mb-4">
+                                <span className="tf-icons bx bx-plus"></span>&nbsp;
+                                Add Country
+                            </button>
+                        </Link>
+                    }
                 </div>
 
                 <div className="card">
