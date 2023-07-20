@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import DisciplineForm from "./DisciplineForm";
+import Error405 from "../errorPages/Error405";
 
 
 function CreateDiscipline() {
+    let auth = useAuth();
+    if (auth.user && auth.user.role !== "SUPERVISOR") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>
