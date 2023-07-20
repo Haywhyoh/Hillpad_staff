@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import DegreeTypeForm from "./DegreeTypeForm";
+import Error405 from "../errorPages/Error405";
 
 
 function CreateDegreeType() {
+    let auth = useAuth();
+    if (auth.user && auth.user.role !== "SUPERVISOR") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>
