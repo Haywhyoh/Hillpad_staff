@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
-import avatar1 from "../assets/img/avatars/1.png";
+import userAvatar from "../assets/img/avatars/user-avatar.jpg";
 
 
 function NavBar() {
@@ -42,7 +42,7 @@ function NavBar() {
                     </div>
 
                     <ul className="navbar-nav flex-row align-items-center ms-auto">
-                        <li className="nav-item me-3">
+                        <li className="nav-item">
                             <span className="h5 fw-bold text-muted">
                                 {user.first_name} {user.last_name}
                             </span>
@@ -62,7 +62,7 @@ function NavBar() {
                             >
                                 <div className="avatar avatar-online">
                                     <img
-                                        src={avatar1}
+                                        src={userAvatar}
                                         alt="Account avatar"
                                         className="w-px-40 h-auto rounded-circle"
                                     />
@@ -75,7 +75,7 @@ function NavBar() {
                                             <div className="flex-shrink-0 me-3">
                                                 <div className="avatar avatar-online">
                                                     <img
-                                                        src={avatar1}
+                                                        src={userAvatar}
                                                         alt="Account avatar"
                                                         className="w-px-40 h-auto rounded-circle"
                                                     />
@@ -87,7 +87,7 @@ function NavBar() {
                                                         " " +
                                                         user.last_name}
                                                 </span>
-                                                <small className="text-muted">
+                                                <small className="text-muted text-capitalize">
                                                     {user.role}
                                                 </small>
                                             </div>
