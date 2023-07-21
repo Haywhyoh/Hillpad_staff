@@ -1,6 +1,6 @@
 import ReactQuill from "react-quill";
 
-const QuillEditor = ({ name, label, modules, onChange, placeholder="", required=false }) => {
+const QuillEditor = ({ name, value="", label, modules, onChange, placeholder="", required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -13,6 +13,7 @@ const QuillEditor = ({ name, label, modules, onChange, placeholder="", required=
                 <ReactQuill
                     theme="snow"
                     id={`${name}-field`}
+                    value={value}
                     modules={modules}
                     required={required}
                     placeholder={placeholder}

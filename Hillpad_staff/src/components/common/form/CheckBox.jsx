@@ -1,9 +1,5 @@
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
 
-
-const CheckBox = ({ name, label, value, options, onChange, required=false }) => {
+const CheckBox = ({ name, value, label, options, onChange, required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -14,7 +10,7 @@ const CheckBox = ({ name, label, value, options, onChange, required=false }) => 
                     {label}{" "}
                     {required && <span className="text-danger"> *</span>}
                 </label>
-                <div>
+                <div id={`${name}-field`}>
                     {options.map(option => (
                         <div key={options.indexOf(option)} className="form-check form-check-inline">
                             <input
@@ -23,9 +19,9 @@ const CheckBox = ({ name, label, value, options, onChange, required=false }) => 
                                 type="checkbox"
                                 id={`${name}-${option.value}`}
                                 name={name}
+                                checked={value.includes(option.value)}
                                 onChange={onChange}
                                 value={option.value}
-                                // checked={value.includes(option.value)}
                             />
                             <label
                                 className="form-check-label"

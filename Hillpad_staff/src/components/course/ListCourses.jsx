@@ -109,7 +109,7 @@ function ListCourses() {
                                     <i className="bx bx-dots-vertical-rounded"></i>
                                 </button>
                                 <div className="dropdown-menu">
-                                    <Link className="dropdown-item" to="#">
+                                    <Link className="dropdown-item" to={`edit/${course.id}`}>
                                         <i className="bx bx-edit-alt me-1"></i>
                                         Edit
                                     </Link>

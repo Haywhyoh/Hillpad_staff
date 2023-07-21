@@ -52,6 +52,8 @@ class CourseForm extends Component {
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+
+        course: {}
     };
 
     options = {
@@ -83,55 +85,108 @@ class CourseForm extends Component {
         ],
     };
 
+    setFormState = (course) => {
+        const padWithLeadingZeros = (num, totalLength) => {
+            return String(num).padStart(totalLength, '0');
+        }
+        const startDate = course.course_dates.start_year + "-" + padWithLeadingZeros(course.course_dates.start_month, 2);
+        const applicationDeadline = course.course_dates.deadline_year + "-" + padWithLeadingZeros(course.course_dates.deadline_month, 2);
+
+        return {
+            name: course.name,
+            about: course.about,
+            overview: course.overview,
+            duration: course.duration,
+            durationBase: "",
+            startDate: startDate,
+            applicationDeadline: applicationDeadline,
+            school: course.school.id,
+            disciplines: course.disciplines.map(discipline => discipline.id),
+            tuitionFee: course.tuition_fee,
+            tuitionFeeBase: course.tuition_fee_base,
+            tuitionCurrency: course.tuition_currency.id,
+            courseFormat: course.course_format,
+            courseAttendance: course.attendance,
+            programmeType: course.programme_type.id,
+            degreeType: course.degree_type.id,
+            language: course.language.id,
+            programmeStructure: course.programme_structure,
+            admissionRequirements: course.admission_requirements,
+            programmeWebsite: course.official_programme_website,
+        };
+    };
+
     async componentDidMount() {
-        // Get schools
-        let { data } = await schoolService.getSchools();
-        const schools = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ schools });
-
-        // Get disciplines
-        ({ data } = await disciplineService.getDisciplines());
-        const disciplines = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ disciplines });
-
-        // Get currencies
-        ({ data } = await currencyService.getCurrencies());
-        const currencies = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ currencies });
-
-        // Get programme types
-        ({ data } = await programmeTypeService.getProgrammeTypes());
-        const programmeTypes = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ programmeTypes });
-
-        // Get degree types
-        ({ data } = await degreeTypeService.getDegreeTypes());
-        const degreeTypes = data.results.map((item) => ({
-            value: item.id,
-            name: `${item.name} (${item.short_name})`,
-        }));
-        this.setState({ degreeTypes });
-
-        // Get languages
-        ({ data } = await languageService.getLanguages());
-        const languages = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ languages });
+        this.loadData();
     }
+
+    loadData = async () => {
+        try {
+
+            if ("courseID" in this.props) {
+                const { courseID } = this.props;
+    
+                let response = await courseService.getCourseDraft(courseID);
+                if (response.status === 200) {
+                    const course = response.data;
+                    this.setState({ course: response });
+                    const formData = this.setFormState(course);
+                    this.setState({ formData });
+                }
+            }
+            
+            // Get schools
+            let { data } = await schoolService.getSchools();
+            const schools = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ schools });
+
+            // Get disciplines
+            ({ data } = await disciplineService.getDisciplines());
+            const disciplines = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ disciplines });
+
+            // Get currencies
+            ({ data } = await currencyService.getCurrencies());
+            const currencies = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ currencies });
+
+            // Get programme types
+            ({ data } = await programmeTypeService.getProgrammeTypes());
+            const programmeTypes = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ programmeTypes });
+
+            // Get degree types
+            ({ data } = await degreeTypeService.getDegreeTypes());
+            const degreeTypes = data.results.map((item) => ({
+                value: item.id,
+                name: `${item.name} (${item.short_name})`,
+            }));
+            this.setState({ degreeTypes });
+
+            // Get languages
+            ({ data } = await languageService.getLanguages());
+            const languages = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ languages });
+
+        } catch (ex) {
+            console.log(ex);
+        }
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
@@ -199,19 +254,19 @@ class CourseForm extends Component {
         this.setState({ formData });
     };
 
-    handleCheckBoxChange = ({ target: input }) => {
+    handleCheckBoxChange = ({ currentTarget: input }) => {
         const formData = { ...this.state.formData };
         if (input.checked) {
-            formData[input.name] = [...formData[input.name], input.value];
+            formData[input.name] = [...formData[input.name], parseInt(input.value)];
             this.setState({ formData });
         } else {
             formData[input.name] = formData[input.name].filter(
-                (_) => _ !== input.value
+                (_) => _ !== parseInt(input.value)
             );
             this.setState({ formData });
         }
-    };
-
+    };    
+      
     handleOverview = (content) => {
         const formData = { ...this.state.formData };
         const value = content === "<p><br></p>" ? "" : content;
@@ -330,6 +385,7 @@ class CourseForm extends Component {
                             <QuillEditor
                                 name="overview"
                                 label="Overview"
+                                value={formData.overview}
                                 modules={this.quillModules}
                                 onChange={this.handleOverview}
                                 placeholder="Course overview"
@@ -463,6 +519,7 @@ class CourseForm extends Component {
                                 name="programmeStructure"
                                 label="Programme Structure"
                                 modules={this.quillModules}
+                                value={formData.programmeStructure}
                                 onChange={this.handleProgrammeStructure}
                                 placeholder="Course programme structure"
                             />
@@ -470,6 +527,7 @@ class CourseForm extends Component {
                                 name="admissionRequirements"
                                 label="Admission Requirements"
                                 modules={this.quillModules}
+                                value={formData.admissionRequirements}
                                 onChange={this.handleAdmissionRequirements}
                                 placeholder="Course admission requirements"
                             />
