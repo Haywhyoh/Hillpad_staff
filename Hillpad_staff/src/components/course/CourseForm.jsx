@@ -117,7 +117,11 @@ class CourseForm extends Component {
     };
 
     async componentDidMount() {
-        this.loadData();
+        this.setState({ statusModal: "fetching", showStatusModal: true });
+        this.loadData()
+        .then(() => {
+            this.setState({ showStatusModal: false });
+        });
     }
 
     loadData = async () => {
@@ -334,7 +338,20 @@ class CourseForm extends Component {
                         </div>
                     </Modal.Body>
                 </>
-            )
+            );
+        }
+
+        else if (this.state.statusModal === "fetching") {
+            return (
+                <Modal.Body>
+                    <div className="text-center">
+                        <Spinner variant="warning" animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                    <p>Fetching data</p>
+                </Modal.Body>
+            );
         }
         
         return (
@@ -543,17 +560,17 @@ class CourseForm extends Component {
                             
 
                             <div className="mt-4 text-end">
-                                <button
+                                {/* <button
                                     type="submit"
                                     className="btn btn-dark me-2"
                                 >
                                     Save and submit later
-                                </button>
+                                </button> */}
                                 <button
                                     type="submit"
                                     className="btn btn-primary"
                                 >
-                                    Submit now
+                                    Submit
                                 </button>
                             </div>
                         </form>

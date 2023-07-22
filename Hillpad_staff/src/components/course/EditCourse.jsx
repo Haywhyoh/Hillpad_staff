@@ -11,7 +11,7 @@ const EditCourse = () => {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Create Course</h4>
+                    <h4 className="fw-bold py-3 mb-4">Edit Course</h4>
                     <Link to="..">
                         <button
                             type="button"
@@ -23,7 +23,7 @@ const EditCourse = () => {
                     </Link>
                 </div>
 
-                <CourseForm formTitle="Create a new course" courseID={courseID} />
+                <CourseForm formTitle="Edit course" courseID={courseID} />
 
                 
             </div>
