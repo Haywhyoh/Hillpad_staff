@@ -80,11 +80,14 @@ function ListSchools() {
             )
         }
         else if (schools.length === 0 && !loading) {
-            return <h5 className="mx-4 my-3 text-danger">No schools.</h5>
+            return (
+                <tr>
+                    <td>
+                        <h5 className="mx-4 my-3 text-danger">No schools.</h5>
+                    </td>
+                </tr>
+            );
         } else {
-            const school_country = (school) => {
-                return school.country ? school.country.name : "-";
-            }
             return (
                 <>
                     {schools.map(school => (
@@ -95,7 +98,7 @@ function ListSchools() {
                                     {school.name}
                                 </strong>
                             </td>
-                            <td>{school_country(school)}</td>
+                            <td>{(school.country && "name" in school.country) ? school.country.name : "-"}</td>
                             <td>
                                 12,765
                             </td>
@@ -114,21 +117,20 @@ function ListSchools() {
                                         <i className="bx bx-dots-vertical-rounded"></i>
                                     </button>
                                     <div className="dropdown-menu">
-                                        <a
+                                        <Link
                                             className="dropdown-item"
-                                            href="{% url 'staff_school_detail' 1 %}"
+                                            to={`edit/${school.id}`}
                                         >
                                             <i className="bx bx-edit-alt me-1"></i>
                                             Edit
-                                        </a>
-                                        <a
+                                        </Link>
+                                        <Link
                                             className="dropdown-item"
-                                            href="{% url 'school_detail' %}"
-                                            target="_blank"
+                                            to="#"
                                         >
                                             <i className="bx bx-window me-1"></i>
                                             View live
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </td>

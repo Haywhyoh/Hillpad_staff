@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
-import Button from "react-bootstrap/Button"
+import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 

@@ -77,7 +77,7 @@ function ListCourses() {
                         </div>
                     </td>
                 </tr>
-            )
+            );
         }
         else if (courses.length === 0 && !loading) {
             return (
@@ -86,7 +86,7 @@ function ListCourses() {
                         <h5 className="mx-4 my-3 text-danger">No courses.</h5>
                     </td>
                 </tr>
-            )
+            );
         } else {
             return (
                 <>
@@ -124,7 +124,7 @@ function ListCourses() {
                     
                     ))}
                 </>
-            )
+            );
         }
     }
 

@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal"
+import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 
 import schoolService from "../../services/api/schoolService";
@@ -11,6 +11,7 @@ import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import FileInput from "../common/form/FileInput";
 import QuillEditor from "../common/form/QuillEditor";
+import httpService from "../../services/httpService";
 
 
 class SchoolForm extends Component {
@@ -24,7 +25,7 @@ class SchoolForm extends Component {
             institutionType: "",
             ranking: "",
             yearEstablished: "",
-            academicStaff: [],
+            academicStaff: "",
             students: "",
             banner: "",
             logo: "",
@@ -34,6 +35,10 @@ class SchoolForm extends Component {
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+
+        school: {},
+        bannerURL: "",
+        logoURL: "",
     };
 
     options = {
@@ -57,15 +62,107 @@ class SchoolForm extends Component {
         ],
     };
 
+    setFormState = async (school) => {
+        let bannerImage = null;
+        let logoImage = null;
+
+        try {
+            this.setState({ bannerURL: school.banner });
+            this.setState({ logoURL: school.logo });
+
+            if (school.banner !== "") {
+                const response = await httpService.get(school.banner, {responseType: "blob"});
+                if (response.status === 200) {
+                    // Extract file extension from the Content-Type header
+                    const contentType = response.headers['content-type'];
+                    const fileExtension = contentType.split('/')[1];
+            
+                    // Create a Blob from the downloaded image data
+                    const imageBlob = new Blob([response.data], { type: contentType });
+            
+                    // Create a File object with the downloaded image and set the image state
+                    const imageFile = new File([imageBlob], `school_banner.${fileExtension}`, {
+                        type: contentType,
+                    });
+            
+                    bannerImage = imageFile;
+                }
+            }
+
+            if (school.logo !== "") {
+                const response = await httpService.get(school.logo, {responseType: "blob"});
+                if (response.status === 200) {
+                    // Extract file extension from the Content-Type header
+                    const contentType = response.headers['content-type'];
+                    const fileExtension = contentType.split('/')[1];
+            
+                    // Create a Blob from the downloaded image data
+                    const imageBlob = new Blob([response.data], { type: contentType });
+            
+                    // Create a File object with the downloaded image and set the image state
+                    const imageFile = new File([imageBlob], `school_logo.${fileExtension}`, {
+                        type: contentType,
+                    });
+            
+                    logoImage = imageFile;
+                }
+            }
+
+            const formData = {
+                name: school.name,
+                about: school.about,
+                address: school.address,
+                city: school.city,
+                country: school.country.id,
+                institutionType: school.institution_type,
+                ranking: school.ranking,
+                yearEstablished: school.year_established,
+                academicStaff: school.academic_staff,
+                students: school.students,
+                banner: bannerImage,
+                logo: logoImage,
+            };
+            this.setState({ formData });
+        } catch (error) {
+            // alert('An error occurred while downloading the image.');
+            console.error(error);
+        }
+    };
+
     async componentDidMount() {
-        // Get countries
-        let { data } = await countryService.getCountries();
-        const countries = data.results.map((item) => ({
-            value: item.id,
-            name: item.name,
-        }));
-        this.setState({ countries });
+        this.setState({ statusModal: "fetching", showStatusModal: true });
+        this.loadData()
+        .then(() => {
+            this.setState({ showStatusModal: false });
+        });
     }
+
+    loadData = async () => {
+        try {
+
+            if ("schoolID" in this.props) {
+                const { schoolID } = this.props;
+    
+                let response = await schoolService.getSchoolDraft(schoolID);
+                if (response.status === 200) {
+                    const school = response.data;
+                    this.setState({ school: response });
+                    await this.setFormState(school);
+                    // this.setState({ formData });
+                }
+            }
+            
+            // Get countries
+            let { data } = await countryService.getCountries();
+            const countries = data.results.map((item) => ({
+                value: item.id,
+                name: item.name,
+            }));
+            this.setState({ countries });
+        } catch (ex) {
+            console.log(ex);
+        }
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
@@ -181,6 +278,19 @@ class SchoolForm extends Component {
                 </>
             )
         }
+
+        else if (this.state.statusModal === "fetching") {
+            return (
+                <Modal.Body>
+                    <div className="text-center">
+                        <Spinner variant="warning" animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                    <p>Fetching data</p>
+                </Modal.Body>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -194,7 +304,7 @@ class SchoolForm extends Component {
 
     render() {
         const { formTitle } = this.props;
-        const { formData, countries, showStatusModal } = this.state;
+        const { formData, countries, showStatusModal, bannerURL, logoURL } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -214,6 +324,7 @@ class SchoolForm extends Component {
                             <QuillEditor
                                 name="about"
                                 label="About"
+                                value={formData.about}
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="Short description of school"
@@ -286,13 +397,66 @@ class SchoolForm extends Component {
                                 name="banner"
                                 label="Upload a banner"
                                 onChange={this.handleFileChange}
+
                             />
+                            <div className="row">
+                                <div className="col mb-3">
+                                    <label className="row ms-1 text-success" htmlFor="banner-selected">Selected:</label>
+                                    {formData.banner && (
+                                        <img
+                                            id="banner-selected"
+                                            className="row ms-1 mt-1 border border-success rounded"
+                                            src={URL.createObjectURL(formData.banner)} // Convert the image to a data URL
+                                            alt="Preview selected banner image"
+                                            style={{ maxWidth: '200px' }}
+                                        />
+                                    )}
+                                </div>
+                                <div className=" col mb-3">
+                                    <label className="row ms-1 text-primary" htmlFor="banner-current">Current:</label>
+                                    {bannerURL && (
+                                        <img
+                                            id="banner-current"
+                                            className="row ms-1 mt-1 border border-primary rounded" 
+                                            src={bannerURL}
+                                            alt="Preview current banner image"
+                                            style={{ maxWidth: '200px' }} 
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
                             <FileInput
                                 name="logo"
                                 label="Upload school logo"
                                 onChange={this.handleFileChange}
                             />
-
+                            <div className="row">
+                                <div className="col mb-3">
+                                    <label className="row ms-1 text-success" htmlFor="logo-selected">Selected:</label>
+                                    {formData.logo && (
+                                        <img
+                                            id="logo-selected"
+                                            className="row ms-1 mt-1 border border-success rounded"
+                                            src={URL.createObjectURL(formData.logo)} // Convert the image to a data URL
+                                            alt="Preview selected logo image"
+                                            style={{ maxWidth: '200px' }}
+                                        />
+                                    )}
+                                </div>
+                                <div className=" col mb-3">
+                                    <label className="row ms-1 text-primary" htmlFor="logo-current">Current:</label>
+                                    {logoURL && (
+                                        <img
+                                            id="logo-current"
+                                            className="row ms-1 mt-1 border border-primary rounded" 
+                                            src={logoURL}
+                                            alt="Preview current logo image"
+                                            style={{ maxWidth: '200px' }} 
+                                        />
+                                    )}
+                                </div>
+                            </div>
 
 
                             <div className="mt-4 text-end">
