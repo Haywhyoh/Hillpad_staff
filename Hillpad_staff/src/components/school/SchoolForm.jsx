@@ -166,13 +166,26 @@ class SchoolForm extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
-
+        
+        const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToSchoolModel(this.state.formData);
         try {
-            const createResponse = await schoolService.createSchoolDraft(data);
-            if (createResponse.status === 201 && createResponse.data) {
-                const submitResponse = await schoolService.submitSchoolDraft(createResponse.data["id"]);
+            let initialResponse;
+            if (action === "create") {
+                initialResponse = await schoolService.createSchoolDraft(data);
+            } else if (action === "edit") {
+                initialResponse = await schoolService.updateSchoolDraft(this.props.schoolID, data);
+            } else {
+                throw new Error("Unknown form action");
+            }
+
+            if (
+                ((initialResponse.status === 201 && action === "create") ||
+                (initialResponse.status === 200 && action === "edit")) &&
+                initialResponse.data
+            ) {
+                const submitResponse = await schoolService.submitSchoolDraft(initialResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
                     this.setState({ statusModal: "success" });
@@ -182,7 +195,7 @@ class SchoolForm extends Component {
                     this.setState({ statusModal: "error" })
                 }
             } else {
-                console.log("An error occured while trying to create the school", createResponse.status);
+                console.log("An error occured while trying to create the school", initialResponse.status);
                 this.setState({ statusModal: "error" });
             }
         } catch (error) {

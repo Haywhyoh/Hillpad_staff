@@ -13,7 +13,6 @@ const FileInput = ({ name, label, onChange, required=false }) => {
                     className="form-control"
                     id={`${name}-field`}
                     name={name}
-                    // value={value}
                     onChange={onChange}
                     required={required}
                 />

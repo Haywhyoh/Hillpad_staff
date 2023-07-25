@@ -28,7 +28,7 @@ function CreateSchool() {
                     </Link>
                 </div>
 
-                <SchoolForm formTitle="Create a new school" />
+                <SchoolForm formTitle="Create a new school" action="create" />
 
                 
             </div>
