@@ -28,7 +28,7 @@ function CreateCourse() {
                     </Link>
                 </div>
 
-                <CourseForm formTitle="Create a new course" />
+                <CourseForm formTitle="Create a new course" action="create" />
 
                 
             </div>

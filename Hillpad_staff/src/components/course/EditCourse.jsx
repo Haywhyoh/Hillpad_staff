@@ -23,7 +23,7 @@ const EditCourse = () => {
                     </Link>
                 </div>
 
-                <CourseForm formTitle="Edit course" courseID={courseID} />
+                <CourseForm formTitle="Edit course" courseID={courseID} action="edit" />
 
                 
             </div>

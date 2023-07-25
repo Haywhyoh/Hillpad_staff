@@ -129,7 +129,7 @@ class CourseForm extends Component {
 
             if ("courseID" in this.props) {
                 const { courseID } = this.props;
-    
+
                 let response = await courseService.getCourseDraft(courseID);
                 if (response.status === 200) {
                     const course = response.data;
@@ -195,22 +195,35 @@ class CourseForm extends Component {
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToCourseModel(this.state.formData);
         try {
-            const createResponse = await courseService.createCourseDraft(data);
-            if (createResponse.status === 201 && createResponse.data) {
-                const submitResponse = await courseService.submitCourseDraft(createResponse.data["id"]);
+            let initialResponse;
+            if (action === "create") {
+                initialResponse = await courseService.createCourseDraft(data);
+            } else if (action === "edit") {
+                initialResponse = await courseService.updateCourseDraft(this.props.courseID, data);
+            } else {
+                throw new Error("Unknown form action");
+            }
+
+            if (
+                ((initialResponse.status === 201 && action === "create") ||
+                (initialResponse.status === 200 && action === "edit")) &&
+                initialResponse.data
+            ) {
+                const submitResponse = await courseService.submitCourseDraft(initialResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
                     this.setState({ statusModal: "success" });
                 }
                 else {
                     console.log("An error occured while trying to submit the course", submitResponse.status);
-                    this.setState({ statusModal: "error" })
+                    this.setState({ statusModal: "error" });
                 }
             } else {
-                console.log("An error occured while trying to create the course", createResponse.status);
+                console.log("An error occured while trying to create the course", initialResponse.status);
                 this.setState({ statusModal: "error" });
             }
         } catch (error) {
