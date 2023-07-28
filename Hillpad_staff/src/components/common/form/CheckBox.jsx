@@ -1,5 +1,5 @@
 
-const CheckBox = ({ name, value, label, options, onChange, required=false }) => {
+const CheckBox = ({ name, value, error, label, options, onChange, required=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -32,6 +32,10 @@ const CheckBox = ({ name, value, label, options, onChange, required=false }) => 
                         </div>
                     ))}
                 </div>
+                {
+                    error &&
+                    <div className="alert alert-danger">{error}</div>
+                }
             </div>
         </>
     );

@@ -96,7 +96,7 @@ function ListCourses() {
                                 <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                 <strong>{course.name}</strong>
                             </td>
-                            <td>{course.school.name}</td>
+                            <td>{course.school ? course.school.name : "-"}</td>
                             <td>
                                 {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
                             </td>

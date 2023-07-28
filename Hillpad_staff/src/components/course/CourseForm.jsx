@@ -42,6 +42,8 @@ class CourseForm extends Component {
             admissionRequirements: "",
             programmeWebsite: "",
         },
+        errors: {},
+
         schools: [],
         disciplines: [],
         currencies: [],
@@ -57,10 +59,17 @@ class CourseForm extends Component {
     };
 
     options = {
+        durationBase: [
+            { value: "MONTH", name: "Month" },
+            { value: "YEAR", name: "Year" },
+            { value: "SEMESTER", name: "Semester" },
+            { value: "SESSION", name: "Session" },
+        ],
         tuitionFeeBase: [
             { value: "SEMESTER", name: "Per semester" },
             { value: "YEAR", name: "Per year" },
             { value: "PROGRAMME", name: "Per full programme"},
+            { value: "CREDIT", name: "Per credit" },
         ],
         courseFormat: [
             { value: "FULL", name: "Full-time" },
@@ -89,22 +98,27 @@ class CourseForm extends Component {
         const padWithLeadingZeros = (num, totalLength) => {
             return String(num).padStart(totalLength, '0');
         }
-        const startDate = course.course_dates.start_year + "-" + padWithLeadingZeros(course.course_dates.start_month, 2);
-        const applicationDeadline = course.course_dates.deadline_year + "-" + padWithLeadingZeros(course.course_dates.deadline_month, 2);
+        const startMonth = course.course_dates.start_month;
+        const startYear = course.course_dates.start_year;
+        const startDate = (startMonth && startYear) ? course.course_dates.start_year + "-" + padWithLeadingZeros(course.course_dates.start_month, 2) : "";
+        
+        const deadlineMonth = course.course_dates.deadline_month;
+        const deadlineYear = course.course_dates.deadline_year;
+        const applicationDeadline = (deadlineMonth && deadlineYear) ? course.course_dates.deadline_year + "-" + padWithLeadingZeros(course.course_dates.deadline_month, 2) : "";
 
         return {
             name: course.name,
             about: course.about,
             overview: course.overview,
-            duration: course.duration,
-            durationBase: "",
+            duration: course.duration > 0? course.duration : "",
+            durationBase: course.durationBase,
             startDate: startDate,
             applicationDeadline: applicationDeadline,
             school: course.school.id,
             disciplines: course.disciplines.map(discipline => discipline.id),
-            tuitionFee: course.tuition_fee,
+            tuitionFee: course.tuition_fee >= 0? course.tuition_fee : "",
             tuitionFeeBase: course.tuition_fee_base,
-            tuitionCurrency: course.tuition_currency.id,
+            tuitionCurrency: course.tuition_currency? course.tuition_currency.id : "",
             courseFormat: course.course_format,
             courseAttendance: course.attendance,
             programmeType: course.programme_type.id,
@@ -121,6 +135,10 @@ class CourseForm extends Component {
         this.loadData()
         .then(() => {
             this.setState({ showStatusModal: false });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ statusModal: "errorFetching" });
         });
     }
 
@@ -189,15 +207,49 @@ class CourseForm extends Component {
 
         } catch (ex) {
             console.log(ex);
+            throw new Error(ex);
         }
     };
+
+    validateForm = () => {
+        const errors = {};
+
+        const { formData } = this.state;
+        if (formData.name === "") errors["name"] = "Course name must not be empty";
+        if (formData.duration && formData.durationBase === "") errors["durationBase"] = "You must select a duration base";
+        if (formData.school === "") errors["school"] = "You must select a school";
+        if (formData.disciplines.length === 0) errors["disciplines"] = "You must select at least one discipline";
+        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionFeeBase === "") errors["tuitionFeeBase"] = "You must select a tuition fee base";
+        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionCurrency === "") errors["tuitionCurrency"] = "You must select the currency of the tuition fee";
+        if (formData.programmeType === "") errors["programmeType"] = "You must specify the programme type";
+        if (formData.degreeType === "") errors["degreeType"] = "You must specify the degree type";
+        if (formData.language === "") errors["language"] = "You must select the language of the course"        
+
+        return Object.keys(errors).length === 0 ? null : errors;
+    }
+
+    validateCheckBox = (input, formData) => {
+        
+        if (input.name === "disciplines") {
+            if (formData.disciplines.length === 0) return "You must select at least one discipline";
+        }
+    }
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        const errors = this.validateForm();
+        this.setState({ errors: errors || {} });
+
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToCourseModel(this.state.formData);
+        console.log(data);
         try {
             let initialResponse;
             if (action === "create") {
@@ -235,23 +287,24 @@ class CourseForm extends Component {
     mapToCourseModel = (data) => {
         const [startYear, startMonth] = data.startDate
             ? data.startDate.split("-")
-            : ["", ""];
+            : ["0", "0"];
         const [appDeadlineYear, appDeadlineMonth] = data.applicationDeadline
             ? data.applicationDeadline.split("-")
-            : ["", ""];
+            : ["0", "0"];
 
         return {
             name: data.name,
             about: data.about,
             overview: data.overview,
-            duration: data.duration,
+            duration: data.duration? data.duration : -1,
+            duration_base: data.durationBase,
             start_month: parseInt(startMonth),
             start_year: parseInt(startYear),
             deadline_month: parseInt(appDeadlineMonth),
             deadline_year: parseInt(appDeadlineYear),
             school: data.school,
             disciplines: data.disciplines,
-            tuition_fee: data.tuitionFee,
+            tuition_fee: data.tuitionFee? data.tuitionFee : -1,
             tuition_fee_base: data.tuitionFeeBase,
             tuition_currency: data.tuitionCurrency,
             course_format: data.courseFormat,
@@ -273,6 +326,7 @@ class CourseForm extends Component {
 
     handleCheckBoxChange = ({ currentTarget: input }) => {
         const formData = { ...this.state.formData };
+
         if (input.checked) {
             formData[input.name] = [...formData[input.name], parseInt(input.value)];
             this.setState({ formData });
@@ -282,6 +336,12 @@ class CourseForm extends Component {
             );
             this.setState({ formData });
         }
+
+        const errors = {...this.state.errors};
+        const errorMessage = this.validateCheckBox(input, formData);
+        if (errorMessage) errors[input.name] = errorMessage;
+        else delete errors[input.name];
+        this.setState({ errors });
     };    
       
     handleOverview = (content) => {
@@ -366,6 +426,32 @@ class CourseForm extends Component {
                 </Modal.Body>
             );
         }
+
+        else if (this.state.statusModal === "errorFetching") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Could not fetch data</h3>
+                            <p>An error occured while trying to fetch the data.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/course" />}
+                </>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -381,6 +467,7 @@ class CourseForm extends Component {
         const { formTitle } = this.props;
         const {
             formData,
+            errors,
             schools,
             disciplines,
             currencies,
@@ -404,6 +491,7 @@ class CourseForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Industrial Chemistry"
                                 required={true}
+                                error={errors.name}
                             />
                             <Input
                                 name="about"
@@ -411,6 +499,7 @@ class CourseForm extends Component {
                                 value={formData.about}
                                 onChange={this.handleChange}
                                 placeholder="Short description of course"
+                                error={errors.about}
                             />
                             <QuillEditor
                                 name="overview"
@@ -427,27 +516,20 @@ class CourseForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Course duration"
                                 type="number"
+                                error={errors.duration}
+                                min={1}
                             />
-                            <Select
-                                name="durationBase"
-                                label="Duration Base"
-                                value={formData.durationBase}
-                                onChange={this.handleChange}
-                                options={[
-                                    {
-                                        value: "1",
-                                        name: "Month",
-                                    },
-                                    {
-                                        value: "2",
-                                        name: "Semester",
-                                    },
-                                    {
-                                        value: "3",
-                                        name: "Year",
-                                    },
-                                ]}
-                            />
+                            {
+                                ((formData.duration > 0) && formData.duration) &&
+                                <Select
+                                    name="durationBase"
+                                    label="Duration Base"
+                                    value={formData.durationBase}
+                                    onChange={this.handleChange}
+                                    required={true}
+                                    options={this.options.durationBase}
+                                />
+                            }
                             <Select
                                 name="school"
                                 label="School"
@@ -463,6 +545,7 @@ class CourseForm extends Component {
                                 value={formData.disciplines}
                                 onChange={this.handleCheckBoxChange}
                                 options={disciplines}
+                                error={errors.disciplines}
                             />
 
                             <small className="text-light fw-semibold">
@@ -474,6 +557,7 @@ class CourseForm extends Component {
                                 type="month"
                                 value={formData.startDate}
                                 onChange={this.handleChange}
+                                error={errors.startDate}
                             />
                             <Input
                                 name="applicationDeadline"
@@ -481,6 +565,7 @@ class CourseForm extends Component {
                                 type="month"
                                 value={formData.applicationDeadline}
                                 onChange={this.handleChange}
+                                error={errors.applicationDeadline}
                             />
 
                             <Input
@@ -490,22 +575,31 @@ class CourseForm extends Component {
                                 value={formData.tuitionFee}
                                 onChange={this.handleChange}
                                 placeholder="Tuition fee"
+                                error={errors.tuitionFee}
+                                min={0}
                             />
-                            <Select
-                                name="tuitionFeeBase"
-                                label="Tuition Fee Base"
-                                value={formData.tuitionFeeBase}
-                                onChange={this.handleChange}
-                                options={this.options.tuitionFeeBase}
-                            />
-                            <Select
-                                name="tuitionCurrency"
-                                label="Tuition Currency"
-                                value={formData.tuitionCurrency}
-                                onChange={this.handleChange}
-                                options={currencies}
-                            />
-
+                            {
+                                ((formData.tuitionFee > 0) && formData.tuitionFee) &&
+                                <>
+                                    <Select
+                                        name="tuitionFeeBase"
+                                        label="Tuition Fee Base"
+                                        value={formData.tuitionFeeBase}
+                                        onChange={this.handleChange}
+                                        options={this.options.tuitionFeeBase}
+                                        required={true}
+                                    />
+                                    <Select
+                                        name="tuitionCurrency"
+                                        label="Tuition Currency"
+                                        value={formData.tuitionCurrency}
+                                        onChange={this.handleChange}
+                                        options={currencies}
+                                        required={true}
+                                    />
+                                </>
+                            }
+                            
                             <Select
                                 name="courseFormat"
                                 label="Course Format"
@@ -527,6 +621,7 @@ class CourseForm extends Component {
                                 value={formData.programmeType}
                                 onChange={this.handleChange}
                                 options={programmeTypes}
+                                required={true}
                             />
                             <Select
                                 name="degreeType"
@@ -534,6 +629,7 @@ class CourseForm extends Component {
                                 value={formData.degreeType}
                                 onChange={this.handleChange}
                                 options={degreeTypes}
+                                required={true}
                             />
 
                             <Select
@@ -568,6 +664,7 @@ class CourseForm extends Component {
                                 value={formData.programmeWebsite}
                                 onChange={this.handleChange}
                                 placeholder="https://hillpaduniversity.edu/undergrad"
+                                error={errors.programmeWebsite}
                             />
 
                             
@@ -580,6 +677,7 @@ class CourseForm extends Component {
                                     Save and submit later
                                 </button> */}
                                 <button
+                                    disabled={this.validateForm()}
                                     type="submit"
                                     className="btn btn-primary"
                                 >

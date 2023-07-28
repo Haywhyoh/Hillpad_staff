@@ -1,9 +1,4 @@
-/* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
 
-
-// eslint-disable-next-line react/prop-types
 const Select = ({ name, label, value, options, onChange, required=false }) => {
     return (
         <>
@@ -23,7 +18,7 @@ const Select = ({ name, label, value, options, onChange, required=false }) => {
                     onChange={onChange}
                     required={required}
                 >
-                    <option value="0">Select {label}...</option>
+                    <option value="">Select {label}...</option>
                     {options.map(option => (
                         <option key={option.value} value={option.value}>
                             {option.name}

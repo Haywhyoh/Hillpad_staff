@@ -1,4 +1,4 @@
-const Input = ({ name, label, value, onChange, placeholder="", maxLength=524288, type="text", required=false, autoFocus=false }) => {
+const Input = ({ name, label, value, onChange, error, placeholder="", min=undefined, maxLength=524288, type="text", required=false, autoFocus=false }) => {
     return (
         <>
             <div className="mb-3">
@@ -19,7 +19,12 @@ const Input = ({ name, label, value, onChange, placeholder="", maxLength=524288,
                     required={required}
                     maxLength={maxLength}
                     autoFocus={autoFocus}
+                    min={min}
                 />
+                {
+                    error &&
+                    <div className="alert alert-danger">{error}</div>
+                }
             </div>
         </>
     );
