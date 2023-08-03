@@ -32,6 +32,7 @@ function ListSchools() {
     useEffect(() => {
         async function fetchSchools() {
             try {
+                setLoading(true);
                 const pageQuery = `page=${currentPage}`;
                 const response = await schoolService.getSchoolDrafts(pageQuery);
                 if (response.status === 200) {
