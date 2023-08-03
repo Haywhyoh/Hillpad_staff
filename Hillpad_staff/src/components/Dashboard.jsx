@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
+import { format } from 'date-fns';
 
 import heroImageLight from '../assets/img/illustrations/man-with-laptop-light.png';
 import bachelorsImage from '../assets/img/icons/unicons/bachelors.svg';
@@ -14,6 +15,13 @@ import useAuth from '../hooks/useAuth';
 
 const Dashboard = () => {
     const { user } = useAuth();
+
+    const dateDisplay = () => {
+        return format(
+          new Date(),
+          "d LLL, yyyy"
+        );
+    }
  
     return (
         <>
@@ -31,7 +39,7 @@ const Dashboard = () => {
                                         </h5>
                                         <p className="mb-4">
                                             You have
-                                            <span className="fw-bold"> 4 </span>
+                                            <span className="fw-bold"> 0 </span>
                                             unread notifications. Check
                                             your notifications for important information.
                                         </p>
@@ -63,21 +71,32 @@ const Dashboard = () => {
                                         className="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                                         <div className="card-title">
                                             <h5 className="text-nowrap mb-2">
-                                                Profile Report
+                                                Daily Profile Summary
                                             </h5>
                                             <span className="badge bg-label-warning rounded-pill">
-                                                Year 2023
+                                                {dateDisplay()}
                                             </span>
                                         </div>
-                                        <div className="mt-sm-auto">
-                                            <small className="text-success text-nowrap fw-semibold">
-                                                Courses Added</small>
-                                            <h3 className="mb-0">
-                                                62
-                                            </h3>
-                                        </div>
+                                        
                                     </div>
-                                    <div id="profileReportChart"></div>
+                                    
+                                    {/* <div id="profileReportChart"></div> */}
+                                </div>
+                                <div className="d-flex align-items-start justify-content-between">
+                                    <div>
+                                        <small className="text-primary fw-semibold">
+                                            Courses Added</small>
+                                        <h3 className="mb-0">
+                                            -
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <small className="text-primary fw-semibold">
+                                            Schools Added</small>
+                                        <h3 className="mb-0">
+                                            -
+                                        </h3>
+                                    </div>
                                 </div>
                             </div>
                         </div>
