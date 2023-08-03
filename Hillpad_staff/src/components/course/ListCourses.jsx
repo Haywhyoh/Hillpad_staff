@@ -32,6 +32,7 @@ function ListCourses() {
     useEffect(() => {
         async function fetchCourses() {
             try {
+                setLoading(true);
                 const pageQuery = `page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {

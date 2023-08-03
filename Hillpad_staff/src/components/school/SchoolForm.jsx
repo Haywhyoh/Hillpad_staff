@@ -6,12 +6,12 @@ import Spinner from "react-bootstrap/Spinner";
 
 import schoolService from "../../services/api/schoolService";
 import countryService from "../../services/api/countryService";
+import httpService from "../../services/httpService";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import FileInput from "../common/form/FileInput";
 import QuillEditor from "../common/form/QuillEditor";
-import httpService from "../../services/httpService";
 
 
 class SchoolForm extends Component {
@@ -30,6 +30,8 @@ class SchoolForm extends Component {
             banner: "",
             logo: "",
         },
+        errors: {},
+
         countries: [],
 
         showStatusModal: false,
@@ -67,10 +69,10 @@ class SchoolForm extends Component {
         let logoImage = null;
 
         try {
-            this.setState({ bannerURL: school.banner });
-            this.setState({ logoURL: school.logo });
+            this.setState({ bannerURL: school.banner? school.banner : "" });
+            this.setState({ logoURL: school.logo? school.logo : "" });
 
-            if (school.banner !== "") {
+            if (school.banner) {
                 const response = await httpService.get(school.banner, {responseType: "blob"});
                 if (response.status === 200) {
                     // Extract file extension from the Content-Type header
@@ -89,7 +91,7 @@ class SchoolForm extends Component {
                 }
             }
 
-            if (school.logo !== "") {
+            if (school.logo) {
                 const response = await httpService.get(school.logo, {responseType: "blob"});
                 if (response.status === 200) {
                     // Extract file extension from the Content-Type header
@@ -119,13 +121,14 @@ class SchoolForm extends Component {
                 yearEstablished: school.year_established,
                 academicStaff: school.academic_staff,
                 students: school.students,
-                banner: bannerImage,
-                logo: logoImage,
+                banner: bannerImage? bannerImage : "",
+                logo: logoImage? logoImage : "",
             };
             this.setState({ formData });
         } catch (error) {
             // alert('An error occurred while downloading the image.');
             console.error(error);
+            throw new Error(error);
         }
     };
 
@@ -134,6 +137,10 @@ class SchoolForm extends Component {
         this.loadData()
         .then(() => {
             this.setState({ showStatusModal: false });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ statusModal: "errorFetching" });
         });
     }
 
@@ -161,7 +168,26 @@ class SchoolForm extends Component {
             this.setState({ countries });
         } catch (ex) {
             console.log(ex);
+            throw new Error(ex);
         }
+    };
+
+    validateForm = () => {
+        const errors = {};
+
+        const { formData } = this.state;
+        if (formData.name === "") errors["name"] = "School name must not be empty";
+        if (formData.about === "") errors["about"] = "About section must not be empty";
+        if (formData.city === "") errors["city"] = "City must not be empty";
+        if (formData.country === "") errors["country"] = "You must select the country";
+        
+        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionFeeBase === "") errors["tuitionFeeBase"] = "You must select a tuition fee base";
+        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionCurrency === "") errors["tuitionCurrency"] = "You must select the currency of the tuition fee";
+        if (formData.programmeType === "") errors["programmeType"] = "You must specify the programme type";
+        if (formData.degreeType === "") errors["degreeType"] = "You must specify the degree type";
+        if (formData.language === "") errors["language"] = "You must select the language of the course"        
+
+        return Object.keys(errors).length === 0 ? null : errors;
     };
 
     handleSubmit = async (e) => {
@@ -234,14 +260,14 @@ class SchoolForm extends Component {
         const formData = { ...this.state.formData };
         formData[input.name] = input.files[0];
         this.setState({ formData });
-    }
+    };
 
     handleAbout = (content) => {
         const formData = { ...this.state.formData };
         const value = content === "<p><br></p>" ? "" : content;
         formData["about"] = value;
         this.setState({ formData });
-    }
+    };
 
     renderModal = () => {
         if (this.state.statusModal === "success") {
@@ -341,6 +367,7 @@ class SchoolForm extends Component {
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="Short description of school"
+                                required={true}
                             />
                             <small className="text-light fw-semibold">
                                 Address
@@ -358,6 +385,7 @@ class SchoolForm extends Component {
                                 value={formData.city}
                                 onChange={this.handleChange}
                                 placeholder="Lagos"
+                                required={true}
                             />
                             <Select
                                 name="country"
@@ -473,17 +501,17 @@ class SchoolForm extends Component {
 
 
                             <div className="mt-4 text-end">
-                                <button
+                                {/* <button
                                     type="submit"
                                     className="btn btn-dark me-2"
                                 >
                                     Save and submit later
-                                </button>
+                                </button> */}
                                 <button
                                     type="submit"
                                     className="btn btn-primary"
                                 >
-                                    Submit now
+                                    Submit
                                 </button>
                             </div>
                         </form>

@@ -582,19 +582,19 @@ class CourseForm extends Component {
                                 ((formData.tuitionFee > 0) && formData.tuitionFee) &&
                                 <>
                                     <Select
-                                        name="tuitionFeeBase"
-                                        label="Tuition Fee Base"
-                                        value={formData.tuitionFeeBase}
-                                        onChange={this.handleChange}
-                                        options={this.options.tuitionFeeBase}
-                                        required={true}
-                                    />
-                                    <Select
                                         name="tuitionCurrency"
                                         label="Tuition Currency"
                                         value={formData.tuitionCurrency}
                                         onChange={this.handleChange}
                                         options={currencies}
+                                        required={true}
+                                    />
+                                    <Select
+                                        name="tuitionFeeBase"
+                                        label="Tuition Fee Base"
+                                        value={formData.tuitionFeeBase}
+                                        onChange={this.handleChange}
+                                        options={this.options.tuitionFeeBase}
                                         required={true}
                                     />
                                 </>
