@@ -114,7 +114,7 @@ function ListCourses() {
                                         <i className="bx bx-edit-alt me-1"></i>
                                         Edit
                                     </Link>
-                                    <Link className="dropdown-item" to="#">
+                                    <Link className="dropdown-item" to="https://hillpad.vercel.app">
                                         <i className="bx bx-window me-1"></i>
                                         View live
                                     </Link>

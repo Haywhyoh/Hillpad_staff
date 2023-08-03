@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 
 class Footer extends Component {
@@ -13,48 +14,41 @@ class Footer extends Component {
                     <div className="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
                         <div className="mb-2 mb-md-0">
                             Copyright &copy; {currentYear} &nbsp;
-                            <a
-                                href="{% url 'about' %}"
+                            <Link
+                                to="https://hillpad.vercel.app"
                                 target="_blank"
+                                rel="noreferrer"
                                 className="footer-link fw-bolder"
                             >
                                 HillPad Limited. &nbsp;
-                            </a>
+                            </Link>
                             All rights reserved.
                         </div>
                         <div>
-                            <a
-                                href="https://themeselection.com/license/"
+                            <Link
+                                to=""
                                 className="footer-link me-4"
-                                target="_blank"
-                                rel="noreferrer"
                             >
                                 Privacy Policy
-                            </a>
-                            <a
-                                href="https://themeselection.com/"
-                                target="_blank"
-                                rel="noreferrer"
+                            </Link>
+                            <Link
+                                to=""
                                 className="footer-link me-4"
                             >
                                 Report a bug
-                            </a>
-                            <a
-                                href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                                target="_blank"
-                                rel="noreferrer"
+                            </Link>
+                            <Link
+                                to=""
                                 className="footer-link me-4"
                             >
                                 Suggest a feature
-                            </a>
-                            <a
-                                href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                                target="_blank"
-                                rel="noreferrer"
+                            </Link>
+                            <Link
+                                to=""
                                 className="footer-link me-4"
                             >
                                 Support
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </footer>

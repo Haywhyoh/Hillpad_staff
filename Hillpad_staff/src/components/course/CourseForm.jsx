@@ -111,7 +111,7 @@ class CourseForm extends Component {
             about: course.about,
             overview: course.overview,
             duration: course.duration > 0? course.duration : "",
-            durationBase: course.durationBase,
+            durationBase: course.duration_base,
             startDate: startDate,
             applicationDeadline: applicationDeadline,
             school: course.school.id,
