@@ -181,18 +181,20 @@ class SchoolForm extends Component {
         if (formData.city === "") errors["city"] = "City must not be empty";
         if (formData.country === "") errors["country"] = "You must select the country";
         
-        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionFeeBase === "") errors["tuitionFeeBase"] = "You must select a tuition fee base";
-        if (formData.tuitionFee && formData.tuitionFee > 0 && formData.tuitionCurrency === "") errors["tuitionCurrency"] = "You must select the currency of the tuition fee";
-        if (formData.programmeType === "") errors["programmeType"] = "You must specify the programme type";
-        if (formData.degreeType === "") errors["degreeType"] = "You must specify the degree type";
-        if (formData.language === "") errors["language"] = "You must select the language of the course"        
-
         return Object.keys(errors).length === 0 ? null : errors;
     };
 
     handleSubmit = async (e) => {
         e.preventDefault();
         
+        const errors = this.validateForm();
+        this.setState({ errors: errors || {} });
+
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToSchoolModel(this.state.formData);
@@ -330,6 +332,32 @@ class SchoolForm extends Component {
                 </Modal.Body>
             );
         }
+
+        else if (this.state.statusModal === "errorFetching") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Could not fetch data</h3>
+                            <p>An error occured while trying to fetch the data.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/school" />}
+                </>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -343,7 +371,7 @@ class SchoolForm extends Component {
 
     render() {
         const { formTitle } = this.props;
-        const { formData, countries, showStatusModal, bannerURL, logoURL } = this.state;
+        const { formData, errors, countries, showStatusModal, bannerURL, logoURL } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -359,6 +387,7 @@ class SchoolForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="HillPad University"
                                 required={true}
+                                error={errors.name}
                             />
                             <QuillEditor
                                 name="about"
@@ -368,6 +397,7 @@ class SchoolForm extends Component {
                                 onChange={this.handleAbout}
                                 placeholder="Short description of school"
                                 required={true}
+                                error={errors.about}
                             />
                             <small className="text-light fw-semibold">
                                 Address
@@ -386,6 +416,7 @@ class SchoolForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Lagos"
                                 required={true}
+                                error={errors.city}
                             />
                             <Select
                                 name="country"
@@ -394,6 +425,7 @@ class SchoolForm extends Component {
                                 onChange={this.handleChange}
                                 required={true}
                                 options={countries}
+                                error={errors.country}
                             />
                             <Select
                                 name="institutionType"
@@ -508,6 +540,7 @@ class SchoolForm extends Component {
                                     Save and submit later
                                 </button> */}
                                 <button
+                                    disabled={this.validateForm()}
                                     type="submit"
                                     className="btn btn-primary"
                                 >
