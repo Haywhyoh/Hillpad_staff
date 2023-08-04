@@ -266,6 +266,7 @@ class CountryForm extends Component {
                             <QuillEditor
                                 name="caption"
                                 label="Short caption"
+                                value={formData.caption}
                                 modules={this.quillModules}
                                 onChange={this.handleCaption}
                                 placeholder="Short caption about country"
@@ -273,6 +274,7 @@ class CountryForm extends Component {
                             <QuillEditor
                                 name="about"
                                 label="About"
+                                value={formData.about}
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="About"
@@ -326,6 +328,7 @@ class CountryForm extends Component {
                             <QuillEditor
                                 name="triviaFacts"
                                 label="Trivia and Fun Facts"
+                                value={formData.triviaFacts}
                                 modules={this.quillModules}
                                 onChange={this.handleTriviaFacts}
                                 placeholder="Country trivia and fun facts"
@@ -333,6 +336,7 @@ class CountryForm extends Component {
                             <QuillEditor
                                 name="livingCosts"
                                 label="Living costs"
+                                value={formData.livingCosts}
                                 modules={this.quillModules}
                                 onChange={this.handleLivingCosts}
                                 placeholder="Average living costs in country"
