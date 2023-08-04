@@ -1,6 +1,9 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+
+import courseService from '../services/api/courseService';
+import schoolService from '../services/api/schoolService';
 
 import heroImageLight from '../assets/img/illustrations/man-with-laptop-light.png';
 import bachelorsImage from '../assets/img/icons/unicons/bachelors.svg';
@@ -14,7 +17,90 @@ import useAuth from '../hooks/useAuth';
 // import '../assets/js/dashboards-analytics.js';
 
 const Dashboard = () => {
+    const [loading, setLoading] = useState(true);
+    const [coursesDaily, setCoursesDaily] = useState(0);
+    const [schoolsDaily, setSchoolsDaily] = useState(0);
+    const [bachelorsPublished, setBachelorsPublished] = useState(0);
+    const [bachelorsReview, setBachelorsReview] = useState(0);
+    const [mastersPublished, setMastersPublished] = useState(0);
+    const [mastersReview, setMastersReview] = useState(0);
+    const [doctoratesPublished, setDoctoratesPublished] = useState(0);
+    const [doctoratesReview, setDoctoratesReview] = useState(0);
+    const [schoolsPublished, setSchoolsPublished] = useState(0);
+    const [schoolsReview, setSchoolsReview] = useState(0);
+
+    let location = useLocation();
+    let navigate = useNavigate();
     const { user } = useAuth();
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setLoading(true);
+                const currentDate = format(new Date(), "yyyy-M-d");
+                const coursesDailyQuery = `author=${user.id}&created_date=${currentDate}`;
+                const schoolsDailyQuery = `author=${user.id}&created_date=${currentDate}`;
+                const bachelorsPublishedQuery = `author=${user.id}&programme=bachelors&status=published`;
+                const bachelorsReviewQuery = `author=${user.id}&programme=bachelors&status=review`;
+                const mastersPublishedQuery = `author=${user.id}&programme=masters&status=published`;
+                const mastersReviewQuery = `author=${user.id}&programme=masters&status=review`;
+                const doctoratesPublishedQuery = `author=${user.id}&programme=doctorates&status=published`;
+                const doctoratesReviewQuery = `author=${user.id}&programme=doctorates&status=review`;
+                const schoolsPublishedQuery = `author=${user.id}&status=published`;
+                const schoolsReviewQuery = `author=${user.id}&status=review`;
+                
+                let response = await courseService.getCourseDrafts(coursesDailyQuery);
+                if (response.status === 200) {
+                    setCoursesDaily(response.data.count);
+                }
+                response = await schoolService.getSchoolDrafts(schoolsDailyQuery);
+                if (response.status === 200) {
+                    setSchoolsDaily(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(bachelorsPublishedQuery);
+                if (response.status === 200) {
+                    setBachelorsPublished(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(bachelorsReviewQuery);
+                if (response.status === 200) {
+                    setBachelorsReview(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(mastersPublishedQuery);
+                if (response.status === 200) {
+                    setMastersPublished(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(mastersReviewQuery);
+                if (response.status === 200) {
+                    setMastersReview(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(doctoratesPublishedQuery);
+                if (response.status === 200) {
+                    setDoctoratesPublished(response.data.count);
+                }
+                response = await courseService.getCourseDrafts(doctoratesReviewQuery);
+                if (response.status === 200) {
+                    setDoctoratesReview(response.data.count);
+                }
+                response = await schoolService.getSchoolDrafts(schoolsPublishedQuery);
+                if (response.status === 200) {
+                    setSchoolsPublished(response.data.count);
+                }
+                response = await schoolService.getSchoolDrafts(schoolsReviewQuery);
+                if (response.status === 200) {
+                    setSchoolsReview(response.data.count);
+                }
+            } catch (ex) {
+                if (ex.response.status === 401) {
+                    navigate("/login", {
+                        state: { from: location },
+                        replace: true
+                    });
+                }
+            }
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     const dateDisplay = () => {
         return format(
@@ -87,14 +173,32 @@ const Dashboard = () => {
                                         <small className="text-primary fw-semibold">
                                             Courses Added</small>
                                         <h3 className="mb-0">
-                                            -
+                                            {
+                                                loading &&
+                                                <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>
+                                            }
+                                            {
+                                                !loading &&
+                                                coursesDaily
+                                            }
                                         </h3>
                                     </div>
                                     <div>
                                         <small className="text-primary fw-semibold">
                                             Schools Added</small>
                                         <h3 className="mb-0">
-                                            -
+                                            {
+                                                loading &&
+                                                <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>
+                                            }
+                                            {
+                                                !loading &&
+                                                schoolsDaily
+                                            }
                                         </h3>
                                     </div>
                                 </div>
@@ -124,13 +228,31 @@ const Dashboard = () => {
                                                 <div>
                                                     <span className="d-block mb-1 text-success">Published</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        89
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            bachelorsPublished
+                                                        }
                                                     </h3>
                                                 </div>
                                                 <div>
                                                     <span className="d-block mb-1 text-warning">Under Review</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        21
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            bachelorsReview
+                                                        }
                                                     </h3>
                                                 </div>
                                             </div>
@@ -157,13 +279,31 @@ const Dashboard = () => {
                                                 <div>
                                                     <span className="d-block mb-1 text-success">Published</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        65
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            mastersPublished
+                                                        }
                                                     </h3>
                                                 </div>
                                                 <div>
                                                     <span className="d-block mb-1 text-warning">Under Review</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        2
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            mastersReview
+                                                        }
                                                     </h3>
                                                 </div>
                                             </div>
@@ -190,13 +330,31 @@ const Dashboard = () => {
                                                 <div>
                                                     <span className="d-block mb-1 text-success">Published</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        27
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            doctoratesPublished
+                                                        }
                                                     </h3>
                                                 </div>
                                                 <div>
                                                     <span className="d-block mb-1 text-warning">Under Review</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        0
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            doctoratesReview
+                                                        }
                                                     </h3>
                                                 </div>
                                             </div>
@@ -223,13 +381,31 @@ const Dashboard = () => {
                                                 <div>
                                                     <span className="d-block mb-1 text-success">Published</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        13
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            schoolsPublished
+                                                        }
                                                     </h3>
                                                 </div>
                                                 <div>
                                                     <span className="d-block mb-1 text-warning">Under Review</span>
                                                     <h3 className="card-title text-nowrap mb-2">
-                                                        1
+                                                        {
+                                                            loading &&
+                                                            <div className="mx-4 my-3 spinner-border text-warning" role="status">
+                                                                <span className="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !loading &&
+                                                            schoolsReview
+                                                        }
                                                     </h3>
                                                 </div>
                                             </div>

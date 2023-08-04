@@ -8,6 +8,7 @@ const AuthContext = React.createContext();
 
 export function AuthProvider({ children }) {
     let [user, setUser] = useState({
+        id: "",
         first_name: "",
         last_name: "",
         email: "",
@@ -24,6 +25,7 @@ export function AuthProvider({ children }) {
             if (response.status === 200) {
                 const { data } = await userService.getUser();
                 setUser(data);
+                // remove id field
                 // const token = response.data["access"];
                 Cookies.set(userCookie, JSON.stringify(data), { expires: 7 });
                 callback();
