@@ -178,6 +178,7 @@ class DisciplineForm extends Component {
                             <QuillEditor
                                 name="about"
                                 label="About"
+                                value={formData.about}
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="Discipline description"
