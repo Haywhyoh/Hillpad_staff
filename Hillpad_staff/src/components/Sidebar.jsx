@@ -45,6 +45,13 @@ class Sidebar extends Component {
                         <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" />
                         <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" />
 
+                        {/* Actions */}
+                        <li className="menu-header small text-uppercase">
+                            <span className="menu-header-text">Actions</span>
+                        </li>
+                        <MenuItem entryName="Course Actions" badge="17" entryURL="/course-actions" entryIcon="bx-book-open" />
+                        <MenuItem entryName="School Actions" badge="6" entryURL="/school-actions" entryIcon="bxs-school" />
+
                         
                         {/* Account */}
                         <li className="menu-header small text-uppercase">
