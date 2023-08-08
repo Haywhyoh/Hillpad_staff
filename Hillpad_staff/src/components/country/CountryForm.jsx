@@ -77,6 +77,7 @@ class CountryForm extends Component {
                 const response = await httpService.get(country.banner, {responseType: "blob"});
                 if (response.status === 200) {
                     // Extract file extension from the Content-Type header
+                    console.log(response);
                     const contentType = response.headers['content-type'];
                     const fileExtension = contentType.split('/')[1];
             
