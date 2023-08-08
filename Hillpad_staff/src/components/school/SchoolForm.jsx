@@ -385,7 +385,7 @@ class SchoolForm extends Component {
                                 label="Name of school"
                                 value={formData.name}
                                 onChange={this.handleChange}
-                                placeholder="HillPad University"
+                                placeholder="e.g. HillPad University"
                                 required={true}
                                 error={errors.name}
                             />

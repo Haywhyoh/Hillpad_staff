@@ -6,6 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import countryService from "../../services/api/countryService";
 import currencyService from "../../services/api/currencyService";
+import httpService from "../../services/httpService";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
@@ -31,11 +32,16 @@ class CountryForm extends Component {
             livingCosts: "",
             banner: ""
         },
+        errors: {},
+
         currencies: [],
 
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+
+        country: {},
+        bannerURL: "",
     };
 
     options = {
@@ -61,35 +67,151 @@ class CountryForm extends Component {
         ],
     };
 
+    setFormState = async (country) => {
+        let bannerImage = null;
+
+        try {
+            this.setState({ bannerURL: country.banner? country.banner : "" });
+
+            if (country.banner) {
+                const response = await httpService.get(country.banner, {responseType: "blob"});
+                if (response.status === 200) {
+                    // Extract file extension from the Content-Type header
+                    const contentType = response.headers['content-type'];
+                    const fileExtension = contentType.split('/')[1];
+            
+                    // Create a Blob from the downloaded image data
+                    const imageBlob = new Blob([response.data], { type: contentType });
+            
+                    // Create a File object with the downloaded image and set the image state
+                    const imageFile = new File([imageBlob], `country_banner.${fileExtension}`, {
+                        type: contentType,
+                    });
+            
+                    bannerImage = imageFile;
+                }
+            }
+
+            const formData = {
+                name: country.name,
+                shortCode: country.short_code,
+                caption: country.caption,
+                continent: country.continent,
+                capital: country.capital,
+                population: country.population,
+                students: country.students,
+                internationalStudents: country.international_students,
+                currency: country.currency.id,
+                about: country.about,
+                aboutWikiLink: country.about_wiki_link,
+                triviaFacts: country.trivia_facts,
+                livingCosts: country.living_costs,
+                banner: bannerImage? bannerImage : "",
+            };
+            this.setState({ formData });
+        } catch (error) {
+            // alert('An error occurred while downloading the image.');
+            console.error(error);
+            throw new Error(error);
+        }
+    };
+
     async componentDidMount() {
-        // Get currencies
-        let { data } = await currencyService.getCurrencies();
-        const currencies = data.results.map((item) => ({
-            name: item.name,
-            value: item.id,
-        }));
-        this.setState({ currencies });
+        this.setState({ statusModal: "fetching", showStatusModal: true });
+        this.loadData()
+        .then(() => {
+            this.setState({ showStatusModal: false });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ statusModal: "errorFetching" });
+        });
     }
+
+    loadData = async () => {
+        try {
+
+            if ("countryID" in this.props) {
+                const { countryID } = this.props;
+    
+                let response = await countryService.getCountryDraft(countryID);
+                
+                if (response.status === 200) {
+                    const country = response.data;
+                    this.setState({ country: response });
+                    await this.setFormState(country);
+                }
+            }
+            // Get currencies
+            let { data } = await currencyService.getCurrencies();
+            const currencies = data.results.map((item) => ({
+                name: item.name,
+                value: item.id,
+            }));
+            this.setState({ currencies });
+        } catch (ex) {
+            console.log(ex);
+            throw new Error(ex);
+        }
+    };
+
+    validateForm = () => {
+        const errors = {};
+
+        const { formData } = this.state;
+        if (formData.name === "") errors["name"] = "Country name must not be empty";
+        if (formData.shortCode === "") errors["shortCode"] = "Country Short Code must not be empty";
+        if (formData.capital === "") errors["capital"] = "Capital city must not be empty";
+        if (formData.caption === "") errors["caption"] = "Caption must not be empty";
+        if (formData.about === "") errors["about"] = "About must not be empty";
+        if (formData.continent === "") errors["country"] = "You must select the continent";
+        if (formData.population === "") errors["population"] = "Population must not be empty";
+        if (formData.currency === "") errors["currency"] = "You must select the currency";
+        if (formData.aboutWikiLink === "") errors["aboutWikiLink"] = "About wiki link must not be empty";
+        
+        return Object.keys(errors).length === 0 ? null : errors;
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        const errors = this.validateForm();
+        this.setState({ errors: errors || {} });
+
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToCountryModel(this.state.formData);
         try {
-            const createResponse = await countryService.createCountryDraft(data);
-            if (createResponse.status === 201 && createResponse.data) {
-                const submitResponse = await countryService.submitCountryDraft(createResponse.data["id"]);
+            let initialResponse;
+            if (action === "create") {
+                initialResponse = await countryService.createCountryDraft(data);
+            } else if (action === "edit") {
+                initialResponse = await countryService.updateCountryDraft(this.props.countryID, data);
+            } else {
+                throw new Error("Unknown form action");
+            }
+
+            if (
+                ((initialResponse.status === 201 && action === "create") ||
+                (initialResponse.status === 200 && action === "edit")) &&
+                initialResponse.data
+            ) {
+                const submitResponse = await countryService.submitCountryDraft(initialResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
                     this.setState({ statusModal: "success" });
                 }
                 else {
-                    console.log("An error occured while trying to submit the country", submitResponse.status);
+                    console.log("An error occured while trying to submit the country entry", submitResponse.status);
                     this.setState({ statusModal: "error" })
                 }
             } else {
-                console.log("An error occured while trying to create the country", createResponse.status);
+                console.log("An error occured while trying to create the country entry", initialResponse.status);
                 this.setState({ statusModal: "error" });
             }
         } catch (error) {
@@ -208,6 +330,45 @@ class CountryForm extends Component {
                 </>
             )
         }
+
+        else if (this.state.statusModal === "fetching") {
+            return (
+                <Modal.Body>
+                    <div className="text-center">
+                        <Spinner variant="warning" animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                    <p>Fetching data</p>
+                </Modal.Body>
+            );
+        }
+
+        else if (this.state.statusModal === "errorFetching") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Could not fetch data</h3>
+                            <p>An error occured while trying to fetch the data.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/school" />}
+                </>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -221,7 +382,7 @@ class CountryForm extends Component {
 
     render() {
         const { formTitle } = this.props;
-        const { formData, currencies, showStatusModal } = this.state;
+        const { formData, errors, currencies, showStatusModal, bannerURL } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -237,15 +398,17 @@ class CountryForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="e.g. Australia"
                                 required={true}
+                                error={errors.name}
                             />
                             <Input
                                 name="shortCode"
                                 label="Country short code (ISO 3166-1 Alpha-2)"
                                 value={formData.shortCode}
                                 onChange={this.handleChange}
-                                placeholder="e.g. AU"
+                                placeholder="e.g. au"
                                 maxLength={2}
                                 required={true}
+                                error={errors.shortCode}
                             />
                             <Input
                                 name="capital"
@@ -254,6 +417,7 @@ class CountryForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="e.g. Canberra"
                                 required={true}
+                                error={errors.capital}
                             />
                             <Select
                                 name="continent"
@@ -262,6 +426,7 @@ class CountryForm extends Component {
                                 onChange={this.handleChange}
                                 options={this.options.continent}
                                 required={true}
+                                error={errors.continent}
                             />
                             <QuillEditor
                                 name="caption"
@@ -270,7 +435,8 @@ class CountryForm extends Component {
                                 modules={this.quillModules}
                                 onChange={this.handleCaption}
                                 placeholder="Short caption about country"
-                            />
+                                required={true}
+                                error={errors.caption}/>
                             <QuillEditor
                                 name="about"
                                 label="About"
@@ -278,6 +444,8 @@ class CountryForm extends Component {
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="About"
+                                required={true}
+                                error={errors.about}
                             />
 
                             <small className="text-light fw-semibold">
@@ -289,8 +457,9 @@ class CountryForm extends Component {
                                 value={formData.population}
                                 type="number"
                                 onChange={this.handleChange}
-                                required={true}
                                 placeholder="Population"
+                                required={true}
+                                error={errors.population}
                             />
                             <Input
                                 name="students"
@@ -315,6 +484,7 @@ class CountryForm extends Component {
                                 onChange={this.handleChange}
                                 options={currencies}
                                 required={true}
+                                error={errors.currency}
                             />
                             <Input
                                 name="aboutWikiLink"
@@ -324,6 +494,7 @@ class CountryForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="e.g. https://en.wikipedia.org/wiki/Australia"
                                 required={true}
+                                error={errors.aboutWikiLink}
                             />
                             <QuillEditor
                                 name="triviaFacts"
@@ -346,19 +517,46 @@ class CountryForm extends Component {
                                 label="Upload a banner"
                                 onChange={this.handleFileChange}
                             />
+                            <div className="row">
+                                <div className="col mb-3">
+                                    <label className="row ms-1 text-success" htmlFor="banner-selected">Selected:</label>
+                                    {formData.banner && (
+                                        <img
+                                            id="banner-selected"
+                                            className="row ms-1 mt-1 border border-success rounded"
+                                            src={URL.createObjectURL(formData.banner)} // Convert the image to a data URL
+                                            alt="Preview selected banner image"
+                                            style={{ maxWidth: '200px' }}
+                                        />
+                                    )}
+                                </div>
+                                <div className=" col mb-3">
+                                    <label className="row ms-1 text-primary" htmlFor="banner-current">Current:</label>
+                                    {bannerURL && (
+                                        <img
+                                            id="banner-current"
+                                            className="row ms-1 mt-1 border border-primary rounded" 
+                                            src={bannerURL}
+                                            alt="Preview current banner image"
+                                            style={{ maxWidth: '200px' }} 
+                                        />
+                                    )}
+                                </div>
+                            </div>
 
                             <div className="mt-4 text-end">
-                                <button
+                                {/* <button
                                     type="submit"
                                     className="btn btn-dark me-2"
                                 >
                                     Save and submit later
-                                </button>
+                                </button> */}
                                 <button
+                                    disabled={this.validateForm()}
                                     type="submit"
                                     className="btn btn-primary"
                                 >
-                                    Submit now
+                                    Submit
                                 </button>
                             </div>
                         </form>

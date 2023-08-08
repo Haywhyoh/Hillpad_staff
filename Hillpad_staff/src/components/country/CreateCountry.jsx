@@ -28,7 +28,7 @@ function CreateCountry() {
                     </Link>
                 </div>
 
-                <CountryForm formTitle="Add a country" />
+                <CountryForm formTitle="Add a country" action="create" />
 
                 
             </div>
