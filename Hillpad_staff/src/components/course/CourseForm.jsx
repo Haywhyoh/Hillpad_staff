@@ -249,7 +249,6 @@ class CourseForm extends Component {
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToCourseModel(this.state.formData);
-        console.log(data);
         try {
             let initialResponse;
             if (action === "create") {

@@ -20,9 +20,13 @@ class DisciplineForm extends Component {
             iconColor: "",
         },
 
+        errors: {},
+
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+
+        discipline: {},
     };
 
     options = {
@@ -46,25 +50,100 @@ class DisciplineForm extends Component {
         ],
     };
 
+    setFormState = (discipline) => {
+
+        return {
+            name: discipline.name,
+            about: discipline.about,
+            icon: discipline.icon,
+            iconColor: discipline.icon_color
+        };
+    };
+
+    async componentDidMount() {
+        this.setState({ statusModal: "fetching", showStatusModal: true });
+        this.loadData()
+        .then(() => {
+            this.setState({ showStatusModal: false });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ statusModal: "errorFetching" });
+        });
+    }
+
+    loadData = async () => {
+        try {
+
+            if ("disciplineID" in this.props) {
+                const { disciplineID } = this.props;
+
+                let response = await disciplineService.getDisciplineDraft(disciplineID);
+                if (response.status === 200) {
+                    const discipline = response.data;
+                    this.setState({ discipline: response });
+                    const formData = this.setFormState(discipline);
+                    this.setState({ formData });
+                }
+            }
+        } catch (ex) {
+            console.log(ex);
+            throw new Error(ex);
+        }
+    };
+
+    validateForm = () => {
+        const errors = {};
+
+        const { formData } = this.state;
+        if (formData.name === "") errors["name"] = "Course name must not be empty";
+        if (formData.about === "") errors["about"] = "About must not be empty";
+        if (formData.icon === "") errors["icon"] = "Icon name must not be empty";
+        if (formData.iconColor === "") errors["iconColor"] = "Icon color must not be empty"        
+
+        return Object.keys(errors).length === 0 ? null : errors;
+    }
+
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        const errors = this.validateForm();
+        this.setState({ errors: errors || {} });
+
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
         const data = this.mapToDisciplineModel(this.state.formData);
         try {
-            const createResponse = await disciplineService.createDisciplineDraft(data);
-            if (createResponse.status === 201 && createResponse.data) {
-                const submitResponse = await disciplineService.submitDisciplineDraft(createResponse.data["id"]);
+            let initialResponse;
+            if (action === "create") {
+                initialResponse = await disciplineService.createDisciplineDraft(data);
+            } else if (action === "edit") {
+                initialResponse = await disciplineService.updateDisciplineDraft(this.props.disciplineID, data);
+            } else {
+                throw new Error("Unknown form action");
+            }
+
+            if (
+                ((initialResponse.status === 201 && action === "create") ||
+                (initialResponse.status === 200 && action === "edit")) &&
+                initialResponse.data
+            ) {
+                const submitResponse = await disciplineService.submitDiscplineDraft(initialResponse.data["id"]);
                 if (submitResponse.status === 200 && submitResponse.data) {
                     console.log("Submitted");
                     this.setState({ statusModal: "success" });
                 }
                 else {
-                    console.log("An error occured while trying to submit the discipline", submitResponse.status);
-                    this.setState({ statusModal: "error" })
+                    console.log("An error occured while trying to submit the course", submitResponse.status);
+                    this.setState({ statusModal: "error" });
                 }
             } else {
-                console.log("An error occured while trying to create the course", createResponse.status);
+                console.log("An error occured while trying to create the course", initialResponse.status);
                 this.setState({ statusModal: "error" });
             }
         } catch (error) {
@@ -146,6 +225,45 @@ class DisciplineForm extends Component {
                 </>
             )
         }
+
+        else if (this.state.statusModal === "fetching") {
+            return (
+                <Modal.Body>
+                    <div className="text-center">
+                        <Spinner variant="warning" animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                    <p>Fetching data</p>
+                </Modal.Body>
+            );
+        }
+
+        else if (this.state.statusModal === "errorFetching") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Could not fetch data</h3>
+                            <p>An error occured while trying to fetch the data.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/course" />}
+                </>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -158,7 +276,7 @@ class DisciplineForm extends Component {
 
     render() {
         const { formTitle } = this.props;
-        const { formData, showStatusModal } = this.state;
+        const { formData, errors, showStatusModal } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -174,6 +292,7 @@ class DisciplineForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="Social Sciences"
                                 required={true}
+                                error={errors.name}
                             />
                             <QuillEditor
                                 name="about"
@@ -182,6 +301,8 @@ class DisciplineForm extends Component {
                                 modules={this.quillModules}
                                 onChange={this.handleAbout}
                                 placeholder="Discipline description"
+                                required={true}
+                                error={errors.about}
                             />
                             <small className="text-light fw-semibold">
                                 Address
@@ -192,6 +313,8 @@ class DisciplineForm extends Component {
                                 value={formData.icon}
                                 onChange={this.handleChange}
                                 placeholder="lab"
+                                required={true}
+                                error={errors.icon}
                             />
                             <Select
                                 name="iconColor"
@@ -199,20 +322,23 @@ class DisciplineForm extends Component {
                                 value={formData.iconColor}
                                 onChange={this.handleChange}
                                 options={this.options.iconColor}
+                                required={true}
+                                error={errors.iconColor}
                             />
 
                             <div className="mt-4 text-end">
-                                <button
+                                {/* <button
                                     type="submit"
                                     className="btn btn-dark me-2"
                                 >
                                     Save and submit later
-                                </button>
+                                </button> */}
                                 <button
+                                    disabled={this.validateForm()}
                                     type="submit"
                                     className="btn btn-primary"
                                 >
-                                    Submit now
+                                    Submit
                                 </button>
                             </div>
                         </form>
