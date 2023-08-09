@@ -109,21 +109,14 @@ function ListDisciplines() {
                                         <i className="bx bx-dots-vertical-rounded"></i>
                                     </button>
                                     <div className="dropdown-menu">
-                                        <a
-                                            className="dropdown-item"
-                                            href="{% url 'staff_discipline_detail' 1 %}"
-                                        >
+                                        <Link className="dropdown-item" to={`edit/${discipline.id}`}>
                                             <i className="bx bx-edit-alt me-1"></i>
                                             Edit
-                                        </a>
-                                        <a
-                                            className="dropdown-item"
-                                            href="{% url 'discipline_detail' %}"
-                                            target="_blank"
-                                        >
+                                        </Link>
+                                        <Link className="dropdown-item" to="https://hillpad.vercel.app">
                                             <i className="bx bx-window me-1"></i>
                                             View live
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </td>
