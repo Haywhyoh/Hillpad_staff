@@ -12,6 +12,7 @@ import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import FileInput from "../common/form/FileInput";
 import QuillEditor from "../common/form/QuillEditor";
+import TextArea from "../common/form/TextArea";
 
 
 class SchoolForm extends Component {
@@ -41,6 +42,9 @@ class SchoolForm extends Component {
         school: {},
         bannerURL: "",
         logoURL: "",
+
+        submitAction: "",
+        rejectReason: "",
     };
 
     options = {
@@ -184,8 +188,15 @@ class SchoolForm extends Component {
         return Object.keys(errors).length === 0 ? null : errors;
     };
 
+    validateRejection = () => {
+        const { rejectReason } = this.state;
+        return rejectReason.trim() === "";
+    }
+
     handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log(e);
         
         const errors = this.validateForm();
         this.setState({ errors: errors || {} });
@@ -199,10 +210,19 @@ class SchoolForm extends Component {
         this.setState({ statusModal: "loading", showStatusModal: true });
         if (action === "review") {
             try {
-                const response = await schoolService.approveSchoolDraft(this.props.schoolID);
-                if (response.status === 200) {
-                    console.log("Approved");
-                    this.setState({ statusModal: "success" });
+                if (this.state.submitAction === "approve") {
+                    const response = await schoolService.approveSchoolDraft(this.props.schoolID);
+                    if (response.status === 200) {
+                        console.log("Approved");
+                        this.setState({ statusModal: "success" });
+                    }
+                } else if (this.state.submitAction === "reject") {
+                    const data = { reject_reason: this.state.rejectReason };
+                    const response = await schoolService.rejectSchoolDraft(this.props.schoolID, data);
+                    if (response.status === 200) {
+                        console.log("Rejected");
+                        this.setState({ statusModal: "success" });
+                    }
                 }
 
             } catch (error) {
@@ -274,7 +294,7 @@ class SchoolForm extends Component {
         this.setState({ formData });
     };
 
-    handleFileChange = ({ currentTarget: input}) => {
+    handleFileChange = ({ currentTarget: input }) => {
         const formData = { ...this.state.formData };
         formData[input.name] = input.files[0];
         this.setState({ formData });
@@ -286,6 +306,10 @@ class SchoolForm extends Component {
         formData["about"] = value;
         this.setState({ formData });
     };
+
+    handleRejectReason = ({ currentTarget: input }) => {
+        this.setState({ rejectReason: input.value });
+    }
 
     renderModal = () => {
         const { action } = this.props;
@@ -400,15 +424,23 @@ class SchoolForm extends Component {
                 <>
                     <div className="mt-4 text-end">
                         <button
-                            disabled
                             type="submit"
                             className="btn btn-danger me-2"
+                            disabled={this.validateRejection()}
+                            onClick={() => {
+                                    this.setState({ submitAction: "reject" });
+                                }
+                            }
                             >
                             Reject
                         </button>
                         <button
                             type="submit"
                             className="btn btn-success"
+                            onClick={() => {
+                                    this.setState({ submitAction: "approve" });
+                                }
+                            }
                         >
                             Approve
                         </button>
@@ -438,8 +470,8 @@ class SchoolForm extends Component {
     };
 
     render() {
-        const { formTitle } = this.props;
-        const { formData, errors, countries, showStatusModal, bannerURL, logoURL } = this.state;
+        const { formTitle, action } = this.props;
+        const { formData, errors, countries, showStatusModal, bannerURL, logoURL, rejectReason } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -598,6 +630,17 @@ class SchoolForm extends Component {
                                     )}
                                 </div>
                             </div>
+
+                            {
+                                action === "review" &&
+                                <TextArea 
+                                    name="rejectReason"
+                                    label="Reason for rejection"
+                                    onChange={this.handleRejectReason}
+                                    value={rejectReason}
+                                    placeholder="e.g. The school logo is too wide, try to reduce the width"
+                                />
+                            }
 
                             {this.renderSubmit()}
 
