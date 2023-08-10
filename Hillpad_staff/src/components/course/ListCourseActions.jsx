@@ -5,35 +5,34 @@ import useAuth from '../../hooks/useAuth';
 import courseService from '../../services/api/courseService';
 import Paginator from "../common/Paginator";
 import config from "../../config.json";
+import Error405 from "../errorPages/Error405";
 
 
 const ListCourseActions = () => {
+
+    let auth = useAuth();
     
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-
+    
     const pageSize = config.pageSize;
-
+    
     let location = useLocation();
     let navigate = useNavigate();
-    let auth = useAuth();
-
-    const statusClass = {
-        "PUBLISHED": "bg-label-success",
-        "APPROVED": "bg-label-info",
-        "REJECTED": "bg-label-danger",
-        "REVIEW": "bg-label-warning",
-        "SAVED": "bg-label-secondary"
-    }
 
     useEffect(() => {
         async function fetchCourses() {
             try {
                 setLoading(true);
-                const pageQuery = `page=${currentPage}`;
+
+                let status;
+                if (auth.user.role === "SUPERVISOR") status = "REVIEW";
+                else if (auth.user.role === "ADMIN") status = "APPROVED";
+
+                const pageQuery = `status=${status}&page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -51,7 +50,13 @@ const ListCourseActions = () => {
             setLoading(false);
         }
         fetchCourses();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, auth.user.role]);
+
+    if (auth.user && auth.user.role === "SPECIALIST") {
+        return (
+            <Error405 />
+        );
+    }
 
     function renderCourses() {
         if (loading) {
@@ -102,24 +107,7 @@ const ListCourseActions = () => {
                                 {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
                             </td>
                             <td>
-                                <span className={`badge ${statusClass[course.status]} me-1`}>{course.status}</span>
-                            </td>
-                            <td>
-                            <div className="dropdown">
-                                <button type="button" className="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                    <i className="bx bx-dots-vertical-rounded"></i>
-                                </button>
-                                <div className="dropdown-menu">
-                                    <Link className="dropdown-item" to={`edit/${course.id}`}>
-                                        <i className="bx bx-edit-alt me-1"></i>
-                                        Edit
-                                    </Link>
-                                    <Link className="dropdown-item" to="https://hillpad.vercel.app">
-                                        <i className="bx bx-window me-1"></i>
-                                        View live
-                                    </Link>
-                                </div>
-                            </div>
+                                <span className={`badge bg-label-info me-1`}>{course.author.first_name} {course.author.last_name}</span>
                             </td>
                         </tr>
                     
@@ -134,7 +122,7 @@ const ListCourseActions = () => {
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">
-                        Courses
+                        Course Actions
                     </h4>
                     {   
                         auth.user &&
@@ -165,8 +153,7 @@ const ListCourseActions = () => {
                                     <th>Course Name</th>
                                     <th>School</th>
                                     <th>Degree</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Author</th>
                                 </tr>
                             </thead>
                             <tbody className="table-border-bottom-0">

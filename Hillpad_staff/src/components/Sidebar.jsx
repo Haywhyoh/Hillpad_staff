@@ -1,5 +1,9 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from "../hooks/useAuth";
+
+import courseService from '../services/api/courseService';
+import schoolService from '../services/api/schoolService';
 
 import MenuItem from './MenuItem.jsx';
 
@@ -9,6 +13,42 @@ import hillpadLogo from '../assets/img/hillpad/logos/hillpad-transparent.png';
 
 const Sidebar = () => {
     const { user } = useAuth();
+    let navigate = useNavigate();
+
+    const [courseActions, setCourseActions] = useState(0);
+    const [schoolActions, setSchoolActions] = useState(0);
+
+    useEffect(() => {
+        async function fetchActionsStats() {
+            try {
+
+                let status;
+                if (user.role === "SUPERVISOR") status = "REVIEW";
+                else if (user.role === "ADMIN") status = "APPROVED";
+                const pageQuery = `status=${status}`;
+
+                let response = await courseService.getCourseDrafts(pageQuery);
+                if (response.status === 200) {
+                    console.log(user.role);
+                    setCourseActions(response.data.count);
+                }
+
+                response = await schoolService.getSchoolDrafts(pageQuery);
+                if (response.status === 200) {
+                    setSchoolActions(response.data.count);
+                }
+            } catch (ex) {
+                if (ex.response.status === 401) {
+                    navigate("/login", {
+                        state: { from: location },
+                        replace: true
+                    });
+                }
+                console.log(ex);
+            }
+        }
+        fetchActionsStats();
+    }, [navigate, user.role]);
      
     return (
         <>
@@ -54,8 +94,8 @@ const Sidebar = () => {
                             <li className="menu-header small text-uppercase">
                                 <span className="menu-header-text">Actions</span>
                             </li>
-                            <MenuItem entryName="Course Actions" badge="17" entryURL="/course-actions" entryIcon="bx-book-open" />
-                            <MenuItem entryName="School Actions" badge="6" entryURL="/school-actions" entryIcon="bxs-school" />
+                            <MenuItem entryName="Course Actions" badge={`${courseActions}`} entryURL="/course/actions" entryIcon="bx-book-open" />
+                            <MenuItem entryName="School Actions" badge={`${schoolActions}`} entryURL="/school-actions" entryIcon="bxs-school" />
                         </>
                     }
 
