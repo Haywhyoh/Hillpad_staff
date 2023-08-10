@@ -95,7 +95,7 @@ const Sidebar = () => {
                                 <span className="menu-header-text">Actions</span>
                             </li>
                             <MenuItem entryName="Course Reviews" badge={`${courseActions}`} entryURL="/course/reviews" entryIcon="bx-book-open" />
-                            <MenuItem entryName="School Reviews" badge={`${schoolActions}`} entryURL="/school-actions" entryIcon="bxs-school" />
+                            <MenuItem entryName="School Reviews" badge={`${schoolActions}`} entryURL="/school/reviews" entryIcon="bxs-school" />
                         </>
                     }
 
