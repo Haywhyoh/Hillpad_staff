@@ -98,18 +98,20 @@ const ListCourseActions = () => {
                 <>
                     {courses.map(course => (
                         <tr key={course.id}>
-                            <td>
-                                <i className="fab fa-angular fa-lg text-danger me-3"></i>
-                                <strong>{course.name}</strong>
-                            </td>
-                            <td>{course.school ? course.school.name : "-"}</td>
-                            <td>
-                                {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
-                            </td>
-                            <td>
-                                <span className={`badge bg-label-info me-1`}>{course.author.first_name} {course.author.last_name}</span>
-                            </td>
-                        </tr>
+                                    <td>
+                                        <Link to={`/course/review/${course.id}`}>
+                                            <i className="fab fa-angular fa-lg text-danger me-3"></i>
+                                            <strong>{course.name}</strong>
+                                        </Link>
+                                    </td>
+                                    <td>{course.school ? course.school.name : "-"}</td>
+                                    <td>
+                                        {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
+                                    </td>
+                                    <td>
+                                        <span className={`badge bg-label-info me-1`}>{course.author.first_name} {course.author.last_name}</span>
+                                    </td>
+                            </tr>
                     
                     ))}
                 </>

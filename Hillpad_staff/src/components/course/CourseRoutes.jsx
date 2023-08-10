@@ -4,6 +4,7 @@ import ListCourses from './ListCourses';
 import CreateCourse from './CreateCourse';
 import EditCourse from './EditCourse';
 import ListCourseActions from './ListCourseActions';
+import ReviewCourse from './ReviewCourse';
 
 
 function CourseRoutes() {
@@ -14,7 +15,8 @@ function CourseRoutes() {
                 <Route path="/" element={<ListCourses />} />
                 <Route path="/create" element={<CreateCourse />} />
                 <Route path="/edit/:courseID" element={<EditCourse />} />
-                <Route path="/actions" element={<ListCourseActions />} />
+                <Route path="/reviews" element={<ListCourseActions />} />
+                <Route path="/review/:courseID" element={<ReviewCourse />} />
             </Routes>
         </>
     );

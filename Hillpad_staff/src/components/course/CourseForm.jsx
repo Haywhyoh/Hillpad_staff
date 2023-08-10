@@ -248,39 +248,56 @@ class CourseForm extends Component {
 
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
-        const data = this.mapToCourseModel(this.state.formData);
-        try {
-            let initialResponse;
-            if (action === "create") {
-                initialResponse = await courseService.createCourseDraft(data);
-            } else if (action === "edit") {
-                initialResponse = await courseService.updateCourseDraft(this.props.courseID, data);
-            } else {
-                throw new Error("Unknown form action");
-            }
 
-            if (
-                ((initialResponse.status === 201 && action === "create") ||
-                (initialResponse.status === 200 && action === "edit")) &&
-                initialResponse.data
-            ) {
-                const submitResponse = await courseService.submitCourseDraft(initialResponse.data["id"]);
-                if (submitResponse.status === 200 && submitResponse.data) {
-                    console.log("Submitted");
+        if (action === "review") {
+            try {
+                const response = await courseService.approveCourseDraft(this.props.courseID);
+                if (response.status === 200) {
+                    console.log("Approved");
                     this.setState({ statusModal: "success" });
                 }
-                else {
-                    console.log("An error occured while trying to submit the course", submitResponse.status);
-                    this.setState({ statusModal: "error" });
-                }
-            } else {
-                console.log("An error occured while trying to create the course", initialResponse.status);
+
+            } catch (error) {
+                console.log(error);
                 this.setState({ statusModal: "error" });
             }
-        } catch (error) {
-            console.log(error);
-            this.setState({ statusModal: "error" });
         }
+        else {
+            const data = this.mapToCourseModel(this.state.formData);
+            try {
+                let initialResponse;
+                if (action === "create") {
+                    initialResponse = await courseService.createCourseDraft(data);
+                } else if (action === "edit") {
+                    initialResponse = await courseService.updateCourseDraft(this.props.courseID, data);
+                } else {
+                    throw new Error("Unknown form action");
+                }
+    
+                if (
+                    ((initialResponse.status === 201 && action === "create") ||
+                    (initialResponse.status === 200 && action === "edit")) &&
+                    initialResponse.data
+                ) {
+                    const submitResponse = await courseService.submitCourseDraft(initialResponse.data["id"]);
+                    if (submitResponse.status === 200 && submitResponse.data) {
+                        console.log("Submitted");
+                        this.setState({ statusModal: "success" });
+                    }
+                    else {
+                        console.log("An error occured while trying to submit the course", submitResponse.status);
+                        this.setState({ statusModal: "error" });
+                    }
+                } else {
+                    console.log("An error occured while trying to create the course", initialResponse.status);
+                    this.setState({ statusModal: "error" });
+                }
+            } catch (error) {
+                console.log(error);
+                this.setState({ statusModal: "error" });
+            }
+        }
+
     };
 
     mapToCourseModel = (data) => {
@@ -365,6 +382,7 @@ class CourseForm extends Component {
     }
 
     renderModal = () => {
+        const { action } = this.props;
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -372,7 +390,14 @@ class CourseForm extends Component {
                         <div className="text-center mb-4">
                             <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
                             <h3>Awesome!</h3>
-                            <p>Course was submitted successfully.</p>
+                            {
+                                action === "review" &&
+                                <p>Course has been approved.</p>
+                            }
+                            {
+                                (action === "create" || action === "edit") &&
+                                <p>Course was submitted successfully.</p>
+                            }
                         </div>
                         <div className="d-grid gap-2">
                             <Button variant="success" onClick={() => {
@@ -460,6 +485,50 @@ class CourseForm extends Component {
             </Modal.Body>
         );
 
+    };
+
+    renderSubmit = () => {
+        const { action } = this.props;
+        if (action === "review") {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            disabled
+                            type="submit"
+                            className="btn btn-danger me-2"
+                            >
+                            Reject
+                        </button>
+                        <button
+                            type="submit"
+                            className="btn btn-success"
+                        >
+                            Approve
+                        </button>
+                    </div>
+                </>
+            );
+        }
+        return (
+            <>
+                <div className="mt-4 text-end">
+                    {/* <button
+                        type="submit"
+                        className="btn btn-dark me-2"
+                    >
+                        Save and submit later
+                    </button> */}
+                    <button
+                        disabled={this.validateForm()}
+                        type="submit"
+                        className="btn btn-primary"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </>
+        );
     };
 
     render() {
@@ -666,23 +735,8 @@ class CourseForm extends Component {
                                 error={errors.programmeWebsite}
                             />
 
+                            {this.renderSubmit()}
                             
-
-                            <div className="mt-4 text-end">
-                                {/* <button
-                                    type="submit"
-                                    className="btn btn-dark me-2"
-                                >
-                                    Save and submit later
-                                </button> */}
-                                <button
-                                    disabled={this.validateForm()}
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Submit
-                                </button>
-                            </div>
                         </form>
                     </div>
                 </div>
