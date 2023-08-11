@@ -58,7 +58,7 @@ class CourseForm extends Component {
 
         course: {},
 
-        submitAction: "",
+        reviewAction: "",
         rejectReason: "",
     };
 
@@ -260,13 +260,13 @@ class CourseForm extends Component {
 
         if (action === "review") {
             try {
-                if (this.state.submitAction === "approve") {
+                if (this.state.reviewAction === "approve") {
                     const response = await courseService.approveCourseDraft(this.props.courseID);
                     if (response.status === 200) {
                         console.log("Approved");
                         this.setState({ statusModal: "success" });
                     }
-                } else if (this.state.submitAction === "reject") {
+                } else if (this.state.reviewAction === "reject") {
                     const data = { reject_reason: this.state.rejectReason };
                     const response = await courseService.rejectCourseDraft(this.props.courseID, data);
                     if (response.status === 200) {
@@ -275,6 +275,18 @@ class CourseForm extends Component {
                     }
                 }
 
+            } catch (error) {
+                console.log(error);
+                this.setState({ statusModal: "error" });
+            }
+        }
+        else if (action === "publish") {
+            try {
+                const response = await courseService.publishCourseDraft(this.props.courseID);
+                if (response.status === 200) {
+                    console.log("Published");
+                    this.setState({ statusModal: "success" });
+                }
             } catch (error) {
                 console.log(error);
                 this.setState({ statusModal: "error" });
@@ -413,8 +425,18 @@ class CourseForm extends Component {
                             <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
                             <h3>Awesome!</h3>
                             {
+                                action === "publish" &&
+                                <p>Course has been published.</p>
+                            }
+                            {
                                 action === "review" &&
+                                this.state.reviewAction === "approve" &&
                                 <p>Course has been approved.</p>
+                            }
+                            {
+                                action === "review" &&
+                                this.state.reviewAction === "reject" &&
+                                <p>Course has been rejected.</p>
                             }
                             {
                                 (action === "create" || action === "edit") &&
@@ -520,7 +542,7 @@ class CourseForm extends Component {
                             className="btn btn-danger me-2"
                             disabled={this.validateRejection()}
                             onClick={() => {
-                                    this.setState({ submitAction: "reject" });
+                                    this.setState({ reviewAction: "reject" });
                                 }
                             }
                         >
@@ -530,7 +552,7 @@ class CourseForm extends Component {
                             type="submit"
                             className="btn btn-success"
                             onClick={() => {
-                                    this.setState({ submitAction: "approve" });
+                                    this.setState({ reviewAction: "approve" });
                                 }
                             }
                         >
@@ -539,26 +561,40 @@ class CourseForm extends Component {
                     </div>
                 </>
             );
+        } else if (action === "publish") {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            type="submit"
+                            className="btn btn-success"
+                        >
+                            Publish
+                        </button>
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        {/* <button
+                            type="submit"
+                            className="btn btn-dark me-2"
+                        >
+                            Save and submit later
+                        </button> */}
+                        <button
+                            disabled={this.validateForm()}
+                            type="submit"
+                            className="btn btn-primary"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </>
+            );
         }
-        return (
-            <>
-                <div className="mt-4 text-end">
-                    {/* <button
-                        type="submit"
-                        className="btn btn-dark me-2"
-                    >
-                        Save and submit later
-                    </button> */}
-                    <button
-                        disabled={this.validateForm()}
-                        type="submit"
-                        className="btn btn-primary"
-                    >
-                        Submit
-                    </button>
-                </div>
-            </>
-        );
     };
 
     render() {
