@@ -29,7 +29,6 @@ const Sidebar = () => {
 
                 let response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
-                    console.log(user.role);
                     setCourseActions(response.data.count);
                 }
 

@@ -16,6 +16,7 @@ import CheckBox from "../common/form/CheckBox";
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
 import QuillEditor from "../common/form/QuillEditor";
+import TextArea from "../common/form/TextArea";
 
 
 class CourseForm extends Component {
@@ -55,7 +56,10 @@ class CourseForm extends Component {
         statusModal: "loading",
         modalRedirect: false,
 
-        course: {}
+        course: {},
+
+        submitAction: "",
+        rejectReason: "",
     };
 
     options = {
@@ -226,13 +230,18 @@ class CourseForm extends Component {
         if (formData.language === "") errors["language"] = "You must select the language of the course"        
 
         return Object.keys(errors).length === 0 ? null : errors;
-    }
+    };
 
     validateCheckBox = (input, formData) => {
         
         if (input.name === "disciplines") {
             if (formData.disciplines.length === 0) return "You must select at least one discipline";
         }
+    };
+
+    validateRejection = () => {
+        const { rejectReason } = this.state;
+        return rejectReason.trim() === "";
     }
 
     handleSubmit = async (e) => {
@@ -251,10 +260,19 @@ class CourseForm extends Component {
 
         if (action === "review") {
             try {
-                const response = await courseService.approveCourseDraft(this.props.courseID);
-                if (response.status === 200) {
-                    console.log("Approved");
-                    this.setState({ statusModal: "success" });
+                if (this.state.submitAction === "approve") {
+                    const response = await courseService.approveCourseDraft(this.props.courseID);
+                    if (response.status === 200) {
+                        console.log("Approved");
+                        this.setState({ statusModal: "success" });
+                    }
+                } else if (this.state.submitAction === "reject") {
+                    const data = { reject_reason: this.state.rejectReason };
+                    const response = await courseService.rejectCourseDraft(this.props.courseID, data);
+                    if (response.status === 200) {
+                        console.log("Rejected");
+                        this.setState({ statusModal: "success" });
+                    }
                 }
 
             } catch (error) {
@@ -365,21 +383,25 @@ class CourseForm extends Component {
         const value = content === "<p><br></p>" ? "" : content;
         formData["overview"] = value;
         this.setState({ formData });
-    }
+    };
 
     handleProgrammeStructure = (content) => {
         const formData = { ...this.state.formData };
         const value = content === "<p><br></p>" ? "" : content;
         formData["programmeStructure"] = value;
         this.setState({ formData });
-    }
+    };
 
     handleAdmissionRequirements = (content) => {
         const formData = { ...this.state.formData };
         const value = content === "<p><br></p>" ? "" : content;
         formData["admissionRequirements"] = value;
         this.setState({ formData });
-    }
+    };
+
+    handleRejectReason = ({ currentTarget: input }) => {
+        this.setState({ rejectReason: input.value });
+    };
 
     renderModal = () => {
         const { action } = this.props;
@@ -494,15 +516,23 @@ class CourseForm extends Component {
                 <>
                     <div className="mt-4 text-end">
                         <button
-                            disabled
                             type="submit"
                             className="btn btn-danger me-2"
-                            >
+                            disabled={this.validateRejection()}
+                            onClick={() => {
+                                    this.setState({ submitAction: "reject" });
+                                }
+                            }
+                        >
                             Reject
                         </button>
                         <button
                             type="submit"
                             className="btn btn-success"
+                            onClick={() => {
+                                    this.setState({ submitAction: "approve" });
+                                }
+                            }
                         >
                             Approve
                         </button>
@@ -532,7 +562,7 @@ class CourseForm extends Component {
     };
 
     render() {
-        const { formTitle } = this.props;
+        const { formTitle, action } = this.props;
         const {
             formData,
             errors,
@@ -543,6 +573,7 @@ class CourseForm extends Component {
             degreeTypes,
             languages,
             showStatusModal,
+            rejectReason,
         } = this.state;
         return (
             <>
@@ -742,7 +773,7 @@ class CourseForm extends Component {
                                     label="Reason for rejection"
                                     onChange={this.handleRejectReason}
                                     value={rejectReason}
-                                    placeholder="e.g. Thefjklegjr"
+                                    placeholder="e.g. The start date is earlier than the application deadline. Confirm to ensure this is not a mistake."
                                 />
                             }
 

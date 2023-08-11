@@ -121,10 +121,10 @@ class SchoolForm extends Component {
                 city: school.city,
                 country: school.country.id,
                 institutionType: school.institution_type,
-                ranking: school.ranking,
-                yearEstablished: school.year_established,
-                academicStaff: school.academic_staff,
-                students: school.students,
+                ranking: school.ranking > 0? school.ranking : "",
+                yearEstablished: school.year_established > 0? school.year_established : "",
+                academicStaff: school.academic_staff > 0? school.academic_staff : "",
+                students: school.students > 0? school.students : "",
                 banner: bannerImage? bannerImage : "",
                 logo: logoImage? logoImage : "",
             };
@@ -278,10 +278,10 @@ class SchoolForm extends Component {
         formattedFormData.append("city", data.city);
         formattedFormData.append("country", data.country);
         formattedFormData.append("institution_type", data.institutionType);
-        formattedFormData.append("ranking", data.ranking);
-        formattedFormData.append("year_established", data.yearEstablished);
-        formattedFormData.append("academic_staff", data.academicStaff);
-        formattedFormData.append("students", data.students);
+        formattedFormData.append("ranking", data.ranking? data.ranking : -1);
+        formattedFormData.append("year_established", data.yearEstablished? data.yearEstablished : -1);
+        formattedFormData.append("academic_staff", data.academicStaff? data.academicStaff : -1);
+        formattedFormData.append("students", data.students? data.students : -1);
         formattedFormData.append("banner", data.banner);
         formattedFormData.append("logo", data.logo);
 
@@ -309,7 +309,7 @@ class SchoolForm extends Component {
 
     handleRejectReason = ({ currentTarget: input }) => {
         this.setState({ rejectReason: input.value });
-    }
+    };
 
     renderModal = () => {
         const { action } = this.props;
@@ -431,7 +431,7 @@ class SchoolForm extends Component {
                                     this.setState({ submitAction: "reject" });
                                 }
                             }
-                            >
+                        >
                             Reject
                         </button>
                         <button
