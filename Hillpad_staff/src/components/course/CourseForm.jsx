@@ -735,6 +735,17 @@ class CourseForm extends Component {
                                 error={errors.programmeWebsite}
                             />
 
+                            {
+                                action === "review" &&
+                                <TextArea 
+                                    name="rejectReason"
+                                    label="Reason for rejection"
+                                    onChange={this.handleRejectReason}
+                                    value={rejectReason}
+                                    placeholder="e.g. Thefjklegjr"
+                                />
+                            }
+
                             {this.renderSubmit()}
                             
                         </form>
