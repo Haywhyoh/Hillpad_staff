@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import countryService from '../../services/api/countryService';
 import Paginator from "../common/Paginator";
-import config from "../../config.json";
+import config from '../../config';
 
 
 const ListCountries = () => {

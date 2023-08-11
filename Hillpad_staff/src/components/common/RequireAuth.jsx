@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Navigate, useLocation } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
-import config from "../../config.json";
+import config from "../../config";
 
 
 const RequireAuth = ({ children }) => {

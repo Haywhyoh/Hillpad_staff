@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import userService from "../services/api/userService";
-import config from "../config.json";
+import config from "../config";
 
 const AuthContext = React.createContext();
 

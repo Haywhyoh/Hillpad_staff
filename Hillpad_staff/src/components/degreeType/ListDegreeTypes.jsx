@@ -4,8 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import degreeTypeService from "../../services/api/degreeTypeService";
 import Paginator from "../common/Paginator";
-import config from "../../config.json";
-
+import config from "../../config";
 
 const DegreeTypes = () => {
     

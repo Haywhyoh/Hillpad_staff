@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import schoolService from '../../services/api/schoolService';
 import Paginator from "../common/Paginator";
-import config from "../../config.json";
+import config from '../../config';
 import Error405 from "../errorPages/Error405";
 
 
