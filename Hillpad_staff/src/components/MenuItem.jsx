@@ -18,6 +18,7 @@ class MenuItem extends Component {
                             {entryName}&nbsp;
                             {
                                 badge &&
+                                badge > 0 &&
                                 <span className="badge bg-label-danger rounded-pill">{badge}</span>
                             }
                         </div>

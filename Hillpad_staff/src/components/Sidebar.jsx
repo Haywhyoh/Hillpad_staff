@@ -4,6 +4,9 @@ import useAuth from "../hooks/useAuth";
 
 import courseService from '../services/api/courseService';
 import schoolService from '../services/api/schoolService';
+import disciplineService from '../services/api/disciplineService';
+import degreeTypeService from '../services/api/degreeTypeService';
+import countryService from '../services/api/countryService';
 
 import MenuItem from './MenuItem.jsx';
 
@@ -17,6 +20,9 @@ const Sidebar = () => {
 
     const [courseActions, setCourseActions] = useState(0);
     const [schoolActions, setSchoolActions] = useState(0);
+    const [disciplineActions, setDisciplineActions] = useState(0);
+    const [degreeTypeActions, setDegreeTypeActions] = useState(0);
+    const [countryActions, setCountryActions] = useState(0);
 
     useEffect(() => {
         async function fetchActionsStats() {
@@ -25,7 +31,7 @@ const Sidebar = () => {
                 let status;
                 if (user.role === "SUPERVISOR") status = "REVIEW";
                 else if (user.role === "ADMIN") status = "APPROVED";
-                const pageQuery = `status=${status}`;
+                let pageQuery = `status=${status}`;
 
                 let response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
@@ -35,6 +41,25 @@ const Sidebar = () => {
                 response = await schoolService.getSchoolDrafts(pageQuery);
                 if (response.status === 200) {
                     setSchoolActions(response.data.count);
+                }
+
+                if (user.role === "ADMIN") {
+                    pageQuery = "status=REVIEW";
+
+                    response = await disciplineService.getDisciplineDrafts(pageQuery);
+                    if (response.status === 200) {
+                        setDisciplineActions(response.data.count);
+                    }
+
+                    response = await degreeTypeService.getDegreeTypeDrafts(pageQuery);
+                    if (response.status === 200) {
+                        setDegreeTypeActions(response.data.count);
+                    }
+
+                    response = await countryService.getCountryDrafts(pageQuery);
+                    if (response.status === 200) {
+                        setCountryActions(response.data.count);
+                    }
                 }
             } catch (ex) {
                 if (ex.response.status === 401) {
@@ -95,6 +120,15 @@ const Sidebar = () => {
                             </li>
                             <MenuItem entryName="Course Reviews" badge={`${courseActions}`} entryURL="/course/reviews" entryIcon="bx-book-open" />
                             <MenuItem entryName="School Reviews" badge={`${schoolActions}`} entryURL="/school/reviews" entryIcon="bxs-school" />
+
+                            {
+                                user.role === "ADMIN" &&
+                                <>
+                                    <MenuItem entryName="Discipline Reviews" badge={`${disciplineActions}`} entryURL="/discipline/reviews" entryIcon="bx-cabinet" />
+                                    <MenuItem entryName="Degree Reviews" badge={`${degreeTypeActions}`} entryURL="/degree-type/reviews" entryIcon="bxs-graduation" />
+                                    <MenuItem entryName="Country Reviews" badge={`${countryActions}`} entryURL="/country/reviews" entryIcon="bx-globe" />
+                                </>
+                            }
                         </>
                     }
 
