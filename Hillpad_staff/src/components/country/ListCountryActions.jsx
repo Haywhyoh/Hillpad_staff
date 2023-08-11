@@ -5,9 +5,10 @@ import useAuth from '../../hooks/useAuth';
 import countryService from '../../services/api/countryService';
 import Paginator from "../common/Paginator";
 import config from '../../config';
+import Error405 from "../errorPages/Error405";
 
 
-const ListCountries = () => {
+const ListCountryActions = () => {
     
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,14 +21,6 @@ const ListCountries = () => {
     let location = useLocation();
     let navigate = useNavigate();
     let auth = useAuth();
-
-    const statusClass = {
-        "PUBLISHED": "bg-label-success",
-        "APPROVED": "bg-label-info",
-        "REJECTED": "bg-label-danger",
-        "REVIEW": "bg-label-warning",
-        "SAVED": "bg-label-secondary"
-    }
 
     const continentMap = {
         "AF": "Africa",
@@ -42,7 +35,9 @@ const ListCountries = () => {
     useEffect(() => {
         async function fetchCountries() {
             try {
-                const pageQuery = `page=${currentPage}`;
+                setLoading(true);
+
+                const pageQuery = `status=REVIEW&page=${currentPage}`;
                 const response = await countryService.getCountryDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -61,6 +56,12 @@ const ListCountries = () => {
         }
         fetchCountries();
     }, [currentPage, dataCount, location, navigate, pageSize]);
+
+    if (auth.user && auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     function renderCountries() {
         if (loading) {
@@ -103,38 +104,19 @@ const ListCountries = () => {
                     {countries.map(country => (
                         <tr key={country.id}>
                             <td>
-                                <i className="fab fa-angular fa-lg text-danger me-3"></i>
-                                <strong>{country.name}</strong>
+                                <Link to={`/country/review/${country.id}`}>
+                                    <i className="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>{country.name}</strong>
+                                </Link>
                             </td>
                             <td>{continentMap[country.continent]}</td>
                             <td>
                                 325
                             </td>
                             <td>
-                                <span className={`badge ${statusClass[country.status]} me-1`}>
-                                    {country.status}
+                                <span className={`badge bg-label-info me-1`}>
+                                    {country.author.first_name} {country.author.last_name}
                                 </span>
-                            </td>
-                            <td>
-                                <div className="dropdown">
-                                    <button
-                                        type="button"
-                                        className="btn p-0 dropdown-toggle hide-arrow"
-                                        data-bs-toggle="dropdown"
-                                    >
-                                        <i className="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div className="dropdown-menu">
-                                        <Link className="dropdown-item" to={`edit/${country.id}`}>
-                                            <i className="bx bx-edit-alt me-1"></i>
-                                            Edit
-                                        </Link>
-                                        <Link className="dropdown-item" to="https://hillpad.vercel.app">
-                                            <i className="bx bx-window me-1"></i>
-                                            View live
-                                        </Link>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                     ))}
@@ -147,17 +129,7 @@ const ListCountries = () => {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Countries</h4>
-                    {   
-                        auth.user &&
-                        auth.user.role === "SUPERVISOR" &&
-                        <Link to="create">
-                            <button type="button" className="btn btn-secondary mb-4">
-                                <span className="tf-icons bx bx-plus"></span>&nbsp;
-                                Add Country
-                            </button>
-                        </Link>
-                    }
+                    <h4 className="fw-bold py-3 mb-4">Country Reviews</h4>
                 </div>
 
                 <div className="card">
@@ -183,7 +155,6 @@ const ListCountries = () => {
                                     <th>Country</th>
                                     <th>Continent</th>
                                     <th>Number of schools</th>
-                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -204,4 +175,4 @@ const ListCountries = () => {
     );
 }
  
-export default ListCountries;
+export default ListCountryActions;
