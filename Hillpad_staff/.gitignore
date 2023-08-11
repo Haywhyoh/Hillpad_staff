@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .eslintrc.cjs
+
+# Environment variable files
+.env

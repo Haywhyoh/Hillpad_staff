@@ -1,8 +1,8 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/country`;
 
+const apiEndPoint = `${config.apiBaseURL}/academics/country`;
 
 // Country routes
 function getCountries(query="") {

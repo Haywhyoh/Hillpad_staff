@@ -1,7 +1,7 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/language`;
+const apiEndPoint = `${config.apiBaseURL}/academics/language`;
 
 
 function getLanguages() {

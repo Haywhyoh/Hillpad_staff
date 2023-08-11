@@ -1,7 +1,7 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/school`;
+const apiEndPoint = `${config.apiBaseURL}/academics/school`;
 
 // School routes
 function getSchools(query="") {

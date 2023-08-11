@@ -1,7 +1,7 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/programme_type`;
+const apiEndPoint = `${config.apiBaseURL}/academics/programme_type`;
 
 function getProgrammeTypes() {
     const url = `${apiEndPoint}/list`;

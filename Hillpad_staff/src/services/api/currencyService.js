@@ -1,7 +1,7 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/currency`;
+const apiEndPoint = `${config.apiBaseURL}/academics/currency`;
 
 
 function getCurrencies() {

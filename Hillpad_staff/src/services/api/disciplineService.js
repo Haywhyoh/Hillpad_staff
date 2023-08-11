@@ -1,7 +1,7 @@
 import http from "../httpService";
-import config from "../../config.json";
+import config from "../../config";
 
-const apiEndPoint = `${config.apiURL}/academics/discipline`;
+const apiEndPoint = `${config.apiBaseURL}/academics/discipline`;
 
 // Discipline routes
 function getDisciplines(query="") {
