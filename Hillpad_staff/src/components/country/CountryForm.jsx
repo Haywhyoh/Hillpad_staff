@@ -99,9 +99,9 @@ class CountryForm extends Component {
                 caption: country.caption,
                 continent: country.continent,
                 capital: country.capital,
-                population: country.population,
-                students: country.students,
-                internationalStudents: country.international_students,
+                population: country.population > 0? country.population : "",
+                students: country.students > 0? country.students: "",
+                internationalStudents: country.international_students > 0? country.international_students : "",
                 currency: country.currency.id,
                 about: country.about,
                 aboutWikiLink: country.about_wiki_link,
@@ -136,7 +136,6 @@ class CountryForm extends Component {
                 const { countryID } = this.props;
     
                 let response = await countryService.getCountryDraft(countryID);
-                
                 if (response.status === 200) {
                     const country = response.data;
                     this.setState({ country: response });
@@ -186,38 +185,52 @@ class CountryForm extends Component {
 
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
-        const data = this.mapToCountryModel(this.state.formData);
-        try {
-            let initialResponse;
-            if (action === "create") {
-                initialResponse = await countryService.createCountryDraft(data);
-            } else if (action === "edit") {
-                initialResponse = await countryService.updateCountryDraft(this.props.countryID, data);
-            } else {
-                throw new Error("Unknown form action");
-            }
-
-            if (
-                ((initialResponse.status === 201 && action === "create") ||
-                (initialResponse.status === 200 && action === "edit")) &&
-                initialResponse.data
-            ) {
-                const submitResponse = await countryService.submitCountryDraft(initialResponse.data["id"]);
-                if (submitResponse.status === 200 && submitResponse.data) {
-                    console.log("Submitted");
+        if (action === "publish") {
+            try {
+                const response = await countryService.publishCountryDraft(this.props.countryID);
+                if (response.status === 200) {
+                    console.log("Published");
                     this.setState({ statusModal: "success" });
                 }
-                else {
-                    console.log("An error occured while trying to submit the country entry", submitResponse.status);
-                    this.setState({ statusModal: "error" })
-                }
-            } else {
-                console.log("An error occured while trying to create the country entry", initialResponse.status);
+            } catch (error) {
+                console.log(error);
                 this.setState({ statusModal: "error" });
             }
-        } catch (error) {
-            console.log(error);
-            this.setState({ statusModal: "error" });
+        }
+        else {
+            const data = this.mapToCountryModel(this.state.formData);
+            try {
+                let initialResponse;
+                if (action === "create") {
+                    initialResponse = await countryService.createCountryDraft(data);
+                } else if (action === "edit") {
+                    initialResponse = await countryService.updateCountryDraft(this.props.countryID, data);
+                } else {
+                    throw new Error("Unknown form action");
+                }
+    
+                if (
+                    ((initialResponse.status === 201 && action === "create") ||
+                    (initialResponse.status === 200 && action === "edit")) &&
+                    initialResponse.data
+                ) {
+                    const submitResponse = await countryService.submitCountryDraft(initialResponse.data["id"]);
+                    if (submitResponse.status === 200 && submitResponse.data) {
+                        console.log("Submitted");
+                        this.setState({ statusModal: "success" });
+                    }
+                    else {
+                        console.log("An error occured while trying to submit the country entry", submitResponse.status);
+                        this.setState({ statusModal: "error" })
+                    }
+                } else {
+                    console.log("An error occured while trying to create the country entry", initialResponse.status);
+                    this.setState({ statusModal: "error" });
+                }
+            } catch (error) {
+                console.log(error);
+                this.setState({ statusModal: "error" });
+            }
         }
     };
 
@@ -230,9 +243,9 @@ class CountryForm extends Component {
         formattedFormData.append("caption", data.caption);
         formattedFormData.append("continent", data.continent);
         formattedFormData.append("capital", data.capital);
-        formattedFormData.append("population", data.population);
-        formattedFormData.append("students", data.students);
-        formattedFormData.append("international_students", data.internationalStudents);
+        formattedFormData.append("population", data.population? data.population : -1);
+        formattedFormData.append("students", data.students? data.students : -1);
+        formattedFormData.append("international_students", data.internationalStudents? data.internationalStudents : -1);
         formattedFormData.append("currency", data.currency);
         formattedFormData.append("about", data.about);
         formattedFormData.append("about_wiki_link", data.aboutWikiLink);
@@ -284,6 +297,7 @@ class CountryForm extends Component {
     }
 
     renderModal = () => {
+        const { action } = this.props;
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -291,7 +305,14 @@ class CountryForm extends Component {
                         <div className="text-center mb-4">
                             <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
                             <h3>Awesome!</h3>
-                            <p>Country was submitted successfully.</p>
+                            {
+                                action === "publish" &&
+                                <p>Country has been published.</p>
+                            }
+                            {
+                                (action === "create" || action === "edit") &&
+                                <p>Country was submitted successfully.</p>
+                            }
                         </div>
                         <div className="d-grid gap-2">
                             <Button variant="success" onClick={() => {
@@ -379,6 +400,38 @@ class CountryForm extends Component {
             </Modal.Body>
         );
 
+    };
+
+    renderSubmit = () => {
+        const { action } = this.props;
+        if (action === "publish") {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            type="submit"
+                            className="btn btn-success"
+                        >
+                            Publish
+                        </button>
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            disabled={this.validateForm()}
+                            type="submit"
+                            className="btn btn-primary"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </>
+            );
+        }
     };
 
     render() {
@@ -545,21 +598,8 @@ class CountryForm extends Component {
                                 </div>
                             </div>
 
-                            <div className="mt-4 text-end">
-                                {/* <button
-                                    type="submit"
-                                    className="btn btn-dark me-2"
-                                >
-                                    Save and submit later
-                                </button> */}
-                                <button
-                                    disabled={this.validateForm()}
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Submit
-                                </button>
-                            </div>
+                            {this.renderSubmit()}
+
                         </form>
                     </div>
                 </div>

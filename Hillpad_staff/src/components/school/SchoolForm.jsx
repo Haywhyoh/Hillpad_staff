@@ -191,12 +191,10 @@ class SchoolForm extends Component {
     validateRejection = () => {
         const { rejectReason } = this.state;
         return rejectReason.trim() === "";
-    }
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
-
-        console.log(e);
         
         const errors = this.validateForm();
         this.setState({ errors: errors || {} });
