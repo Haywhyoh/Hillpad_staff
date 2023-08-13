@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import useAuth from '../../hooks/useAuth';
-import countryService from '../../services/api/countryService';
+import useAuth from "../../hooks/useAuth";
+import disciplineService from "../../services/api/disciplineService";
 import Paginator from "../common/Paginator";
-import config from '../../config';
+import config from "../../config";
 import Error405 from "../errorPages/Error405";
 
 
-const ListCountryActions = () => {
+function ListDisciplineActions() {
     
-    const [countries, setCountries] = useState([]);
+    const [disciplines, setDisciplines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
@@ -22,27 +22,17 @@ const ListCountryActions = () => {
     let navigate = useNavigate();
     let auth = useAuth();
 
-    const continentMap = {
-        "AF": "Africa",
-        "AS": "Asia",
-        "EU": "Europe",
-        "NA": "North America",
-        "SA": "South America",
-        "OC": "Oceania",
-        "AN": "Antarctica"
-    }
-
     useEffect(() => {
-        async function fetchCountries() {
+        async function fetchDisciplines() {
             try {
                 setLoading(true);
 
                 const pageQuery = `status=REVIEW&page=${currentPage}`;
-                const response = await countryService.getCountryDrafts(pageQuery);
+                const response = await disciplineService.getDisciplineDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
-                    setCountries(response.data.results);
+                    setDisciplines(response.data.results);
                 }
             } catch (ex) {
                 if (ex.response.status === 401) {
@@ -54,7 +44,7 @@ const ListCountryActions = () => {
             }
             setLoading(false);
         }
-        fetchCountries();
+        fetchDisciplines();
     }, [currentPage, dataCount, location, navigate, pageSize]);
 
     if (auth.user && auth.user.role !== "ADMIN") {
@@ -63,7 +53,7 @@ const ListCountryActions = () => {
         );
     }
 
-    function renderCountries() {
+    function renderDisciplines() {
         if (loading) {
             return (
                 <tr>
@@ -90,46 +80,42 @@ const ListCountryActions = () => {
                 </tr>
             )
         }
-        else if (countries.length === 0 && !loading) {
-            return (
-                <tr>
-                    <td>
-                        <h5 className="mx-4 my-3 text-danger">No countries.</h5>
-                    </td>
-                </tr>
-            );
+        else if (disciplines.length === 0 && !loading) {
+            return <h5 className="mx-4 my-3 text-danger">No disciplines found.</h5>
         } else {
             return (
                 <>
-                    {countries.map(country => (
-                        <tr key={country.id}>
+                    {disciplines.map(discipline => (
+                        <tr key={discipline.id}>
                             <td>
-                                <Link to={`/country/review/${country.id}`}>
+                                <Link to={`/discipline/review/${discipline.id}`}>
                                     <i className="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>{country.name}</strong>
+                                    <strong>{discipline.name}</strong>
                                 </Link>
                             </td>
-                            <td>{continentMap[country.continent]}</td>
                             <td>
-                                325
+                                23,450
                             </td>
                             <td>
                                 <span className={`badge bg-label-info me-1`}>
-                                    {country.author.first_name} {country.author.last_name}
+                                    {console.log(discipline.author)}
+                                    {discipline.author.first_name} {discipline.author.last_name}
                                 </span>
                             </td>
                         </tr>
+                    
                     ))}
                 </>
             )
         }
     }
 
+
     return (
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Country Reviews</h4>
+                    <h4 className="fw-bold py-3 mb-4">Disciplines</h4>
                 </div>
 
                 <div className="card">
@@ -152,14 +138,15 @@ const ListCountryActions = () => {
                         <table className="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Country</th>
-                                    <th>Continent</th>
-                                    <th>Number of schools</th>
+                                    <th>Discipline</th>
+                                    <th>Number of Courses</th>
                                     <th>Author</th>
                                 </tr>
                             </thead>
                             <tbody className="table-border-bottom-0">
-                                {renderCountries()}
+
+                                {renderDisciplines()}
+
                             </tbody>
                         </table>
                     </div>
@@ -170,9 +157,12 @@ const ListCountryActions = () => {
                         setCurrentPage={setCurrentPage}
                     />
                 </div>
+                
             </div>
+
         </>
     );
+    
 }
- 
-export default ListCountryActions;
+
+export default ListDisciplineActions;
