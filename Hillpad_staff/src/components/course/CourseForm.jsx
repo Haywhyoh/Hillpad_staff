@@ -162,7 +162,9 @@ class CourseForm extends Component {
             }
             
             // Get schools
-            let { data } = await schoolService.getSchools();
+            // Set the page size to a very large number so all schools are listed in dropdown
+            // Inefficient but temporary fix
+            let { data } = await schoolService.getSchools("page_size=1000000");
             const schools = data.results.map((item) => ({
                 value: item.id,
                 name: item.name,
