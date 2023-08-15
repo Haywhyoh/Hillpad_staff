@@ -164,7 +164,7 @@ class SchoolForm extends Component {
             }
             
             // Get countries
-            let { data } = await countryService.getCountries();
+            let { data } = await countryService.getCountries("page_size=300");
             const countries = data.results.map((item) => ({
                 value: item.id,
                 name: item.name,
