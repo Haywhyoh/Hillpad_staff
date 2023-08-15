@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import DisciplineForm from "./DisciplineForm";
+import CurrencyForm from "./CurrencyForm";
 import Error405 from "../errorPages/Error405";
 
 
-function CreateDiscipline() {
+function CreateCurrency() {
     let auth = useAuth();
     if (auth.user && auth.user.role !== "SUPERVISOR") {
         return (
@@ -16,7 +16,7 @@ function CreateDiscipline() {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Create Discipline</h4>
+                    <h4 className="fw-bold py-3 mb-4">Create Currency Entry</h4>
                     <Link to="..">
                         <button
                             type="button"
@@ -28,7 +28,7 @@ function CreateDiscipline() {
                     </Link>
                 </div>
 
-                <DisciplineForm formTitle="Create a new discipline" action="create" />
+                <CurrencyForm formTitle="Create a new currency entry" action="create" />
 
                 
             </div>
@@ -36,4 +36,4 @@ function CreateDiscipline() {
     );
 }
 
-export default CreateDiscipline;
+export default CreateCurrency;

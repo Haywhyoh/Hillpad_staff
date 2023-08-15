@@ -28,7 +28,7 @@ function CreateDegreeType() {
                     </Link>
                 </div>
 
-                <DegreeTypeForm formTitle="Create a new degree type" />
+                <DegreeTypeForm formTitle="Create a new degree type" action="create" />
 
                 
             </div>
