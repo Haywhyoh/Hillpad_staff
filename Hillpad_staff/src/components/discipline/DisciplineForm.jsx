@@ -74,7 +74,6 @@ class DisciplineForm extends Component {
 
     loadData = async () => {
         try {
-
             if ("disciplineID" in this.props) {
                 const { disciplineID } = this.props;
 
@@ -153,11 +152,11 @@ class DisciplineForm extends Component {
                         this.setState({ statusModal: "success" });
                     }
                     else {
-                        console.log("An error occured while trying to submit the course", submitResponse.status);
+                        console.log("An error occured while trying to submit the discipline", submitResponse.status);
                         this.setState({ statusModal: "error" });
                     }
                 } else {
-                    console.log("An error occured while trying to create the course", initialResponse.status);
+                    console.log("An error occured while trying to create the discipline", initialResponse.status);
                     this.setState({ statusModal: "error" });
                 }
             } catch (error) {

@@ -18,47 +18,139 @@ class DegreeTypeForm extends Component {
             shortName: "",
             programmeType: ""
         },
+        errors: {},
+
         programmeTypes: [],
 
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+
+        degreeType: {},
+    };
+
+    setFormState = (degreeType) => {
+
+        return {
+            name: degreeType.name,
+            shortName: degreeType.short_name,
+            programmeType: degreeType.programme_type.id
+        };
     };
 
     async componentDidMount() {
-        // Get currencies
-        let { data } = await programmeTypeService.getProgrammeTypes();
-        const programmeTypes = data.results.map((item) => ({
-            name: item.name,
-            value: item.id,
-        }));
-        this.setState({ programmeTypes });
+        this.setState({ statusModal: "fetching", showStatusModal: true });
+        this.loadData()
+        .then(() => {
+            this.setState({ showStatusModal: false });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ statusModal: "errorFetching" });
+        });
     }
+
+    loadData = async () => {
+        try {
+            if ("degreeTypeID" in this.props) {
+                const { degreeTypeID } = this.props;
+                
+                let response = await degreeTypeService.getDegreeTypeDraft(degreeTypeID);
+                if (response.status === 200) {
+                    console.log(response.data);
+                    const degreeType = response.data;
+                    this.setState({ degreeType: response });
+                    const formData = this.setFormState(degreeType);
+                    this.setState({ formData });
+                }
+
+            }
+
+            // Get Programme Types
+            let { data } = await programmeTypeService.getProgrammeTypes();
+            const programmeTypes = data.results.map((item) => ({
+                name: item.name,
+                value: item.id,
+            }));
+            this.setState({ programmeTypes });
+        } catch (error) {
+            console.log(error);
+            throw new Error(error);
+        }
+
+    };
+
+    validateForm = () => {
+        const errors = {};
+
+        const { formData } = this.state;
+        if (formData.name === "") errors["name"] = "Course name must not be empty";
+        if (formData.shortName === "") errors["shortName"] = "Short Name must not be empty";
+        if (formData.programmeType === "") errors["programmeType"] = "You must select a programme type";
+
+        return Object.keys(errors).length === 0 ? null : errors;
+    };
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
+        const errors = this.validateForm();
+        this.setState({ errors: errors || {} });
+
+        if (errors) {
+            console.log(errors);
+            return;
+        }
+
+        const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
-        const data = this.mapToDegreeTypeModel(this.state.formData);
-        try {
-            const createResponse = await degreeTypeService.createDegreeTypeDraft(data);
-            if (createResponse.status === 201 && createResponse.data) {
-                const submitResponse = await degreeTypeService.submitDegreeTypeDraft(createResponse.data["id"]);
-                if (submitResponse.status === 200 && submitResponse.data) {
-                    console.log("Submitted");
+
+        if (action === "publish") {
+            try {
+                const response = await degreeTypeService.publishDegreeTypeDraft(this.props.degreeTypeID);
+                if (response.status === 200) {
+                    console.log("Published");
                     this.setState({ statusModal: "success" });
                 }
-                else {
-                    console.log("An error occured while trying to submit the degree type", submitResponse.status);
-                    this.setState({ statusModal: "error" })
-                }
-            } else {
-                console.log("An error occured while trying to create the degree type", createResponse.status);
+            } catch (error) {
+                console.log(error);
                 this.setState({ statusModal: "error" });
             }
-        } catch (error) {
-            console.log(error);
-            this.setState({ statusModal: "error" });
+        }
+        else {
+            const data = this.mapToDegreeTypeModel(this.state.formData);
+            try {
+                let initialResponse;
+                if (action === "create") {
+                    initialResponse = await degreeTypeService.createDegreeTypeDraft(data);
+                } else if (action === "edit") {
+                    initialResponse = await degreeTypeService.updateDegreeTypeDraft(this.props.degreeTypeID, data);
+                } else {
+                    throw new Error("Unknown form action");
+                }
+    
+                if (
+                    ((initialResponse.status === 201 && action === "create") ||
+                    (initialResponse.status === 200 && action === "edit")) &&
+                    initialResponse.data
+                ) {
+                    const submitResponse = await degreeTypeService.submitDegreeTypeDraft(initialResponse.data["id"]);
+                    if (submitResponse.status === 200 && submitResponse.data) {
+                        console.log("Submitted");
+                        this.setState({ statusModal: "success" });
+                    }
+                    else {
+                        console.log("An error occured while trying to submit the degree type", submitResponse.status);
+                        this.setState({ statusModal: "error" });
+                    }
+                } else {
+                    console.log("An error occured while trying to create the degree type", initialResponse.status);
+                    this.setState({ statusModal: "error" });
+                }
+            } catch (error) {
+                console.log(error);
+                this.setState({ statusModal: "error" });
+            }
         }
     };
 
@@ -80,6 +172,7 @@ class DegreeTypeForm extends Component {
     };
 
     renderModal = () => {
+        const { action } = this.props;
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -87,7 +180,14 @@ class DegreeTypeForm extends Component {
                         <div className="text-center mb-4">
                             <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
                             <h3>Awesome!</h3>
-                            <p>Degree type was submitted successfully.</p>
+                            {
+                                action === "publish" &&
+                                <p>Degree Type has been published.</p>
+                            }
+                            {
+                                (action === "create" || action === "edit") &&
+                                <p>Degree Type was submitted successfully.</p>
+                            }
                         </div>
                         <div className="d-grid gap-2">
                             <Button variant="success" onClick={() => {
@@ -99,7 +199,16 @@ class DegreeTypeForm extends Component {
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/degree-type" />}
+                    {
+                        this.state.modalRedirect && 
+                        action !== "publish" &&
+                        <Navigate to="/degree-type" />
+                    }
+                    {
+                        this.state.modalRedirect && 
+                        action === "publish" &&
+                        <Navigate to="/degree-type/reviews" />
+                    }
                 </>
             );
         }
@@ -127,6 +236,45 @@ class DegreeTypeForm extends Component {
                 </>
             )
         }
+
+        else if (this.state.statusModal === "fetching") {
+            return (
+                <Modal.Body>
+                    <div className="text-center">
+                        <Spinner variant="warning" animation="border" role="status" size="lg">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                    <p>Fetching data</p>
+                </Modal.Body>
+            );
+        }
+
+        else if (this.state.statusModal === "errorFetching") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Could not fetch data</h3>
+                            <p>An error occured while trying to fetch the data.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    this.setState({ showStatusModal: false });
+                                    this.setState({ modalRedirect: true });
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {this.state.modalRedirect && <Navigate to="/degree-type" />}
+                </>
+            );
+        }
         
         return (
             <Modal.Body>
@@ -138,9 +286,41 @@ class DegreeTypeForm extends Component {
 
     };
 
+    renderSubmit = () => {
+        const { action } = this.props;
+        if (action === "publish") {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            type="submit"
+                            className="btn btn-success"
+                        >
+                            Publish
+                        </button>
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            disabled={this.validateForm()}
+                            type="submit"
+                            className="btn btn-primary"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </>
+            );
+        }
+    };
+
     render() {
         const { formTitle } = this.props;
-        const { formData, programmeTypes, showStatusModal } = this.state;
+        const { formData, errors, programmeTypes, showStatusModal } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -156,6 +336,7 @@ class DegreeTypeForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder="e.g. Bachelor of Science"
                                 required={true}
+                                error={errors.name}
                             />
                             <Input
                                 name="shortName"
@@ -163,6 +344,7 @@ class DegreeTypeForm extends Component {
                                 value={formData.shortName}
                                 onChange={this.handleChange}
                                 placeholder="e.g. B.Sc."
+                                error={errors.shortName}
                                 required={true}
                             />
                             <Select
@@ -171,22 +353,11 @@ class DegreeTypeForm extends Component {
                                 value={formData.programmeType}
                                 onChange={this.handleChange}
                                 options={programmeTypes}
+                                required={true}
                             />
 
-                            <div className="mt-4 text-end">
-                                <button
-                                    type="submit"
-                                    className="btn btn-dark me-2"
-                                >
-                                    Save and submit later
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Submit now
-                                </button>
-                            </div>
+                            {this.renderSubmit()}
+
                         </form>
                     </div>
                 </div>

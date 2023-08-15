@@ -79,7 +79,13 @@ const DegreeTypes = () => {
             )
         }
         else if (degreeTypes.length === 0 && !loading) {
-            return <h5 className="mx-4 my-3 text-danger">No degree types.</h5>
+            return (
+                <tr>
+                    <td>
+                        <h5 className="mx-4 my-3 text-danger">No degree types.</h5>
+                    </td>
+                </tr>
+            );
         } else {
             return (
                 <>
@@ -108,21 +114,14 @@ const DegreeTypes = () => {
                                         <i className="bx bx-dots-vertical-rounded"></i>
                                     </button>
                                     <div className="dropdown-menu">
-                                        <a
-                                            className="dropdown-item"
-                                            href="{% url 'staff_degree_type_detail' 1 %}"
-                                        >
+                                        <Link className="dropdown-item" to={`edit/${degreeType.id}`}>
                                             <i className="bx bx-edit-alt me-1"></i>
                                             Edit
-                                        </a>
-                                        <a
-                                            className="dropdown-item"
-                                            href="{% url 'courses_listing' %}"
-                                            target="_blank"
-                                        >
+                                        </Link>
+                                        <Link className="dropdown-item" to="https://hillpad.vercel.app">
                                             <i className="bx bx-window me-1"></i>
                                             View live
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </td>
