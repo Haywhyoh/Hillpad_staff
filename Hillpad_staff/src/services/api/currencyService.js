@@ -1,7 +1,7 @@
 import http from "../httpService";
 import config from "../../config";
 
-const apiEndPoint = `${config.apiBaseURL}/academics/currrency`;
+const apiEndPoint = `${config.apiBaseURL}/academics/currency`;
 
 // Currency routes
 function getCurrencies(query="") {
