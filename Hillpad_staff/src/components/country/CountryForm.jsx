@@ -185,6 +185,7 @@ class CountryForm extends Component {
 
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
+
         if (action === "publish") {
             try {
                 const response = await countryService.publishCountryDraft(this.props.countryID);
@@ -324,7 +325,16 @@ class CountryForm extends Component {
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/country" />}
+                    {
+                        this.state.modalRedirect && 
+                        action !== "publish" &&
+                        <Navigate to="/country" />
+                    }
+                    {
+                        this.state.modalRedirect && 
+                        action === "publish" &&
+                        <Navigate to="/country/reviews" />
+                    }
                 </>
             );
         }

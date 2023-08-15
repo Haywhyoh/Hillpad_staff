@@ -24,7 +24,7 @@ const EditDiscipline = () => {
                     </Link>
                 </div>
 
-                <DisciplineForm formTitle="Edit discipline" disciplineID={disciplineID} action="edit" />
+                <DisciplineForm formTitle="Publish discipline" disciplineID={disciplineID} action="publish" />
 
             </div>
         </>

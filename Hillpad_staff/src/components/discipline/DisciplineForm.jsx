@@ -117,38 +117,53 @@ class DisciplineForm extends Component {
 
         const { action } = this.props;
         this.setState({ statusModal: "loading", showStatusModal: true });
-        const data = this.mapToDisciplineModel(this.state.formData);
-        try {
-            let initialResponse;
-            if (action === "create") {
-                initialResponse = await disciplineService.createDisciplineDraft(data);
-            } else if (action === "edit") {
-                initialResponse = await disciplineService.updateDisciplineDraft(this.props.disciplineID, data);
-            } else {
-                throw new Error("Unknown form action");
-            }
 
-            if (
-                ((initialResponse.status === 201 && action === "create") ||
-                (initialResponse.status === 200 && action === "edit")) &&
-                initialResponse.data
-            ) {
-                const submitResponse = await disciplineService.submitDiscplineDraft(initialResponse.data["id"]);
-                if (submitResponse.status === 200 && submitResponse.data) {
-                    console.log("Submitted");
+        if (action === "publish") {
+            try {
+                const response = await disciplineService.publishDisciplineDraft(this.props.disciplineID);
+                if (response.status === 200) {
+                    console.log("Published");
                     this.setState({ statusModal: "success" });
                 }
-                else {
-                    console.log("An error occured while trying to submit the course", submitResponse.status);
-                    this.setState({ statusModal: "error" });
-                }
-            } else {
-                console.log("An error occured while trying to create the course", initialResponse.status);
+            } catch (error) {
+                console.log(error);
                 this.setState({ statusModal: "error" });
             }
-        } catch (error) {
-            console.log(error);
-            this.setState({ statusModal: "error" });
+        }
+        else {
+            const data = this.mapToDisciplineModel(this.state.formData);
+            try {
+                let initialResponse;
+                if (action === "create") {
+                    initialResponse = await disciplineService.createDisciplineDraft(data);
+                } else if (action === "edit") {
+                    initialResponse = await disciplineService.updateDisciplineDraft(this.props.disciplineID, data);
+                } else {
+                    throw new Error("Unknown form action");
+                }
+    
+                if (
+                    ((initialResponse.status === 201 && action === "create") ||
+                    (initialResponse.status === 200 && action === "edit")) &&
+                    initialResponse.data
+                ) {
+                    const submitResponse = await disciplineService.submitDiscplineDraft(initialResponse.data["id"]);
+                    if (submitResponse.status === 200 && submitResponse.data) {
+                        console.log("Submitted");
+                        this.setState({ statusModal: "success" });
+                    }
+                    else {
+                        console.log("An error occured while trying to submit the course", submitResponse.status);
+                        this.setState({ statusModal: "error" });
+                    }
+                } else {
+                    console.log("An error occured while trying to create the course", initialResponse.status);
+                    this.setState({ statusModal: "error" });
+                }
+            } catch (error) {
+                console.log(error);
+                this.setState({ statusModal: "error" });
+            }
         }
     };
 
@@ -178,6 +193,7 @@ class DisciplineForm extends Component {
     }
 
     renderModal = () => {
+        const { action } = this.props;
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -185,7 +201,14 @@ class DisciplineForm extends Component {
                         <div className="text-center mb-4">
                             <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
                             <h3>Awesome!</h3>
-                            <p>Discipline was submitted successfully.</p>
+                            {
+                                action === "publish" &&
+                                <p>Discipline has been published.</p>
+                            }
+                            {
+                                (action === "create" || action === "edit") &&
+                                <p>Discipline was submitted successfully.</p>
+                            }
                         </div>
                         <div className="d-grid gap-2">
                             <Button variant="success" onClick={() => {
@@ -197,7 +220,16 @@ class DisciplineForm extends Component {
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/discipline" />}
+                    {
+                        this.state.modalRedirect && 
+                        action !== "publish" &&
+                        <Navigate to="/discipline" />
+                    }
+                    {
+                        this.state.modalRedirect && 
+                        action === "publish" &&
+                        <Navigate to="/discipline/reviews" />
+                    }
                 </>
             );
         }
@@ -260,7 +292,7 @@ class DisciplineForm extends Component {
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/course" />}
+                    {this.state.modalRedirect && <Navigate to="/discipline" />}
                 </>
             );
         }
@@ -272,6 +304,38 @@ class DisciplineForm extends Component {
                 </Spinner>
             </Modal.Body>
         );
+    };
+
+    renderSubmit = () => {
+        const { action } = this.props;
+        if (action === "publish") {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            type="submit"
+                            className="btn btn-success"
+                        >
+                            Publish
+                        </button>
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <div className="mt-4 text-end">
+                        <button
+                            disabled={this.validateForm()}
+                            type="submit"
+                            className="btn btn-primary"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </>
+            );
+        }
     };
 
     render() {
@@ -326,21 +390,8 @@ class DisciplineForm extends Component {
                                 error={errors.iconColor}
                             />
 
-                            <div className="mt-4 text-end">
-                                {/* <button
-                                    type="submit"
-                                    className="btn btn-dark me-2"
-                                >
-                                    Save and submit later
-                                </button> */}
-                                <button
-                                    disabled={this.validateForm()}
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Submit
-                                </button>
-                            </div>
+                            {this.renderSubmit()}
+                            
                         </form>
                     </div>
                 </div>
