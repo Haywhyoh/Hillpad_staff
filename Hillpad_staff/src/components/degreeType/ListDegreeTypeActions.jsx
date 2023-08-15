@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
-import disciplineService from "../../services/api/disciplineService";
+import degreeTypeService from "../../services/api/degreeTypeService";
 import Paginator from "../common/Paginator";
 import config from "../../config";
 import Error405 from "../errorPages/Error405";
 
 
-function ListDisciplineActions() {
+const ListDegreeTypeActions = () => {
     
-    const [disciplines, setDisciplines] = useState([]);
+    const [degreeTypes, setDegreeTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
@@ -23,16 +23,16 @@ function ListDisciplineActions() {
     let auth = useAuth();
 
     useEffect(() => {
-        async function fetchDisciplines() {
+        async function fetchDegreeTypes() {
             try {
                 setLoading(true);
 
                 const pageQuery = `status=REVIEW&page=${currentPage}`;
-                const response = await disciplineService.getDisciplineDrafts(pageQuery);
+                const response = await degreeTypeService.getDegreeTypeDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
-                    setDisciplines(response.data.results);
+                    setDegreeTypes(response.data.results);
                 }
             } catch (ex) {
                 if (ex.response.status === 401) {
@@ -44,7 +44,7 @@ function ListDisciplineActions() {
             }
             setLoading(false);
         }
-        fetchDisciplines();
+        fetchDegreeTypes();
     }, [currentPage, dataCount, location, navigate, pageSize]);
 
     if (auth.user && auth.user.role !== "ADMIN") {
@@ -53,7 +53,7 @@ function ListDisciplineActions() {
         );
     }
 
-    function renderDisciplines() {
+    function renderDegreeType() {
         if (loading) {
             return (
                 <tr>
@@ -80,7 +80,7 @@ function ListDisciplineActions() {
                 </tr>
             )
         }
-        else if (disciplines.length === 0 && !loading) {
+        else if (degreeTypes.length === 0 && !loading) {
             return (
                 <tr>
                     <td>
@@ -91,21 +91,24 @@ function ListDisciplineActions() {
         } else {
             return (
                 <>
-                    {disciplines.map(discipline => (
-                        <tr key={discipline.id}>
+                    {degreeTypes.map(degreeType => (
+                        <tr key={degreeType.id}>
                             <td>
-                                <Link to={`/discipline/review/${discipline.id}`}>
+                                <Link to={`/degreeType/review/${degreeType.id}`}>
                                     <i className="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <strong>{discipline.name}</strong>
+                                    <strong>{degreeType.name}</strong>
                                 </Link>
                             </td>
                             <td>
-                                23,450
+                                {degreeType.programme_type.name}
+                            </td>
+                            <td>
+                                34,298
                             </td>
                             <td>
                                 <span className={`badge bg-label-info me-1`}>
-                                    {console.log(discipline.author)}
-                                    {discipline.author.first_name} {discipline.author.last_name}
+                                    {console.log(degreeType.author)}
+                                    {degreeType.author.first_name} {degreeType.author.last_name}
                                 </span>
                             </td>
                         </tr>
@@ -121,7 +124,7 @@ function ListDisciplineActions() {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Disciplines</h4>
+                    <h4 className="fw-bold py-3 mb-4">Degree Types</h4>
                 </div>
 
                 <div className="card">
@@ -144,14 +147,15 @@ function ListDisciplineActions() {
                         <table className="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Discipline</th>
-                                    <th>Number of Courses</th>
+                                    <th>Degree Type</th>
+                                    <th>Programme Type</th>
+                                    <th>Number of courses</th>
                                     <th>Author</th>
                                 </tr>
                             </thead>
                             <tbody className="table-border-bottom-0">
-
-                                {renderDisciplines()}
+                                
+                                {renderDegreeType()}
 
                             </tbody>
                         </table>
@@ -163,12 +167,9 @@ function ListDisciplineActions() {
                         setCurrentPage={setCurrentPage}
                     />
                 </div>
-                
             </div>
-
         </>
     );
-    
 }
 
-export default ListDisciplineActions;
+export default ListDegreeTypeActions;

@@ -80,7 +80,13 @@ function ListDisciplines() {
             )
         }
         else if (disciplines.length === 0 && !loading) {
-            return <h5 className="mx-4 my-3 text-danger">No disciplines found.</h5>
+            return (
+                <tr>
+                    <td>
+                        <h5 className="mx-4 my-3 text-danger">No disciplines.</h5>
+                    </td>
+                </tr>
+            );
         } else {
             return (
                 <>

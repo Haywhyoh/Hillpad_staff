@@ -6,7 +6,7 @@ import degreeTypeService from "../../services/api/degreeTypeService";
 import Paginator from "../common/Paginator";
 import config from "../../config";
 
-const DegreeTypes = () => {
+const ListDegreeTypes = () => {
     
     const [degreeTypes, setDegreeTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -197,4 +197,4 @@ const DegreeTypes = () => {
     );
 }
 
-export default DegreeTypes;
+export default ListDegreeTypes;
