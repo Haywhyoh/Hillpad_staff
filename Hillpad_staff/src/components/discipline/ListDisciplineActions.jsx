@@ -104,7 +104,6 @@ function ListDisciplineActions() {
                             </td>
                             <td>
                                 <span className={`badge bg-label-info me-1`}>
-                                    {console.log(discipline.author)}
                                     {discipline.author.first_name} {discipline.author.last_name}
                                 </span>
                             </td>

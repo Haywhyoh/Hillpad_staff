@@ -94,7 +94,7 @@ const ListDegreeTypeActions = () => {
                     {degreeTypes.map(degreeType => (
                         <tr key={degreeType.id}>
                             <td>
-                                <Link to={`/degreeType/review/${degreeType.id}`}>
+                                <Link to={`/degree-type/review/${degreeType.id}`}>
                                     <i className="fab fa-angular fa-lg text-danger me-3"></i>
                                     <strong>{degreeType.name}</strong>
                                 </Link>
@@ -107,7 +107,6 @@ const ListDegreeTypeActions = () => {
                             </td>
                             <td>
                                 <span className={`badge bg-label-info me-1`}>
-                                    {console.log(degreeType.author)}
                                     {degreeType.author.first_name} {degreeType.author.last_name}
                                 </span>
                             </td>
