@@ -5,9 +5,10 @@ import useAuth from "../../hooks/useAuth";
 import currencyService from "../../services/api/currencyService";
 import Paginator from "../common/Paginator";
 import config from "../../config";
+import Error405 from "../errorPages/Error405";
 
 
-function ListCurrencies() {
+function ListCurrencyActions() {
     
     const [currencies, setCurrencies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,14 +21,6 @@ function ListCurrencies() {
     let location = useLocation();
     let navigate = useNavigate();
     let auth = useAuth();
-
-    const statusClass = {
-        "PUBLISHED": "bg-label-success",
-        "APPROVED": "bg-label-info",
-        "REJECTED": "bg-label-danger",
-        "REVIEW": "bg-label-warning",
-        "SAVED": "bg-label-secondary"
-    }
 
     useEffect(() => {
         async function fetchCurrencies() {
@@ -51,6 +44,12 @@ function ListCurrencies() {
         }
         fetchCurrencies();
     }, [currentPage, dataCount, location, navigate, pageSize]);
+
+    if (auth.user && auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     function renderCurrencies() {
         if (loading) {
@@ -93,40 +92,18 @@ function ListCurrencies() {
                     {currencies.map(currency => (
                         <tr key={currency.id}>
                             <td>
-                                <i className="fab fa-angular fa-lg text-danger me-3"></i>
-                                <strong>
-                                    {currency.name}
-                                </strong>
+                                <Link to={`/currency/review/${currency.id}`}>
+                                    <i className="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <strong>{currency.name}</strong>
+                                </Link>
                             </td>
                             <td>
                                 {currency.short_code}
                             </td>
-                            
                             <td>
-                                <span className={`badge ${statusClass[currency.status]} me-1`}>
-                                    {currency.status}
+                                <span className={`badge bg-label-info me-1`}>
+                                    {currency.author.first_name} {currency.author.last_name}
                                 </span>
-                            </td>
-                            <td>
-                                <div className="dropdown">
-                                    <button
-                                        type="button"
-                                        className="btn p-0 dropdown-toggle hide-arrow"
-                                        data-bs-toggle="dropdown"
-                                    >
-                                        <i className="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div className="dropdown-menu">
-                                        <Link className="dropdown-item" to={`edit/${currency.id}`}>
-                                            <i className="bx bx-edit-alt me-1"></i>
-                                            Edit
-                                        </Link>
-                                        <Link className="dropdown-item" to="https://hillpad.vercel.app">
-                                            <i className="bx bx-window me-1"></i>
-                                            View live
-                                        </Link>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                     
@@ -136,22 +113,11 @@ function ListCurrencies() {
         }
     }
 
-
     return (
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
                     <h4 className="fw-bold py-3 mb-4">Currencies</h4>
-                    {   
-                        auth.user &&
-                        auth.user.role === "SUPERVISOR" &&
-                        <Link to="create">
-                            <button type="button" className="btn btn-secondary mb-4">
-                                <span className="tf-icons bx bx-plus"></span>&nbsp;
-                                Add Currency
-                            </button>
-                        </Link>
-                    }
                 </div>
 
                 <div className="card">
@@ -176,8 +142,7 @@ function ListCurrencies() {
                                 <tr>
                                     <th>Currency</th>
                                     <th>ISO Short Code</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Author</th>
                                 </tr>
                             </thead>
                             <tbody className="table-border-bottom-0">
@@ -202,4 +167,4 @@ function ListCurrencies() {
     
 }
 
-export default ListCurrencies;
+export default ListCurrencyActions;

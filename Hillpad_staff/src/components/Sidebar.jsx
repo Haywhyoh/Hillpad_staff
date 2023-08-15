@@ -7,6 +7,7 @@ import schoolService from '../services/api/schoolService';
 import disciplineService from '../services/api/disciplineService';
 import degreeTypeService from '../services/api/degreeTypeService';
 import countryService from '../services/api/countryService';
+import currencyService from '../services/api/currencyService';
 
 import MenuItem from './MenuItem.jsx';
 
@@ -23,6 +24,7 @@ const Sidebar = () => {
     const [disciplineActions, setDisciplineActions] = useState(0);
     const [degreeTypeActions, setDegreeTypeActions] = useState(0);
     const [countryActions, setCountryActions] = useState(0);
+    const [currencyActions, setCurrencyActions] = useState(0);
 
     useEffect(() => {
         async function fetchActionsStats() {
@@ -59,6 +61,11 @@ const Sidebar = () => {
                     response = await countryService.getCountryDrafts(pageQuery);
                     if (response.status === 200) {
                         setCountryActions(response.data.count);
+                    }
+
+                    response = await currencyService.getCurrencyDrafts(pageQuery);
+                    if (response.status === 200) {
+                        setCurrencyActions(response.data.count);
                     }
                 }
             } catch (ex) {
@@ -128,6 +135,7 @@ const Sidebar = () => {
                                     <MenuItem entryName="Discipline Reviews" badge={`${disciplineActions}`} entryURL="/discipline/reviews" entryIcon="bx-cabinet" />
                                     <MenuItem entryName="Degree Reviews" badge={`${degreeTypeActions}`} entryURL="/degree-type/reviews" entryIcon="bxs-graduation" />
                                     <MenuItem entryName="Country Reviews" badge={`${countryActions}`} entryURL="/country/reviews" entryIcon="bx-globe" />
+                                    <MenuItem entryName="Currency Reviews" badge={`${currencyActions}`} entryURL="/currency/reviews" entryIcon="bx-dollar-circle" />
                                 </>
                             }
                         </>
