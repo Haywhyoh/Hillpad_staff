@@ -25,7 +25,9 @@ function ListCurrencyActions() {
     useEffect(() => {
         async function fetchCurrencies() {
             try {
-                const pageQuery = `page=${currentPage}`;
+                setLoading(true);
+
+                const pageQuery = `status=REVIEW&page=${currentPage}`;
                 const response = await currencyService.getCurrencyDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
