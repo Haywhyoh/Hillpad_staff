@@ -4,7 +4,7 @@ import ListCurrencies from './ListCurrencies';
 import CreateCurrency from './CreateCurrency';
 import EditCurrency from './EditCurrency';
 import ListCurrencyActions from './ListCurrencyActions';
-// import ReviewDiscipline from './ReviewDiscipline';
+import ReviewCurrency from './ReviewCurrency';
 
 
 function CurrencyRoutes() {
@@ -16,7 +16,7 @@ function CurrencyRoutes() {
                 <Route path="/create" element={<CreateCurrency />} />
                 <Route path="/edit/:currencyID" element={<EditCurrency />} />
                 <Route path="/reviews" element={<ListCurrencyActions />} />
-                {/* <Route path="/review/:disciplineID" element={<ReviewDiscipline />} /> */}
+                <Route path="/review/:currencyID" element={<ReviewCurrency />} />
             </Routes>
         </>
     );
