@@ -108,6 +108,7 @@ const Sidebar = () => {
                     <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" />
                     <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" />
                     <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" />
+                    <MenuItem entryName="Currencies" entryURL="/currency" entryIcon="bx-dollar-circle" />
 
 
                     {/* Actions */}
