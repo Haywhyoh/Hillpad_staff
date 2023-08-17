@@ -209,7 +209,8 @@ class SchoolForm extends Component {
         if (action === "review") {
             try {
                 if (this.state.reviewAction === "approve") {
-                    const response = await schoolService.approveSchoolDraft(this.props.schoolID);
+                    const data = this.mapToSchoolModel(this.state.formData);
+                    const response = await schoolService.approveSchoolDraft(this.props.schoolID, data);
                     if (response.status === 200) {
                         console.log("Approved");
                         this.setState({ statusModal: "success" });

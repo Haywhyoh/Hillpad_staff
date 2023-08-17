@@ -60,6 +60,8 @@ class CourseForm extends Component {
 
         reviewAction: "",
         rejectReason: "",
+
+        edited: false,
     };
 
     options = {
@@ -263,7 +265,8 @@ class CourseForm extends Component {
         if (action === "review") {
             try {
                 if (this.state.reviewAction === "approve") {
-                    const response = await courseService.approveCourseDraft(this.props.courseID);
+                    const data = this.mapToCourseModel(this.state.formData);
+                    const response = await courseService.approveCourseDraft(this.props.courseID, data);
                     if (response.status === 200) {
                         console.log("Approved");
                         this.setState({ statusModal: "success" });

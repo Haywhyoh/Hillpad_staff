@@ -45,9 +45,9 @@ function rejectSchoolDraft(id, data) {
     return http.put(url, data);
 }
 
-function approveSchoolDraft(id) {
+function approveSchoolDraft(id, data={}) {
     const url = `${apiEndPoint}/approve_draft/${id}`;
-    return http.put(url);
+    return http.put(url, data);
 }
 
 function publishSchoolDraft(id) {
