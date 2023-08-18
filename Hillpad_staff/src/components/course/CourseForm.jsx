@@ -639,6 +639,7 @@ class CourseForm extends Component {
                                 value={formData.about}
                                 onChange={this.handleChange}
                                 placeholder="Short description of course"
+                                rows={6}
                                 error={errors.about}
                             />
                             <QuillEditor
