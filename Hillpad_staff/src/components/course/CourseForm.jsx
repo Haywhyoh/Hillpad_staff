@@ -633,7 +633,7 @@ class CourseForm extends Component {
                                 required={true}
                                 error={errors.name}
                             />
-                            <Input
+                            <TextArea 
                                 name="about"
                                 label="About"
                                 value={formData.about}
