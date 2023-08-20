@@ -7,11 +7,14 @@ import Input from "./common/form/Input";
 
 import "../assets/vendor/css/pages/page-auth.css";
 
-function LoginForm() {
+
+const LoginForm = () => {
     let [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+    let [loading, setLoading] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     let auth = useAuth();
     let navigate = useNavigate();
@@ -19,14 +22,21 @@ function LoginForm() {
 
     let from = location.state?.from?.pathname || "/";
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
+        setButtonDisabled(true);
+
         auth.setLoginError(null);
 
         auth.login(formData, () => {
             navigate(from, { replace: true });
         });
+
+        setLoading(false);
+        setButtonDisabled(false);
+
     };
 
     const handleChange = ({ currentTarget: input }) => {
@@ -203,10 +213,24 @@ function LoginForm() {
                                     </div>
                                     <div className="mb-3">
                                         <button
-                                            className="btn btn-primary d-grid w-100"
+                                            className="btn btn-primary w-100"
                                             type="submit"
+                                            onClick={() => {
+                                                    setLoading(true);
+                                                }
+                                            }
+                                            disabled={buttonDisabled}
                                         >
+                                            {
+                                                loading &&
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm text-warning" role="status"></span>
+                                                    <span className="sr-only visually-hidden">Loading...</span>
+                                                    &nbsp;
+                                                </>
+                                            }
                                             Sign in
+                                            
                                         </button>
                                     </div>
                                 </form>

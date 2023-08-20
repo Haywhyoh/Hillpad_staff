@@ -22,9 +22,9 @@ const RequireAuth = ({ children }) => {
         if (userData && JSON.parse(userData)) {
             auth.setUser(JSON.parse(userData));
         }
-      }, []);
+    }, []);
     
-    const userData = Cookies.get("hillpad_user");
+    const userData = Cookies.get(userCookie);
     if (!userData) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
