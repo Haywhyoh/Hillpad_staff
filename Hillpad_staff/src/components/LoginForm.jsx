@@ -170,6 +170,7 @@ const LoginForm = () => {
                                         label="Email"
                                         value={formData.email}
                                         onChange={handleChange}
+                                        required={true}
                                         placeholder="Enter your official email"
                                         autoFocus={true}
                                     />
@@ -181,6 +182,7 @@ const LoginForm = () => {
                                                 htmlFor="password"
                                             >
                                                 Password
+                                                <span className="text-danger"> *</span>
                                             </label>
                                             <Link to="">
                                                 <small>Forgot Password?</small>
@@ -194,6 +196,7 @@ const LoginForm = () => {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
+                                                required={true}
                                                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                                 aria-describedby="password-field"
                                             />
