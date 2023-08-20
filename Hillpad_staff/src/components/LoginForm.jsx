@@ -178,7 +178,7 @@ const LoginForm = () => {
                                     <div className="mb-4 form-password-toggle">
                                         <div className="d-flex justify-content-between">
                                             <label
-                                                className="form-label"
+                                                className="form-label fw-bold"
                                                 htmlFor="password"
                                             >
                                                 Password
