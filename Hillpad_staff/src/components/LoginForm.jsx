@@ -13,8 +13,6 @@ const LoginForm = () => {
         email: "",
         password: "",
     });
-    let [loading, setLoading] = useState(false);
-    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     let auth = useAuth();
     let navigate = useNavigate();
@@ -22,21 +20,14 @@ const LoginForm = () => {
 
     let from = location.state?.from?.pathname || "/";
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        setButtonDisabled(true);
 
         auth.setLoginError(null);
 
         auth.login(formData, () => {
             navigate(from, { replace: true });
         });
-
-        setLoading(false);
-        setButtonDisabled(false);
-
     };
 
     const handleChange = ({ currentTarget: input }) => {
@@ -215,14 +206,10 @@ const LoginForm = () => {
                                         <button
                                             className="btn btn-primary w-100"
                                             type="submit"
-                                            onClick={() => {
-                                                    setLoading(true);
-                                                }
-                                            }
-                                            disabled={buttonDisabled}
+                                            disabled={auth.loading}
                                         >
                                             {
-                                                loading &&
+                                                auth.loading &&
                                                 <>
                                                     <span className="spinner-border spinner-border-sm text-warning" role="status"></span>
                                                     <span className="sr-only visually-hidden">Loading...</span>
@@ -230,7 +217,6 @@ const LoginForm = () => {
                                                 </>
                                             }
                                             Sign in
-                                            
                                         </button>
                                     </div>
                                 </form>
