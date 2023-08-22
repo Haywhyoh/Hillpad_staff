@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 
 import courseService from '../services/api/courseService';
 import schoolService from '../services/api/schoolService';
+import statsService from '../services/api/statsService';
 
 import heroImageLight from '../assets/img/illustrations/man-with-laptop-light.png';
 import bachelorsImage from '../assets/img/icons/unicons/bachelors.svg';
@@ -37,18 +38,21 @@ const Dashboard = () => {
         async function fetchData() {
             try {
                 setLoading(true);
+                console.log(user);
+                const metrics = [
+                    "total_bachelors_published",
+                    "total_bachelors_review",
+                    "total_masters_published",
+                    "total_masters_review",
+                    "total_doctorates_published",
+                    "total_doctorates_review",
+                    "total_schools_published",
+                    "total_schools_review"
+                ]
+                
                 const currentDate = format(new Date(), "yyyy-M-d");
                 const coursesDailyQuery = `author=${user.id}&created_date=${currentDate}`;
                 const schoolsDailyQuery = `author=${user.id}&created_date=${currentDate}`;
-                const bachelorsPublishedQuery = `author=${user.id}&programme=bachelors&status=published`;
-                const bachelorsReviewQuery = `author=${user.id}&programme=bachelors&status=review`;
-                const mastersPublishedQuery = `author=${user.id}&programme=masters&status=published`;
-                const mastersReviewQuery = `author=${user.id}&programme=masters&status=review`;
-                const doctoratesPublishedQuery = `author=${user.id}&programme=doctorates&status=published`;
-                const doctoratesReviewQuery = `author=${user.id}&programme=doctorates&status=review`;
-                const schoolsPublishedQuery = `author=${user.id}&status=published`;
-                const schoolsReviewQuery = `author=${user.id}&status=review`;
-                
                 let response = await courseService.getCourseDrafts(coursesDailyQuery);
                 if (response.status === 200) {
                     setCoursesDaily(response.data.count);
@@ -57,38 +61,20 @@ const Dashboard = () => {
                 if (response.status === 200) {
                     setSchoolsDaily(response.data.count);
                 }
-                response = await courseService.getCourseDrafts(bachelorsPublishedQuery);
+
+                response = await statsService.getAccountEntriesStats(metrics);
                 if (response.status === 200) {
-                    setBachelorsPublished(response.data.count);
+                    const result = response.data;
+                    setBachelorsPublished(result["total_bachelors_published"]);
+                    setBachelorsReview(result["total_bachelors_review"]);
+                    setMastersPublished(result["total_masters_published"]);
+                    setMastersReview(result["total_masters_review"]);
+                    setDoctoratesPublished(result["total_doctorates_published"]);
+                    setDoctoratesReview(result["total_doctorates_review"]);
+                    setSchoolsPublished(result["total_schools_published"]);
+                    setSchoolsReview(result["total_schools_review"]);
                 }
-                response = await courseService.getCourseDrafts(bachelorsReviewQuery);
-                if (response.status === 200) {
-                    setBachelorsReview(response.data.count);
-                }
-                response = await courseService.getCourseDrafts(mastersPublishedQuery);
-                if (response.status === 200) {
-                    setMastersPublished(response.data.count);
-                }
-                response = await courseService.getCourseDrafts(mastersReviewQuery);
-                if (response.status === 200) {
-                    setMastersReview(response.data.count);
-                }
-                response = await courseService.getCourseDrafts(doctoratesPublishedQuery);
-                if (response.status === 200) {
-                    setDoctoratesPublished(response.data.count);
-                }
-                response = await courseService.getCourseDrafts(doctoratesReviewQuery);
-                if (response.status === 200) {
-                    setDoctoratesReview(response.data.count);
-                }
-                response = await schoolService.getSchoolDrafts(schoolsPublishedQuery);
-                if (response.status === 200) {
-                    setSchoolsPublished(response.data.count);
-                }
-                response = await schoolService.getSchoolDrafts(schoolsReviewQuery);
-                if (response.status === 200) {
-                    setSchoolsReview(response.data.count);
-                }
+                
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -100,7 +86,7 @@ const Dashboard = () => {
             setLoading(false);
         }
         fetchData();
-    }, []);
+    }, [location, navigate, user]);
 
     const dateDisplay = () => {
         return format(
