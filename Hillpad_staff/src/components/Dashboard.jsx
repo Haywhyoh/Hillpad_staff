@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
-import courseService from '../services/api/courseService';
-import schoolService from '../services/api/schoolService';
+// import courseService from '../services/api/courseService';
+// import schoolService from '../services/api/schoolService';
 import statsService from '../services/api/statsService';
 
 import heroImageLight from '../assets/img/illustrations/man-with-laptop-light.png';
@@ -40,6 +40,8 @@ const Dashboard = () => {
                 setLoading(true);
                 console.log(user);
                 const metrics = [
+                    "daily_courses_added",
+                    "daily_schools_added",
                     "total_bachelors_published",
                     "total_bachelors_review",
                     "total_masters_published",
@@ -51,20 +53,23 @@ const Dashboard = () => {
                 ]
                 
                 const currentDate = format(new Date(), "yyyy-M-d");
-                const coursesDailyQuery = `author=${user.id}&created_date=${currentDate}`;
-                const schoolsDailyQuery = `author=${user.id}&created_date=${currentDate}`;
-                let response = await courseService.getCourseDrafts(coursesDailyQuery);
-                if (response.status === 200) {
-                    setCoursesDaily(response.data.count);
-                }
-                response = await schoolService.getSchoolDrafts(schoolsDailyQuery);
-                if (response.status === 200) {
-                    setSchoolsDaily(response.data.count);
-                }
 
-                response = await statsService.getAccountEntriesStats(metrics);
+                // const coursesDailyQuery = `author=${user.id}&created_date=${currentDate}`;
+                // const schoolsDailyQuery = `author=${user.id}&created_date=${currentDate}`;
+                // let response = await courseService.getCourseDrafts(coursesDailyQuery);
+                // if (response.status === 200) {
+                //     setCoursesDaily(response.data.count);
+                // }
+                // response = await schoolService.getSchoolDrafts(schoolsDailyQuery);
+                // if (response.status === 200) {
+                //     setSchoolsDaily(response.data.count);
+                // }
+
+                let response = await statsService.getAccountEntriesStats(metrics, currentDate);
                 if (response.status === 200) {
                     const result = response.data;
+                    setCoursesDaily(result["daily_courses_added"])
+                    setSchoolsDaily(result["daily_schools_added"])
                     setBachelorsPublished(result["total_bachelors_published"]);
                     setBachelorsReview(result["total_bachelors_review"]);
                     setMastersPublished(result["total_masters_published"]);

@@ -3,9 +3,12 @@ import config from "../../config";
 
 const apiEndPoint = `${config.apiBaseURL}/stats`;
 
-function getAccountEntriesStats(metrics) {
+function getAccountEntriesStats(metrics, date="") {
     const data = {
         "metrics": metrics
+    }
+    if (date) {
+        data.date = date;
     }
     const url = `${apiEndPoint}/entries`;
     return http.post(url, data);
