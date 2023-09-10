@@ -103,7 +103,7 @@ class CourseForm extends Component {
     setFormState = (course) => {
         const padWithLeadingZeros = (num, totalLength) => {
             return String(num).padStart(totalLength, '0');
-        }
+        };
         const startMonth = course.course_dates.start_month;
         const startYear = course.course_dates.start_year;
         const startDate = (startMonth && startYear) ? course.course_dates.start_year + "-" + padWithLeadingZeros(course.course_dates.start_month, 2) : "";
