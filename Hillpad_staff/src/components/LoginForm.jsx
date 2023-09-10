@@ -14,6 +14,8 @@ const LoginForm = () => {
         password: "",
     });
 
+    let [passwordVisible, setPasswordVisible] = useState(false);
+
     let auth = useAuth();
     let navigate = useNavigate();
     let location = useLocation();
@@ -190,7 +192,7 @@ const LoginForm = () => {
                                         </div>
                                         <div className="input-group input-group-merge">
                                             <input
-                                                type="password"
+                                                type={passwordVisible ? "text" : "password"}
                                                 id="password-field"
                                                 className="form-control"
                                                 name="password"
@@ -200,8 +202,8 @@ const LoginForm = () => {
                                                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                                 aria-describedby="password-field"
                                             />
-                                            <span className="input-group-text cursor-pointer">
-                                                <i className="bx bx-hide"></i>
+                                            <span className="input-group-text cursor-pointer" onClick={() => setPasswordVisible(!passwordVisible)}>
+                                                <i className={passwordVisible ? "bx bx-hide" : "bx bx-show"}></i>
                                             </span>
                                         </div>
                                     </div>
