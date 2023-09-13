@@ -20,6 +20,11 @@ function getCourseDrafts(query="") {
     return http.get(url);
 }
 
+function getCourseDraftsApproved() {
+    const url = `${apiEndPoint}/list_approved`;
+    return http.get(url);
+}
+
 function getCourseDraft(id) {
     const url = `${apiEndPoint}/detail_draft/${id}`;
     return http.get(url);
@@ -60,6 +65,7 @@ export default {
     getCourses,
     getCourse,
     getCourseDrafts,
+    getCourseDraftsApproved,
     getCourseDraft,
     createCourseDraft,
     updateCourseDraft,

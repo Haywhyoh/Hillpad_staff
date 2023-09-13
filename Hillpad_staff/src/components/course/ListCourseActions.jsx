@@ -17,6 +17,8 @@ const ListCourseActions = () => {
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [approvedCourses, setApprovedCourses] = useState([]);
     
     const pageSize = config.pageSize;
     
@@ -57,6 +59,33 @@ const ListCourseActions = () => {
             <Error405 />
         );
     }
+
+    const publishAll = async () => {
+        // Get all APPROVED courses IDs
+        // Loop and publish
+        // Display progress while publishing
+        // Add confirmation popup before publishing
+        // Publish done.
+        try {
+            const approvedResponse = await courseService.getCourseDraftsApproved();
+            if (approvedResponse.status === 200) {
+                setApprovedCourses(approvedResponse.data.results);
+                // this.setState({ statusModal: "success" });
+                let published = 0;
+                for (let courseID of approvedCourses) {
+                    const response = await courseService.publishCourseDraft(courseID);
+                    if (response.status === 200) {
+                        published += 1;
+                        // this.setState({ statusModal: "success" });
+                        console.log(`Published: ${published}/${approvedCourses.length}`);
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            this.setState({ statusModal: "error" });
+        }
+    };
 
     function renderCourses() {
         if (loading) {
@@ -126,6 +155,17 @@ const ListCourseActions = () => {
                     <h4 className="fw-bold py-3 mb-4">
                         Course Reviews
                     </h4>
+                    {   
+                        auth.user &&
+                        auth.user.role === "ADMIN" &&
+                        <button
+                            type="button"
+                            className="btn btn-danger mb-4"
+                            onClick={publishAll}
+                        >
+                            <span className="tf-icons bx bx-book-reader"></span>&nbsp; Publish All
+                        </button>
+                    }
                 </div>
 
                 <div className="card">
