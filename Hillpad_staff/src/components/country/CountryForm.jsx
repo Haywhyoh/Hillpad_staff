@@ -143,7 +143,7 @@ class CountryForm extends Component {
                 }
             }
             // Get currencies
-            let { data } = await currencyService.getCurrencies();
+            let { data } = await currencyService.getCurrencies("page_size=1000");
             const currencies = data.results.map((item) => ({
                 name: item.name,
                 value: item.id,
