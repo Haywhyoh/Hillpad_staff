@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom';
 class MenuItem extends Component {
     
     render() { 
-        const { entryName, entryURL, entryIcon, badge } = this.props;
+        const { entryName, entryURL, entryIcon, badge, active=false } = this.props;
         
         return (
             <>
-                <li className="menu-item">
+                <li className={`menu-item ${active ? 'active' : ''}`}>
                     <Link to={entryURL} className="menu-link">
                         <i className={`menu-icon tf-icons bx ${entryIcon}`}></i>
                         <div data-i18n={entryName}>

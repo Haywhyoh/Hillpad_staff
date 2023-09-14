@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from "../hooks/useAuth";
 
 import courseService from '../services/api/courseService';
@@ -17,6 +17,7 @@ import hillpadLogo from '../assets/img/hillpad/logos/hillpad-transparent.png';
 
 const Sidebar = () => {
     const { user } = useAuth();
+    const location = useLocation();
     let navigate = useNavigate();
 
     const [courseActions, setCourseActions] = useState(0);
@@ -79,7 +80,7 @@ const Sidebar = () => {
             }
         }
         fetchActionsStats();
-    }, [navigate, user.role]);
+    }, [navigate, location, user.role]);
      
     return (
         <>
@@ -110,12 +111,12 @@ const Sidebar = () => {
                     <li className="menu-header small text-uppercase">
                         <span className="menu-header-text">Entries</span>
                     </li>
-                    <MenuItem entryName="Courses" entryURL="/course" entryIcon="bx-book-open" />
-                    <MenuItem entryName="Schools" entryURL="/school" entryIcon="bxs-school" />
-                    <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" />
-                    <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" />
-                    <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" />
-                    <MenuItem entryName="Currencies" entryURL="/currency" entryIcon="bx-dollar-circle" />
+                    <MenuItem entryName="Courses" entryURL="/course" entryIcon="bx-book-open" active={location.pathname === "/course"} />
+                    <MenuItem entryName="Schools" entryURL="/school" entryIcon="bxs-school" active={location.pathname === "/school"} />
+                    <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" active={location.pathname === "/discipline"} />
+                    <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" active={location.pathname === "/degree-type"} />
+                    <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" active={location.pathname === "/country"} />
+                    <MenuItem entryName="Currencies" entryURL="/currency" entryIcon="bx-dollar-circle" active={location.pathname === "/currency"} />
 
 
                     {/* Actions */}
@@ -126,16 +127,16 @@ const Sidebar = () => {
                             <li className="menu-header small text-uppercase">
                                 <span className="menu-header-text">Actions</span>
                             </li>
-                            <MenuItem entryName="Course Reviews" badge={`${courseActions}`} entryURL="/course/reviews" entryIcon="bx-book-open" />
-                            <MenuItem entryName="School Reviews" badge={`${schoolActions}`} entryURL="/school/reviews" entryIcon="bxs-school" />
+                            <MenuItem entryName="Course Reviews" badge={`${courseActions}`} entryURL="/course/reviews" entryIcon="bx-book-open" active={location.pathname === "/course/reviews"} />
+                            <MenuItem entryName="School Reviews" badge={`${schoolActions}`} entryURL="/school/reviews" entryIcon="bxs-school" active={location.pathname === "/school/reviews"} />
 
                             {
                                 user.role === "ADMIN" &&
                                 <>
-                                    <MenuItem entryName="Discipline Reviews" badge={`${disciplineActions}`} entryURL="/discipline/reviews" entryIcon="bx-cabinet" />
-                                    <MenuItem entryName="Degree Reviews" badge={`${degreeTypeActions}`} entryURL="/degree-type/reviews" entryIcon="bxs-graduation" />
-                                    <MenuItem entryName="Country Reviews" badge={`${countryActions}`} entryURL="/country/reviews" entryIcon="bx-globe" />
-                                    <MenuItem entryName="Currency Reviews" badge={`${currencyActions}`} entryURL="/currency/reviews" entryIcon="bx-dollar-circle" />
+                                    <MenuItem entryName="Discipline Reviews" badge={`${disciplineActions}`} entryURL="/discipline/reviews" entryIcon="bx-cabinet" active={location.pathname === "/discipline/reviews"} />
+                                    <MenuItem entryName="Degree Reviews" badge={`${degreeTypeActions}`} entryURL="/degree-type/reviews" entryIcon="bxs-graduation" active={location.pathname === "/degree-type/reviews"} />
+                                    <MenuItem entryName="Country Reviews" badge={`${countryActions}`} entryURL="/country/reviews" entryIcon="bx-globe" active={location.pathname === "/country/reviews"} />
+                                    <MenuItem entryName="Currency Reviews" badge={`${currencyActions}`} entryURL="/currency/reviews" entryIcon="bx-dollar-circle" active={location.pathname === "/currency/reviews"} />
                                 </>
                             }
                         </>
@@ -146,15 +147,15 @@ const Sidebar = () => {
                     <li className="menu-header small text-uppercase">
                         <span className="menu-header-text">Account</span>
                     </li>
-                    <MenuItem entryName="Notifications" entryURL="/notifications" entryIcon="bx-bell" />
-                    <MenuItem entryName="Chat" entryURL="/chat" entryIcon="bx-message-rounded-dots" />
+                    <MenuItem entryName="Notifications" entryURL="/notifications" entryIcon="bx-bell" active={location.pathname === "/notifications"} />
+                    <MenuItem entryName="Chat" entryURL="/chat" entryIcon="bx-message-rounded-dots" active={location.pathname === "/chat"} />
 
                     {/* Misc */}
                     <li className="menu-header small text-uppercase">
                         <span className="menu-header-text">Misc</span>
                     </li>
-                    <MenuItem entryName="Support" entryURL="/support" entryIcon="bx-support" />
-                    <MenuItem entryName="Privacy Policy" entryURL="/privacy-policy" entryIcon="bx-file" />
+                    <MenuItem entryName="Support" entryURL="/support" entryIcon="bx-support" active={location.pathname === "/support"} />
+                    <MenuItem entryName="Privacy Policy" entryURL="/privacy-policy" entryIcon="bx-file" active={location.pathname === "/privacy-policy"} />
 
                 </ul>
 
