@@ -174,7 +174,7 @@ class CourseForm extends Component {
             this.setState({ schools });
 
             // Get disciplines
-            ({ data } = await disciplineService.getDisciplines());
+            ({ data } = await disciplineService.getDisciplines("page_size=1000"));
             const disciplines = data.results.map((item) => ({
                 value: item.id,
                 name: item.name,
@@ -182,7 +182,7 @@ class CourseForm extends Component {
             this.setState({ disciplines });
 
             // Get currencies
-            ({ data } = await currencyService.getCurrencies());
+            ({ data } = await currencyService.getCurrencies("page_size=1000"));
             const currencies = data.results.map((item) => ({
                 value: item.id,
                 name: item.name,
@@ -198,7 +198,7 @@ class CourseForm extends Component {
             this.setState({ programmeTypes });
 
             // Get degree types
-            ({ data } = await degreeTypeService.getDegreeTypes());
+            ({ data } = await degreeTypeService.getDegreeTypes("page_size=1000"));
             const degreeTypes = data.results.map((item) => ({
                 value: item.id,
                 name: `${item.name} (${item.short_name})`,
