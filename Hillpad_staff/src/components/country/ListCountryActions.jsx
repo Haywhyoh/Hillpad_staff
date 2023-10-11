@@ -10,17 +10,20 @@ import Error405 from "../errorPages/Error405";
 
 const ListCountryActions = () => {
     
+    let auth = useAuth();
+
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [reviewCountries, setReviewCountries] = useState([]);
+    
     const pageSize = config.pageSize;
 
     let location = useLocation();
     let navigate = useNavigate();
-    let auth = useAuth();
 
     const continentMap = {
         "AF": "Africa",
@@ -62,6 +65,33 @@ const ListCountryActions = () => {
             <Error405 />
         );
     }
+
+    const publishAll = async () => {
+        // Get all REVIEW countries IDs
+        // Loop and publish
+        // Display progress while publishing
+        // Add confirmation popup before publishing
+        // Publish done.
+        try {
+            const reviewResponse = await countryService.getCountryDraftsReview();
+            if (reviewResponse.status === 200) {
+                setReviewCountries(reviewResponse.data.results);
+                // this.setState({ statusModal: "success" });
+                let published = 0;
+                for (let courseID of reviewCountries) {
+                    const response = await countryService.publishCountryDraft(courseID);
+                    if (response.status === 200) {
+                        published += 1;
+                        // this.setState({ statusModal: "success" });
+                        console.log(`Published: ${published}/${reviewCountries.length}`);
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            this.setState({ statusModal: "error" });
+        }
+    };
 
     function renderCountries() {
         if (loading) {
@@ -129,7 +159,20 @@ const ListCountryActions = () => {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Country Reviews</h4>
+                    <h4 className="fw-bold py-3 mb-4">
+                        Country Reviews
+                    </h4>
+                    {   
+                        auth.user &&
+                        auth.user.role === "ADMIN" &&
+                        <button
+                            type="button"
+                            className="btn btn-danger mb-4"
+                            onClick={publishAll}
+                        >
+                            <span className="tf-icons bx bx-book-reader"></span>&nbsp; Publish All
+                        </button>
+                    }
                 </div>
 
                 <div className="card">

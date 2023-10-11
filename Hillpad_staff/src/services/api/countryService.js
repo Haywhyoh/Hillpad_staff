@@ -21,6 +21,11 @@ function getCountryDrafts(query="") {
     return http.get(url);
 }
 
+function getCountryDraftsReview() {
+    const url = `${apiEndPoint}/list_review`;
+    return http.get(url);
+}
+
 function getCountryDraft(id) {
     const url = `${apiEndPoint}/detail_draft/${id}`;
     return http.get(url);
@@ -50,6 +55,7 @@ export default {
     getCountries,
     getCountry,
     getCountryDrafts,
+    getCountryDraftsReview,
     getCountryDraft,
     createCountryDraft,
     updateCountryDraft,
