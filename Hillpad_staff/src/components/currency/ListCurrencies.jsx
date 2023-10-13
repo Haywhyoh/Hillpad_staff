@@ -7,13 +7,16 @@ import config from "../../config";
 import EntryTable from "../common/EntryTable";
 
 
-function ListCurrencies() {
+const ListCurrencies = () => {
     
     const [currencies, setCurrencies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -32,7 +35,7 @@ function ListCurrencies() {
     useEffect(() => {
         async function fetchCurrencies() {
             try {
-                const pageQuery = `page=${currentPage}`;
+                const pageQuery = `${searchQuery}page=${currentPage}`;
                 const response = await currencyService.getCurrencyDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -50,9 +53,14 @@ function ListCurrencies() {
             setLoading(false);
         }
         fetchCurrencies();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
-    function renderCurrencies() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderCurrencies = () => {
         if (loading) {
             return (
                 <tr>
@@ -155,10 +163,15 @@ function ListCurrencies() {
                 </div>
 
                 <EntryTable
+                    title="currencies"
                     entryRenderer={renderCurrencies}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Currency",
                         "ISO Short Code",
