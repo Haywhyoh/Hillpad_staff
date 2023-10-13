@@ -7,13 +7,15 @@ import config from '../../config';
 import EntryTable from '../common/EntryTable';
 
 
-function ListCourses() {
+const ListCourses = () => {
     
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -33,7 +35,8 @@ function ListCourses() {
         async function fetchCourses() {
             try {
                 setLoading(true);
-                const pageQuery = `page=${currentPage}`;
+
+                const pageQuery = `${searchQuery}page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -51,9 +54,13 @@ function ListCourses() {
             setLoading(false);
         }
         fetchCourses();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
-    function renderCourses() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+    }
+
+    const renderCourses = () => {
         if (loading) {
             return (
                 <tr>
@@ -152,6 +159,9 @@ function ListCourses() {
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Course Name",
                         "School",

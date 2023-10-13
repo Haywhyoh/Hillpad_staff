@@ -1,13 +1,51 @@
 import Paginator from "./Paginator";
 
-const EntryTable = ({entryRenderer, pages, currentPage, setCurrentPage, headers}) => {
+const EntryTable = ({
+        entryRenderer,
+        pages,
+        currentPage,
+        setCurrentPage,
+        headers,
+        searchEntry,
+        setSearchEntry,
+        handleSearch
+}) => {
+
+    const validateSearch = () => {
+        return searchEntry === "";
+    };
+
+    const handleChange = ({currentTarget: input}) => {
+        setSearchEntry(input.value);
+    };
+
+
     return (
         <div className="card">
             <div className="mt-4">
-                <form action="" method="GET">
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    handleSearch();
+                }}>
                     <div className="mb-3 px-4 row">
-                        <div className="col-md-4">
-                            <input className="form-control" type="search" placeholder="Search..." id="html5-search-input" />
+                        <div className="col-md-4 pe-0">
+                            <input
+                                className="form-control"
+                                type="search"
+                                name="search"
+                                value={searchEntry}
+                                onChange={handleChange}
+                                placeholder="Search..."
+                            />
+                        </div>
+                        <div className="col-md-1">
+                                <button
+                                    disabled={validateSearch()}
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
+                                    <i className="bx bx-search-alt-2"></i>
+                                </button>
                         </div>
                     </div>
                 </form>
