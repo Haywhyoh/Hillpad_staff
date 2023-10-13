@@ -157,6 +157,7 @@ const ListCourses = () => {
                 </div>
 
                 <EntryTable 
+                    title="courses"
                     entryRenderer={renderCourses}
                     pages={pages}
                     currentPage={currentPage}

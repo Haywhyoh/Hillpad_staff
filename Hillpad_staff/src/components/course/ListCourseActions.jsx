@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
 import courseService from '../../services/api/courseService';
-import Paginator from "../common/Paginator";
 import config from '../../config';
 import Error405 from "../errorPages/Error405";
 import EntryTable from '../common/EntryTable';
@@ -18,6 +17,9 @@ const ListCourseActions = () => {
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [approvedCourses, setApprovedCourses] = useState([]);
     
@@ -35,7 +37,7 @@ const ListCourseActions = () => {
                 if (auth.user.role === "SUPERVISOR") status = "REVIEW";
                 else if (auth.user.role === "ADMIN") status = "APPROVED";
 
-                const pageQuery = `status=${status}&page=${currentPage}`;
+                const pageQuery = `${searchQuery}status=${status}&page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -53,7 +55,7 @@ const ListCourseActions = () => {
             setLoading(false);
         }
         fetchCourses();
-    }, [currentPage, dataCount, location, navigate, pageSize, auth.user.role]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, auth.user.role]);
 
     if (auth.user && auth.user.role === "SPECIALIST") {
         return (
@@ -87,6 +89,11 @@ const ListCourseActions = () => {
             this.setState({ statusModal: "error" });
         }
     };
+
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
 
     function renderCourses() {
         if (loading) {
@@ -170,10 +177,15 @@ const ListCourseActions = () => {
                 </div>
 
                 <EntryTable
+                    title="courses"
                     entryRenderer={renderCourses}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Course Name",
                         "School",

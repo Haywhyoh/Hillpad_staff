@@ -1,6 +1,7 @@
 import Paginator from "./Paginator";
 
 const EntryTable = ({
+        title,
         entryRenderer,
         pages,
         currentPage,
@@ -62,8 +63,8 @@ const EntryTable = ({
                                     </button>
                                 </span>
                                 Showing search results for&nbsp;
-                                <span className="text-danger">&quot;{searchedEntry}&quot;</span>
-                                &nbsp;courses&nbsp;
+                                <span className="text-primary">&quot;{searchedEntry}&quot;</span>
+                                &nbsp;{title}&nbsp;
                             </h6>
                         </div>
                     }
