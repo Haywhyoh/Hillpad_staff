@@ -15,6 +15,9 @@ const ListDegreeTypeActions = () => {
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -27,7 +30,7 @@ const ListDegreeTypeActions = () => {
             try {
                 setLoading(true);
 
-                const pageQuery = `status=REVIEW&page=${currentPage}`;
+                const pageQuery = `${searchQuery}status=REVIEW&page=${currentPage}`;
                 const response = await degreeTypeService.getDegreeTypeDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -45,7 +48,7 @@ const ListDegreeTypeActions = () => {
             setLoading(false);
         }
         fetchDegreeTypes();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
     if (auth.user && auth.user.role !== "ADMIN") {
         return (
@@ -53,7 +56,12 @@ const ListDegreeTypeActions = () => {
         );
     }
 
-    function renderDegreeTypes() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderDegreeTypes = () => {
         if (loading) {
             return (
                 <tr>
@@ -127,10 +135,15 @@ const ListDegreeTypeActions = () => {
                 </div>
 
                 <EntryTable
+                    title="degree types"
                     entryRenderer={renderDegreeTypes}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Degree Type",
                         "Programme Type",
