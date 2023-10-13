@@ -8,13 +8,16 @@ import Error405 from "../errorPages/Error405";
 import EntryTable from "../common/EntryTable";
 
 
-function ListCurrencyActions() {
+const ListCurrencyActions = () => {
     
     const [currencies, setCurrencies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -27,7 +30,7 @@ function ListCurrencyActions() {
             try {
                 setLoading(true);
 
-                const pageQuery = `status=REVIEW&page=${currentPage}`;
+                const pageQuery = `${searchQuery}status=REVIEW&page=${currentPage}`;
                 const response = await currencyService.getCurrencyDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -45,7 +48,7 @@ function ListCurrencyActions() {
             setLoading(false);
         }
         fetchCurrencies();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
     if (auth.user && auth.user.role !== "ADMIN") {
         return (
@@ -53,7 +56,12 @@ function ListCurrencyActions() {
         );
     }
 
-    function renderCurrencies() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderCurrencies = () => {
         if (loading) {
             return (
                 <tr>
@@ -119,14 +127,19 @@ function ListCurrencyActions() {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">Currencies</h4>
+                    <h4 className="fw-bold py-3 mb-4">Currency Reviews</h4>
                 </div>
 
                 <EntryTable
+                    title="currencies"
                     entryRenderer={renderCurrencies}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Currency",
                         "ISO Short Code",
