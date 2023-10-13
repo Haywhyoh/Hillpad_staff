@@ -7,13 +7,16 @@ import config from '../../config';
 import EntryTable from '../common/EntryTable';
 
 
-function ListSchools() {
+const ListSchools = () => {
     
     const [schools, setSchools] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -33,7 +36,7 @@ function ListSchools() {
         async function fetchSchools() {
             try {
                 setLoading(true);
-                const pageQuery = `page=${currentPage}`;
+                const pageQuery = `${searchQuery}page=${currentPage}`;
                 const response = await schoolService.getSchoolDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -51,9 +54,14 @@ function ListSchools() {
             setLoading(false);
         }
         fetchSchools();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
-    function renderSchools() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderSchools = () => {
         if (loading) {
             return (
                 <tr>
@@ -163,10 +171,15 @@ function ListSchools() {
                 </div>
 
                 <EntryTable
+                    title="schools"
                     entryRenderer={renderSchools}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "School",
                         "Country",
