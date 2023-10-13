@@ -8,13 +8,16 @@ import Error405 from "../errorPages/Error405";
 import EntryTable from "../common/EntryTable";
 
 
-function ListDisciplineActions() {
+const ListDisciplineActions = () => {
     
     const [disciplines, setDisciplines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -27,7 +30,7 @@ function ListDisciplineActions() {
             try {
                 setLoading(true);
 
-                const pageQuery = `status=REVIEW&page=${currentPage}`;
+                const pageQuery = `${searchQuery}status=REVIEW&page=${currentPage}`;
                 const response = await disciplineService.getDisciplineDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -45,7 +48,7 @@ function ListDisciplineActions() {
             setLoading(false);
         }
         fetchDisciplines();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
     if (auth.user && auth.user.role !== "ADMIN") {
         return (
@@ -53,7 +56,12 @@ function ListDisciplineActions() {
         );
     }
 
-    function renderDisciplines() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderDisciplines = () => {
         if (loading) {
             return (
                 <tr>
@@ -124,10 +132,15 @@ function ListDisciplineActions() {
                 </div>
 
                 <EntryTable
+                    title="disciplines"
                     entryRenderer={renderDisciplines}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Discipline",
                         "Number of Courses",
