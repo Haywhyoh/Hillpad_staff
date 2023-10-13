@@ -14,6 +14,9 @@ const ListCountries = () => {
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -42,7 +45,7 @@ const ListCountries = () => {
     useEffect(() => {
         async function fetchCountries() {
             try {
-                const pageQuery = `page=${currentPage}`;
+                const pageQuery = `${searchQuery}page=${currentPage}`;
                 const response = await countryService.getCountryDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -60,9 +63,14 @@ const ListCountries = () => {
             setLoading(false);
         }
         fetchCountries();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
-    function renderCountries() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderCountries = () => {
         if (loading) {
             return (
                 <tr>
@@ -161,10 +169,15 @@ const ListCountries = () => {
                 </div>
 
                 <EntryTable
+                    title="countries"
                     entryRenderer={renderCountries}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Country",
                         "Continent",
