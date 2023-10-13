@@ -8,6 +8,7 @@ const EntryTable = ({
         headers,
         searchEntry,
         setSearchEntry,
+        searchedEntry,
         handleSearch
 }) => {
 
@@ -18,7 +19,6 @@ const EntryTable = ({
     const handleChange = ({currentTarget: input}) => {
         setSearchEntry(input.value);
     };
-
 
     return (
         <div className="card">
@@ -48,6 +48,25 @@ const EntryTable = ({
                                 </button>
                         </div>
                     </div>
+
+                    {
+                        searchedEntry &&
+                        <div className="mb-3 px-4 row">
+                            <h6>
+                                <span>
+                                    <button 
+                                        className="btn btn-xs btn-icon"
+                                        onClick={() => setSearchEntry("")}    
+                                    >
+                                        <i className="bx bx-x text-danger"></i>
+                                    </button>
+                                </span>
+                                Showing search results for&nbsp;
+                                <span className="text-danger">&quot;{searchedEntry}&quot;</span>
+                                &nbsp;courses&nbsp;
+                            </h6>
+                        </div>
+                    }
                 </form>
             </div>
 

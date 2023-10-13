@@ -15,6 +15,7 @@ const ListCourses = () => {
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
@@ -58,6 +59,7 @@ const ListCourses = () => {
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
     }
 
     const renderCourses = () => {
@@ -161,6 +163,7 @@ const ListCourses = () => {
                     setCurrentPage={setCurrentPage}
                     searchEntry={searchEntry}
                     setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
                     handleSearch={handleSearch}
                     headers={[
                         "Course Name",
