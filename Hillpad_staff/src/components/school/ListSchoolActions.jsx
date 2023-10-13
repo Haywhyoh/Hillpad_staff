@@ -8,13 +8,16 @@ import Error405 from "../errorPages/Error405";
 import EntryTable from '../common/EntryTable';
 
 
-function ListSchoolActions() {
+const ListSchoolActions = () => {
     
     const [schools, setSchools] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -31,7 +34,7 @@ function ListSchoolActions() {
                 if (auth.user.role === "SUPERVISOR") status = "REVIEW";
                 else if (auth.user.role === "ADMIN") status = "APPROVED";
 
-                const pageQuery = `status=${status}&page=${currentPage}`;
+                const pageQuery = `${searchQuery}status=${status}&page=${currentPage}`;
                 const response = await schoolService.getSchoolDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -49,7 +52,7 @@ function ListSchoolActions() {
             setLoading(false);
         }
         fetchSchools();
-    }, [currentPage, dataCount, location, navigate, pageSize, auth.user.role]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, auth.user.role]);
 
     if (auth.user && auth.user.role === "SPECIALIST") {
         return (
@@ -57,7 +60,12 @@ function ListSchoolActions() {
         );
     }
 
-    function renderSchools() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderSchools = () => {
         if (loading) {
             return (
                 <tr>
@@ -128,10 +136,15 @@ function ListSchoolActions() {
                 </div>
 
                 <EntryTable
+                    title="schools"
                     entryRenderer={renderSchools}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "School",
                         "Country",
