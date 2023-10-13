@@ -13,6 +13,9 @@ const ListDegreeTypes = () => {
     const [dataCount, setDataCount] = useState(0);
     const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchEntry, setSearchEntry] = useState("");
+    const [searchedEntry, setSearchedEntry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const pageSize = config.pageSize;
 
@@ -31,7 +34,7 @@ const ListDegreeTypes = () => {
     useEffect(() => {
         async function fetchDegreeTypes() {
             try {
-                const pageQuery = `page=${currentPage}`;
+                const pageQuery = `${searchQuery}page=${currentPage}`;
                 const response = await degreeTypeService.getDegreeTypeDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -49,9 +52,14 @@ const ListDegreeTypes = () => {
             setLoading(false);
         }
         fetchDegreeTypes();
-    }, [currentPage, dataCount, location, navigate, pageSize]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
 
-    function renderDegreeTypes() {
+    const handleSearch = () => {
+        setSearchQuery(`name=${searchEntry}&`);
+        setSearchedEntry(searchEntry);
+    }
+
+    const renderDegreeTypes = () => {
         if (loading) {
             return (
                 <tr>
@@ -152,10 +160,15 @@ const ListDegreeTypes = () => {
                 </div>
 
                 <EntryTable
+                    title="degree types"
                     entryRenderer={renderDegreeTypes}
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    searchEntry={searchEntry}
+                    setSearchEntry={setSearchEntry}
+                    searchedEntry={searchedEntry}
+                    handleSearch={handleSearch}
                     headers={[
                         "Degree Type",
                         "Programme Type",
