@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
 import schoolService from '../../services/api/schoolService';
-import Paginator from "../common/Paginator";
 import config from '../../config';
 import Error405 from "../errorPages/Error405";
+import EntryTable from '../common/EntryTable';
 
 
 function ListSchoolActions() {
@@ -127,44 +127,19 @@ function ListSchoolActions() {
                     <h4 className="fw-bold py-3 mb-4">School Reviews</h4>
                 </div>
 
-                <div className="card">
-                    <div className="mt-4">
-                        <form action="" method="GET">
-                            <div className="mb-3 px-4 row">
-                                <div className="col-md-4">
-                                    <input
-                                        className="form-control"
-                                        type="search"
-                                        placeholder="Search..."
-                                        id="html5-search-input"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <EntryTable
+                    entryRenderer={renderSchools}
+                    pages={pages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    headers={[
+                        "School",
+                        "Country",
+                        "Number of Courses",
+                        "Author"
+                    ]}
+                />
 
-                    <div className="table-responsive text-nowrap">
-                        <table className="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>School</th>
-                                    <th>Country</th>
-                                    <th>Number of Courses</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-border-bottom-0">
-                                {renderSchools()}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Paginator
-                        pages={pages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </div>
             </div>
         </>
     );

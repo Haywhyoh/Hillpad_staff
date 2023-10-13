@@ -6,6 +6,7 @@ import courseService from '../../services/api/courseService';
 import Paginator from "../common/Paginator";
 import config from '../../config';
 import Error405 from "../errorPages/Error405";
+import EntryTable from '../common/EntryTable';
 
 
 const ListCourseActions = () => {
@@ -168,41 +169,18 @@ const ListCourseActions = () => {
                     }
                 </div>
 
-                <div className="card">
-                    <div className="mt-4">
-                        <form action="" method="GET">
-                            <div className="mb-3 px-4 row">
-                                <div className="col-md-4">
-                                    <input className="form-control" type="search" placeholder="Search..." id="html5-search-input" />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="table-responsive text-nowrap">
-                        <table className="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Course Name</th>
-                                    <th>School</th>
-                                    <th>Degree</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-border-bottom-0">
-
-                                {renderCourses()}
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Paginator
-                        pages={pages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </div>
+                <EntryTable
+                    entryRenderer={renderCourses}
+                    pages={pages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    headers={[
+                        "Course Name",
+                        "School",
+                        "Degree",
+                        "Author"
+                    ]}
+                />
 
             </div>
         </>

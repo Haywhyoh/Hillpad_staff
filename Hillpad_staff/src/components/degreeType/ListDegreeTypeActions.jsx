@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 import degreeTypeService from "../../services/api/degreeTypeService";
-import Paginator from "../common/Paginator";
 import config from "../../config";
 import Error405 from "../errorPages/Error405";
+import EntryTable from "../common/EntryTable";
 
 
 const ListDegreeTypeActions = () => {
@@ -53,7 +53,7 @@ const ListDegreeTypeActions = () => {
         );
     }
 
-    function renderDegreeType() {
+    function renderDegreeTypes() {
         if (loading) {
             return (
                 <tr>
@@ -126,46 +126,19 @@ const ListDegreeTypeActions = () => {
                     <h4 className="fw-bold py-3 mb-4">Degree Types</h4>
                 </div>
 
-                <div className="card">
-                    <div className="mt-4">
-                        <form action="" method="GET">
-                            <div className="mb-3 px-4 row">
-                                <div className="col-md-4">
-                                    <input
-                                        className="form-control"
-                                        type="search"
-                                        placeholder="Search..."
-                                        id="html5-search-input"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <EntryTable
+                    entryRenderer={renderDegreeTypes}
+                    pages={pages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    headers={[
+                        "Degree Type",
+                        "Programme Type",
+                        "Number of courses",
+                        "Author"
+                    ]}
+                />
 
-                    <div className="table-responsive text-nowrap">
-                        <table className="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Degree Type</th>
-                                    <th>Programme Type</th>
-                                    <th>Number of courses</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-border-bottom-0">
-                                
-                                {renderDegreeType()}
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Paginator
-                        pages={pages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </div>
             </div>
         </>
     );

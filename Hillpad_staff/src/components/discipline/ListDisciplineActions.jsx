@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 import disciplineService from "../../services/api/disciplineService";
-import Paginator from "../common/Paginator";
 import config from "../../config";
 import Error405 from "../errorPages/Error405";
+import EntryTable from "../common/EntryTable";
 
 
 function ListDisciplineActions() {
@@ -123,45 +123,17 @@ function ListDisciplineActions() {
                     <h4 className="fw-bold py-3 mb-4">Disciplines</h4>
                 </div>
 
-                <div className="card">
-                    <div className="mt-4">
-                        <form action="" method="GET">
-                            <div className="mb-3 px-4 row">
-                                <div className="col-md-4">
-                                    <input
-                                        className="form-control"
-                                        type="search"
-                                        placeholder="Search..."
-                                        id="html5-search-input"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="table-responsive text-nowrap">
-                        <table className="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Discipline</th>
-                                    <th>Number of Courses</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-border-bottom-0">
-
-                                {renderDisciplines()}
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Paginator
-                        pages={pages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </div>
+                <EntryTable
+                    entryRenderer={renderDisciplines}
+                    pages={pages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    headers={[
+                        "Discipline",
+                        "Number of Courses",
+                        "Author"
+                    ]}
+                />
                 
             </div>
 

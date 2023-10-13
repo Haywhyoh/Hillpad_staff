@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 import currencyService from "../../services/api/currencyService";
-import Paginator from "../common/Paginator";
 import config from "../../config";
 import Error405 from "../errorPages/Error405";
+import EntryTable from "../common/EntryTable";
 
 
 function ListCurrencyActions() {
@@ -122,45 +122,17 @@ function ListCurrencyActions() {
                     <h4 className="fw-bold py-3 mb-4">Currencies</h4>
                 </div>
 
-                <div className="card">
-                    <div className="mt-4">
-                        <form action="" method="GET">
-                            <div className="mb-3 px-4 row">
-                                <div className="col-md-4">
-                                    <input
-                                        className="form-control"
-                                        type="search"
-                                        placeholder="Search..."
-                                        id="html5-search-input"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="table-responsive text-nowrap">
-                        <table className="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Currency</th>
-                                    <th>ISO Short Code</th>
-                                    <th>Author</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-border-bottom-0">
-
-                                {renderCurrencies()}
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Paginator
-                        pages={pages}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </div>
+                <EntryTable
+                    entryRenderer={renderCurrencies}
+                    pages={pages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    headers={[
+                        "Currency",
+                        "ISO Short Code",
+                        "Author"
+                    ]}
+                />
                 
             </div>
 
