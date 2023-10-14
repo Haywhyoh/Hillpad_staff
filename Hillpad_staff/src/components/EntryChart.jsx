@@ -1,4 +1,5 @@
 import AreaChart from "./common/AreaChart";
+import Spinner from "./common/Spinner";
 
 const EntryChart = ({entryName, totalValue, icon, loading}) => {
     return (
@@ -22,16 +23,7 @@ const EntryChart = ({entryName, totalValue, icon, loading}) => {
                             </small>
                             <div className="d-flex align-items-center">
                                 <h6 className="mb-0 me-1">
-                                    {loading && (
-                                        <div
-                                            className="spinner-border spinner-border-sm text-primary"
-                                            role="status"
-                                        >
-                                            <span className="visually-hidden">
-                                                Loading...
-                                            </span>
-                                        </div>
-                                    )}
+                                    {loading && <Spinner size="sm" />}
                                     {!loading && totalValue}
                                 </h6>
                             </div>
