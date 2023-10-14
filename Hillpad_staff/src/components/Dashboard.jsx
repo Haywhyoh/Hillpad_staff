@@ -177,7 +177,7 @@ const Dashboard = () => {
                         Courses Added
                       </small>
                       <h3 className="mb-0">
-                        {loading && <Spinner addClasses="mx-4 my-3" />}
+                        {loading && <Spinner />}
                         {!loading && coursesDaily}
                       </h3>
                     </div>
@@ -186,7 +186,7 @@ const Dashboard = () => {
                         Schools Added
                       </small>
                       <h3 className="mb-0">
-                        {loading && <Spinner addClasses="mx-4 my-3" />}
+                        {loading && <Spinner />}
                         {!loading && schoolsDaily}
                       </h3>
                     </div>
@@ -215,20 +215,20 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex align-items-start justify-content-between">
                           <div>
-                            <span className="d-block mb-1 text-success">
+                            <small className="fw-semibold text-success">
                               Published
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && bachelorsPublished}
                             </h3>
                           </div>
                           <div>
-                            <span className="d-block mb-1 text-warning">
+                            <small className="fw-semibold text-warning">
                               Under Review
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && bachelorsReview}
                             </h3>
                           </div>
@@ -255,20 +255,20 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex align-items-start justify-content-between">
                           <div>
-                            <span className="d-block mb-1 text-success">
+                            <small className="fw-semibold text-success">
                               Published
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && mastersPublished}
                             </h3>
                           </div>
                           <div>
-                            <span className="d-block mb-1 text-warning">
+                            <small className="fw-semibold text-warning">
                               Under Review
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && mastersReview}
                             </h3>
                           </div>
@@ -298,20 +298,20 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex align-items-start justify-content-between">
                           <div>
-                            <span className="d-block mb-1 text-success">
+                            <small className="fw-semibold text-success">
                               Published
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && doctoratesPublished}
                             </h3>
                           </div>
                           <div>
-                            <span className="d-block mb-1 text-warning">
+                            <small className="fw-semibold text-warning">
                               Under Review
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && doctoratesReview}
                             </h3>
                           </div>
@@ -338,20 +338,20 @@ const Dashboard = () => {
                         </div>
                         <div className="d-flex align-items-start justify-content-between">
                           <div>
-                            <span className="d-block mb-1 text-success">
+                            <small className="fw-semibold text-success">
                               Published
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && schoolsPublished}
                             </h3>
                           </div>
                           <div>
-                            <span className="d-block mb-1 text-warning">
+                            <small className="fw-semibold text-warning">
                               Under Review
-                            </span>
-                            <h3 className="card-title text-nowrap mb-2">
-                              {loading && <Spinner addClasses="mx-4 my-3" />}
+                            </small>
+                            <h3 className="mb-0">
+                              {loading && <Spinner />}
                               {!loading && schoolsReview}
                             </h3>
                           </div>
