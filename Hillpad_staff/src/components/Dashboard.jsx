@@ -37,7 +37,6 @@ const Dashboard = () => {
     const [activeEntryChart, setActiveEntryChart] = useState("Courses");
     const [coursesPublishedTotal, setCoursesPublishedTotal] = useState(0);
     const [schoolsPublishedTotal, setSchoolsPublishedTotal] = useState(0);
-    const [activeTotalEntryValue, setActiveTotalEntryValue] = useState(coursesPublishedTotal);
 
     let location = useLocation();
     let navigate = useNavigate();
@@ -523,10 +522,7 @@ const Dashboard = () => {
                                         type="button"
                                         className={`nav-link ${activeEntryChart === "Courses" ? "active" : ""}`}
                                         role="tab"
-                                        onClick={() => {
-                                          setActiveEntryChart("Courses");
-                                          setActiveTotalEntryValue(coursesPublishedTotal);
-                                        }}
+                                        onClick={() => setActiveEntryChart("Courses")}
                                     >
                                         Courses
                                     </button>
@@ -536,10 +532,7 @@ const Dashboard = () => {
                                         type="button"
                                         className={`nav-link ${activeEntryChart === "Schools" ? "active" : ""}`} 
                                         role="tab"
-                                        onClick={() => {
-                                          setActiveEntryChart("Schools");
-                                          setActiveTotalEntryValue(schoolsPublishedTotal);
-                                        }}
+                                        onClick={() => setActiveEntryChart("Schools")}
                                     >
                                         Schools
                                     </button>
@@ -549,7 +542,7 @@ const Dashboard = () => {
                     
                         <EntryChart
                             entryName={activeEntryChart}
-                            totalValue={activeTotalEntryValue}
+                            totalValue={activeEntryChart === "Courses" ? coursesPublishedTotal : schoolsPublishedTotal}
                             icon={doctoratesImage}
                             loading={loading}
                         />
