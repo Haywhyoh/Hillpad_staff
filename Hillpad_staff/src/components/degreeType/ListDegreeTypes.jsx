@@ -57,6 +57,7 @@ const ListDegreeTypes = () => {
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
         setSearchedEntry(searchEntry);
+        setCurrentPage(1); // Reset the current page to 1 so as to avoid 404 queries
     }
 
     const renderDegreeTypes = () => {

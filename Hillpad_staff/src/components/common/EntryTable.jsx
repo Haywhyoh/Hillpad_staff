@@ -13,7 +13,7 @@ const EntryTable = ({
         setSearchEntry,
         searchedEntry,
         handleSearch
-}) => {
+    }) => {
 
     const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
