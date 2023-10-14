@@ -633,6 +633,7 @@ const Dashboard = () => {
                             entryName={activeEntryChart}
                             totalValue={activeTotalEntryValue}
                             icon={doctoratesImage}
+                            loading={loading}
                         />
 
                     </div>

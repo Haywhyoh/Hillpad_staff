@@ -1,6 +1,6 @@
 import AreaChart from "./common/AreaChart";
 
-const EntryChart = ({entryName, totalValue, icon}) => {
+const EntryChart = ({entryName, totalValue, icon, loading}) => {
     return (
         <div className="card-body px-0 pb-0 mb-0">
             <div className="tab-content p-0">
@@ -21,7 +21,19 @@ const EntryChart = ({entryName, totalValue, icon}) => {
                                 Total {entryName}
                             </small>
                             <div className="d-flex align-items-center">
-                                <h6 className="mb-0 me-1">{totalValue}</h6>
+                                <h6 className="mb-0 me-1">
+                                    {loading && (
+                                        <div
+                                            className="spinner-border spinner-border-sm text-primary"
+                                            role="status"
+                                        >
+                                            <span className="visually-hidden">
+                                                Loading...
+                                            </span>
+                                        </div>
+                                    )}
+                                    {!loading && totalValue}
+                                </h6>
                             </div>
                         </div>
                     </div>
