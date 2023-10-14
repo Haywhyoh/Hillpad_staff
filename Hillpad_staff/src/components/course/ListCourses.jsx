@@ -5,6 +5,7 @@ import useAuth from '../../hooks/useAuth';
 import courseService from '../../services/api/courseService';
 import config from '../../config';
 import EntryTable from '../common/EntryTable';
+import Spinner from '../common/Spinner';
 
 
 const ListCourses = () => {
@@ -67,24 +68,16 @@ const ListCourses = () => {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             );

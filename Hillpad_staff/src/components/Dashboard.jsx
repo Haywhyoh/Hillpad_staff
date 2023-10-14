@@ -2,9 +2,15 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
+import EntryChart from './EntryChart';
+import Spinner from './common/Spinner';
+
+import useAuth from '../hooks/useAuth';
+
 // import courseService from '../services/api/courseService';
 // import schoolService from '../services/api/schoolService';
 import statsService from '../services/api/statsService';
+
 
 import heroImageLight from '../assets/img/illustrations/man-with-laptop-light.png';
 import bachelorsImage from '../assets/img/icons/unicons/bachelors.svg';
@@ -13,8 +19,6 @@ import doctoratesImage from '../assets/img/icons/unicons/doctorates.svg';
 import schoolsImage from '../assets/img/icons/unicons/schools.svg';
 import settingsImage from '../assets/img/icons/notifications/settings.svg';
 import messagesImage from '../assets/img/icons/notifications/messages.svg';
-import useAuth from '../hooks/useAuth';
-import EntryChart from './EntryChart';
 
 // import '../assets/js/dashboards-analytics.js';
 
@@ -173,14 +177,7 @@ const Dashboard = () => {
                         Courses Added
                       </small>
                       <h3 className="mb-0">
-                        {loading && (
-                          <div
-                            className="mx-4 my-3 spinner-border text-warning"
-                            role="status"
-                          >
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                        )}
+                        {loading && <Spinner addClasses="mx-4 my-3" />}
                         {!loading && coursesDaily}
                       </h3>
                     </div>
@@ -189,14 +186,7 @@ const Dashboard = () => {
                         Schools Added
                       </small>
                       <h3 className="mb-0">
-                        {loading && (
-                          <div
-                            className="mx-4 my-3 spinner-border text-warning"
-                            role="status"
-                          >
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                        )}
+                        {loading && <Spinner addClasses="mx-4 my-3" />}
                         {!loading && schoolsDaily}
                       </h3>
                     </div>
@@ -229,16 +219,7 @@ const Dashboard = () => {
                               Published
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && bachelorsPublished}
                             </h3>
                           </div>
@@ -247,16 +228,7 @@ const Dashboard = () => {
                               Under Review
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && bachelorsReview}
                             </h3>
                           </div>
@@ -287,16 +259,7 @@ const Dashboard = () => {
                               Published
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && mastersPublished}
                             </h3>
                           </div>
@@ -305,16 +268,7 @@ const Dashboard = () => {
                               Under Review
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && mastersReview}
                             </h3>
                           </div>
@@ -348,16 +302,7 @@ const Dashboard = () => {
                               Published
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && doctoratesPublished}
                             </h3>
                           </div>
@@ -366,16 +311,7 @@ const Dashboard = () => {
                               Under Review
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && doctoratesReview}
                             </h3>
                           </div>
@@ -406,16 +342,7 @@ const Dashboard = () => {
                               Published
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && schoolsPublished}
                             </h3>
                           </div>
@@ -424,16 +351,7 @@ const Dashboard = () => {
                               Under Review
                             </span>
                             <h3 className="card-title text-nowrap mb-2">
-                              {loading && (
-                                <div
-                                  className="mx-4 my-3 spinner-border text-warning"
-                                  role="status"
-                                >
-                                  <span className="visually-hidden">
-                                    Loading...
-                                  </span>
-                                </div>
-                              )}
+                              {loading && <Spinner addClasses="mx-4 my-3" />}
                               {!loading && schoolsReview}
                             </h3>
                           </div>
