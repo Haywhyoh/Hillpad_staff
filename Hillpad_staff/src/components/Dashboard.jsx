@@ -31,6 +31,9 @@ const Dashboard = () => {
     const [schoolsPublished, setSchoolsPublished] = useState(0);
     const [schoolsReview, setSchoolsReview] = useState(0);
     const [activeEntryChart, setActiveEntryChart] = useState("Courses");
+    const [coursesPublishedTotal, setCoursesPublishedTotal] = useState(0);
+    const [schoolsPublishedTotal, setSchoolsPublishedTotal] = useState(0);
+    const [activeTotalEntryValue, setActiveTotalEntryValue] = useState(coursesPublishedTotal);
 
     let location = useLocation();
     let navigate = useNavigate();
@@ -50,7 +53,9 @@ const Dashboard = () => {
                     "total_doctorates_published",
                     "total_doctorates_review",
                     "total_schools_published",
-                    "total_schools_review"
+                    "total_schools_review",
+                    "total_courses_published_db",
+                    "total_schools_published_db",
                 ]
                 
                 const currentDate = format(new Date(), "yyyy-M-d");
@@ -79,6 +84,8 @@ const Dashboard = () => {
                     setDoctoratesReview(result["total_doctorates_review"]);
                     setSchoolsPublished(result["total_schools_published"]);
                     setSchoolsReview(result["total_schools_review"]);
+                    setCoursesPublishedTotal(result["total_courses_published_db"]);
+                    setSchoolsPublishedTotal(result["total_schools_published_db"]);
                 }
                 
             } catch (ex) {
@@ -598,7 +605,10 @@ const Dashboard = () => {
                                         type="button"
                                         className={`nav-link ${activeEntryChart === "Courses" ? "active" : ""}`}
                                         role="tab"
-                                        onClick={() => setActiveEntryChart("Courses")}
+                                        onClick={() => {
+                                          setActiveEntryChart("Courses");
+                                          setActiveTotalEntryValue(coursesPublishedTotal);
+                                        }}
                                     >
                                         Courses
                                     </button>
@@ -608,7 +618,10 @@ const Dashboard = () => {
                                         type="button"
                                         className={`nav-link ${activeEntryChart === "Schools" ? "active" : ""}`} 
                                         role="tab"
-                                        onClick={() => setActiveEntryChart("Schools")}
+                                        onClick={() => {
+                                          setActiveEntryChart("Schools");
+                                          setActiveTotalEntryValue(schoolsPublishedTotal);
+                                        }}
                                     >
                                         Schools
                                     </button>
@@ -618,7 +631,7 @@ const Dashboard = () => {
                     
                         <EntryChart
                             entryName={activeEntryChart}
-                            totalValue={"18,967"}
+                            totalValue={activeTotalEntryValue}
                             icon={doctoratesImage}
                         />
 
