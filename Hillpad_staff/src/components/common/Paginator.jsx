@@ -13,11 +13,10 @@ const Paginator = ({ pages, currentPage, setCurrentPage }) => {
 
     return (
         <>
-            {
-                pages > 0 &&
-                <nav aria-label="Page navigation" className="my-4">
-                    <ul className="pagination justify-content-center">
-                        <li className="page-item prev">
+            {pages > 0 && // Use (pages > 0) instead of (pages) to avoid displaying 0 at bottom when there are no entries
+                <nav aria-label="Page navigation" className="mx-4 my-4">
+                    <ul className="pagination justify-content-center flex-wrap">
+                        <li className="page-item mb-2 prev">
                             <a
                                 className="page-link"
                                 href="javascript:void(0);"
@@ -26,7 +25,7 @@ const Paginator = ({ pages, currentPage, setCurrentPage }) => {
                             </a>
                         </li>
                         {[...Array(pages)].map((_, i) => (
-                            <li key={i} className={`page-item ${activePageDecor(i+1)}`}>
+                            <li key={i} className={`page-item mb-2 ${activePageDecor(i+1)}`}>
                                 <Link
                                     className="page-link"
                                     to="#"
@@ -36,7 +35,7 @@ const Paginator = ({ pages, currentPage, setCurrentPage }) => {
                                 </Link>
                             </li>
                         ))}
-                        <li className="page-item next">
+                        <li className="page-item mb-2 next">
                             <a
                                 className="page-link"
                                 href="javascript:void(0);"
