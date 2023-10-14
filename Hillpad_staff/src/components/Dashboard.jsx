@@ -19,6 +19,7 @@ import doctoratesImage from '../assets/img/icons/unicons/doctorates.svg';
 import schoolsImage from '../assets/img/icons/unicons/schools.svg';
 import settingsImage from '../assets/img/icons/notifications/settings.svg';
 import messagesImage from '../assets/img/icons/notifications/messages.svg';
+import bookImage from '../assets/img/icons/unicons/book-open.svg';
 
 // import '../assets/js/dashboards-analytics.js';
 
@@ -543,7 +544,7 @@ const Dashboard = () => {
                         <EntryChart
                             entryName={activeEntryChart}
                             totalValue={activeEntryChart === "Courses" ? coursesPublishedTotal : schoolsPublishedTotal}
-                            icon={doctoratesImage}
+                            icon={activeEntryChart === "Courses" ? bookImage : schoolsImage}
                             loading={loading}
                         />
 
