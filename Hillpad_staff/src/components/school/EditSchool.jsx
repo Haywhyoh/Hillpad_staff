@@ -23,7 +23,7 @@ const EditSchool = () => {
                     </Link>
                 </div>
 
-                <SchoolForm formTitle="Edit course" schoolID={schoolID} action="edit" />
+                <SchoolForm formTitle="Edit school" schoolID={schoolID} action="edit" />
 
                 
             </div>

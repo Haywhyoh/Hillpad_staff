@@ -31,6 +31,8 @@ class SchoolForm extends Component {
             banner: "",
             logo: "",
             video: "",
+            rejectReason: "",
+            status: "",
         },
         errors: {},
 
@@ -129,6 +131,8 @@ class SchoolForm extends Component {
                 banner: bannerImage? bannerImage : "",
                 logo: logoImage? logoImage : "",
                 video: school.video,
+                rejectReason: school.reject_reason,
+                status: school.status,
             };
             this.setState({ formData });
         } catch (error) {
@@ -516,6 +520,19 @@ class SchoolForm extends Component {
                     <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">{formTitle}</h5>
                     </div>
+
+                    {formData.status === "REJECTED" &&
+                        <div className="card-body pb-0">
+                            <h6 className="mb-2 text-danger">
+                                <i className="bx bx-info-circle text-danger"></i>&nbsp;
+                                This school entry was rejected because of the following reason(s):
+                            </h6>
+                            <p className="border border-top-0 border-bottom-0 border-end-0 border-danger p-3">
+                                {formData.rejectReason}
+                            </p>
+                        </div>
+                    }
+
                     <div className="card-body">
                         <form onSubmit={this.handleSubmit}>
                             <Input

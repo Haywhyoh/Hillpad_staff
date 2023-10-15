@@ -42,6 +42,8 @@ class CourseForm extends Component {
             programmeStructure: "",
             admissionRequirements: "",
             programmeWebsite: "",
+            rejectReason: "",
+            status: "",
         },
         errors: {},
 
@@ -133,6 +135,8 @@ class CourseForm extends Component {
             programmeStructure: course.programme_structure,
             admissionRequirements: course.admission_requirements,
             programmeWebsite: course.official_programme_website,
+            rejectReason: course.reject_reason,
+            status: course.status,
         };
     };
 
@@ -622,6 +626,19 @@ class CourseForm extends Component {
                     <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">{formTitle}</h5>
                     </div>
+                    
+                    {formData.status === "REJECTED" &&
+                        <div className="card-body pb-0">
+                            <h6 className="mb-2 text-danger">
+                                <i className="bx bx-info-circle text-danger"></i>&nbsp;
+                                This course entry was rejected because of the following reason(s):
+                            </h6>
+                            <p className="border border-top-0 border-bottom-0 border-end-0 border-danger p-3">
+                                {formData.rejectReason}
+                            </p>
+                        </div>
+                    }
+
                     <div className="card-body">
                         <form onSubmit={this.handleSubmit}>
                             <Input
