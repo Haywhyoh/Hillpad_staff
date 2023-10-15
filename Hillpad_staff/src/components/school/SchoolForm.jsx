@@ -30,6 +30,7 @@ class SchoolForm extends Component {
             students: "",
             banner: "",
             logo: "",
+            video: "",
         },
         errors: {},
 
@@ -127,6 +128,7 @@ class SchoolForm extends Component {
                 students: school.students > 0? school.students : "",
                 banner: bannerImage? bannerImage : "",
                 logo: logoImage? logoImage : "",
+                video: school.video,
             };
             this.setState({ formData });
         } catch (error) {
@@ -295,6 +297,7 @@ class SchoolForm extends Component {
         formattedFormData.append("students", data.students? data.students : -1);
         formattedFormData.append("banner", data.banner);
         formattedFormData.append("logo", data.logo);
+        formattedFormData.append("video", data.video);
 
         return formattedFormData;
     };
@@ -665,6 +668,16 @@ class SchoolForm extends Component {
                                     )}
                                 </div>
                             </div>
+
+                            <Input
+                                name="video"
+                                label="School Youtube Video Link"
+                                type="url"
+                                value={formData.video}
+                                onChange={this.handleChange}
+                                placeholder="https://www.youtube.com/watch?v=72R4v61t9mz"
+                                error={errors.video}
+                            />
 
                             {
                                 action === "review" &&
