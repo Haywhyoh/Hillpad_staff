@@ -41,6 +41,8 @@ const Dashboard = () => {
     const [schoolsReview, setSchoolsReview] = useState(0);
     const [schoolsRejected, setSchoolsRejected] = useState(0);
 
+    const [coursesReviewTotal, setCoursesReviewTotal] = useState(0);
+    const [schoolsReviewTotal, setSchoolsReviewTotal] = useState(0);
     const [coursesPublishedTotal, setCoursesPublishedTotal] = useState(0);
     const [schoolsPublishedTotal, setSchoolsPublishedTotal] = useState(0);
 
@@ -57,6 +59,7 @@ const Dashboard = () => {
                 const metrics = [
                     "daily_courses_added",
                     "daily_schools_added",
+
                     "total_bachelors_published",
                     "total_bachelors_review",
                     "total_masters_published",
@@ -67,6 +70,9 @@ const Dashboard = () => {
                     "total_schools_published",
                     "total_schools_review",
                     "total_schools_rejected",
+
+                    "total_courses_review_db",
+                    "total_schools_review_db",
                     "total_courses_published_db",
                     "total_schools_published_db",
                 ]
@@ -89,6 +95,7 @@ const Dashboard = () => {
                     const result = response.data;
                     setCoursesDaily(result["daily_courses_added"])
                     setSchoolsDaily(result["daily_schools_added"])
+
                     setBachelorsPublished(result["total_bachelors_published"]);
                     setBachelorsReview(result["total_bachelors_review"]);
                     setMastersPublished(result["total_masters_published"]);
@@ -99,6 +106,9 @@ const Dashboard = () => {
                     setSchoolsPublished(result["total_schools_published"]);
                     setSchoolsReview(result["total_schools_review"]);
                     setSchoolsRejected(result["total_schools_rejected"]);
+
+                    setCoursesReviewTotal(result["total_courses_review_db"]);
+                    setSchoolsReviewTotal(result["total_schools_review_db"]);
                     setCoursesPublishedTotal(result["total_courses_published_db"]);
                     setSchoolsPublishedTotal(result["total_schools_published_db"]);
                 }
@@ -137,37 +147,73 @@ const Dashboard = () => {
                         Welcome {user.first_name} &#128526;
                       </h5>
 
-                      <AutoChanger
-                        elements={[
-                          <>
-                            <p className="mb-4">
-                              You have
-                              <span className="text-info">
-                                <span className="fw-bold">&nbsp;{coursesRejected}&nbsp;</span>
-                                Rejected Courses.&nbsp;
-                              </span>
-                              Review courses rejected by your supervisor.
-                            </p>
-                            <Link to="#" className="btn btn-sm btn-outline-info">
-                              View Rejected Courses
-                            </Link>
-                          </>,
-                          <>
-                            <p className="mb-4">
-                              You have
-                              <span className="text-warning">
-                                <span className="fw-bold">&nbsp;{schoolsRejected}&nbsp;</span>
-                                Rejected Schools.&nbsp;
-                              </span>
-                              Review schools rejected by your supervisor.
-                            </p>
-                            <Link to="#" className="btn btn-sm btn-outline-warning">
-                              View Rejected Schools
-                            </Link>
-                          </>
-                        ]}
-                        frequency={5000}
-                      />
+                      {user.role === "SPECIALIST" &&
+                        <AutoChanger
+                          elements={[
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-info">
+                                  <span className="fw-bold">&nbsp;{coursesRejected}&nbsp;</span>
+                                  Rejected Courses.&nbsp;
+                                </span>
+                                Review courses rejected by your supervisor.
+                              </p>
+                              <Link to="#" className="btn btn-sm btn-outline-info">
+                                View Rejected Courses
+                              </Link>
+                            </>,
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-warning">
+                                  <span className="fw-bold">&nbsp;{schoolsRejected}&nbsp;</span>
+                                  Rejected Schools.&nbsp;
+                                </span>
+                                Review schools rejected by your supervisor.
+                              </p>
+                              <Link to="#" className="btn btn-sm btn-outline-warning">
+                                View Rejected Schools
+                              </Link>
+                            </>
+                          ]}
+                          frequency={5000}
+                        />
+                      }
+
+                      {user.role === "SUPERVISOR" &&
+                        <AutoChanger
+                          elements={[
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-info">
+                                  <span className="fw-bold">&nbsp;{coursesReviewTotal}&nbsp;</span>
+                                  courses waiting for review.&nbsp;
+                                </span>
+                                Review, then approve or reject them.
+                              </p>
+                              <Link to="/course/reviews" className="btn btn-sm btn-outline-info">
+                                Review Courses
+                              </Link>
+                            </>,
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-warning">
+                                  <span className="fw-bold">&nbsp;{schoolsReviewTotal}&nbsp;</span>
+                                  schools waiting for review.&nbsp;
+                                </span>
+                                Review, then approve or reject them.
+                              </p>
+                              <Link to="#" className="btn btn-sm btn-outline-warning">
+                                Review Schools
+                              </Link>
+                            </>
+                          ]}
+                          frequency={5000}
+                        />
+                      }
 
                     </div>
                   </div>
