@@ -166,10 +166,12 @@ const ListDegreeTypes = () => {
                     pages={pages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    totalResultCount={dataCount}
                     searchEntry={searchEntry}
                     setSearchEntry={setSearchEntry}
                     searchedEntry={searchedEntry}
                     handleSearch={handleSearch}
+                    loading={loading}
                     headers={[
                         "Degree Type",
                         "Programme Type",

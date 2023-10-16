@@ -8,10 +8,12 @@ const EntryTable = ({
         pages,
         currentPage,
         setCurrentPage,
+        totalResultCount,
         headers,
         searchEntry,
         setSearchEntry,
         searchedEntry,
+        loading,
         handleSearch
     }) => {
 
@@ -70,7 +72,7 @@ const EntryTable = ({
                                 </span>
                                 Showing search results for&nbsp;
                                 <span className="text-primary">&quot;{searchedEntry}&quot;</span>
-                                &nbsp;{title}&nbsp;
+                                &nbsp;{title}.
                             </h6>
                         </div>
                     }
@@ -157,6 +159,16 @@ const EntryTable = ({
                             </div>
                         </div>
                     </form>
+                }
+            </div>
+
+            <div className="px-4 text-end">
+                {!loading &&
+                    <h6 className="">
+                        <i className="bx bx-check-circle text-success fw-bold"></i>&nbsp;
+                        <span className="fw-bold">{totalResultCount}&nbsp;</span>
+                        results.
+                    </h6>
                 }
             </div>
 
