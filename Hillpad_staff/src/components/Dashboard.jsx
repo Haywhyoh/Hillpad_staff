@@ -43,6 +43,9 @@ const Dashboard = () => {
 
     const [coursesReviewTotal, setCoursesReviewTotal] = useState(0);
     const [schoolsReviewTotal, setSchoolsReviewTotal] = useState(0);
+    const [countriesReviewTotal, setCountriesReviewTotal] = useState(0);
+    const [coursesApprovedTotal, setCoursesApprovedTotal] = useState(0);
+    const [schoolsApprovedTotal, setSchoolsApprovedTotal] = useState(0);
     const [coursesPublishedTotal, setCoursesPublishedTotal] = useState(0);
     const [schoolsPublishedTotal, setSchoolsPublishedTotal] = useState(0);
 
@@ -73,6 +76,9 @@ const Dashboard = () => {
 
                     "total_courses_review_db",
                     "total_schools_review_db",
+                    "total_countries_review_db",
+                    "total_courses_approved_db",
+                    "total_schools_approved_db",
                     "total_courses_published_db",
                     "total_schools_published_db",
                 ]
@@ -109,6 +115,9 @@ const Dashboard = () => {
 
                     setCoursesReviewTotal(result["total_courses_review_db"]);
                     setSchoolsReviewTotal(result["total_schools_review_db"]);
+                    setCountriesReviewTotal(result["total_countries_review_db"]);
+                    setCoursesApprovedTotal(result["total_courses_approved_db"]);
+                    setSchoolsApprovedTotal(result["total_schools_approved_db"]);
                     setCoursesPublishedTotal(result["total_courses_published_db"]);
                     setSchoolsPublishedTotal(result["total_schools_published_db"]);
                 }
@@ -206,10 +215,57 @@ const Dashboard = () => {
                                 </span>
                                 Review, then approve or reject them.
                               </p>
-                              <Link to="#" className="btn btn-sm btn-outline-warning">
+                              <Link to="/school/reviews" className="btn btn-sm btn-outline-warning">
                                 Review Schools
                               </Link>
                             </>
+                          ]}
+                          frequency={5000}
+                        />
+                      }
+
+                      {user.role === "ADMIN" &&
+                        <AutoChanger
+                          elements={[
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-info">
+                                  <span className="fw-bold">&nbsp;{coursesApprovedTotal}&nbsp;</span>
+                                  courses waiting to be published.&nbsp;
+                                </span>
+                                Review and publish them.
+                              </p>
+                              <Link to="/course/reviews" className="btn btn-sm btn-outline-info">
+                                Publish Courses
+                              </Link>
+                            </>,
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-warning">
+                                  <span className="fw-bold">&nbsp;{schoolsApprovedTotal}&nbsp;</span>
+                                  schools waiting to be published.&nbsp;
+                                </span>
+                                Review and publish them.
+                              </p>
+                              <Link to="/school/reviews" className="btn btn-sm btn-outline-warning">
+                                Publish Schools
+                              </Link>
+                            </>,
+                            <>
+                              <p className="mb-4">
+                                You have
+                                <span className="text-success">
+                                  <span className="fw-bold">&nbsp;{countriesReviewTotal}&nbsp;</span>
+                                  countries waiting to be published.&nbsp;
+                                </span>
+                                Review and publish them.
+                              </p>
+                              <Link to="/country/reviews" className="btn btn-sm btn-outline-success">
+                                Publish Countries
+                              </Link>
+                            </>,
                           ]}
                           frequency={5000}
                         />
