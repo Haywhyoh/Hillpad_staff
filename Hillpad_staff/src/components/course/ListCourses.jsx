@@ -150,6 +150,38 @@ const ListCourses = () => {
                     }
                 </div>
 
+                <div className="nav-align-top">
+                    <ul className="nav nav-pills mb-3" role="tablist">
+                        <li className="nav-item" role="presentation">
+                            <button type="button" className="nav-link tab-pill-btn active" role="tab" data-bs-toggle="tab" aria-selected="true">
+                                <span className="d-none d-sm-block">All</span>
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                                <span className="d-none d-sm-block">Review</span>
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                                <span className="d-none d-sm-block">Approved</span>
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                                <span className="d-none d-sm-block">Rejected</span>
+                                <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">3</span>
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                                <span className="d-none d-sm-block">Published</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+
                 <EntryTable 
                     title="courses"
                     entryRenderer={renderCourses}
