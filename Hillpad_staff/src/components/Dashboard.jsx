@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import EntryChart from './EntryChart';
@@ -20,24 +20,31 @@ import schoolsImage from '../assets/img/icons/unicons/schools.svg';
 import settingsImage from '../assets/img/icons/notifications/settings.svg';
 import messagesImage from '../assets/img/icons/notifications/messages.svg';
 import bookImage from '../assets/img/icons/unicons/book-open.svg';
+import AutoChanger from './common/AutoChanger';
 
 // import '../assets/js/dashboards-analytics.js';
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
+
     const [coursesDaily, setCoursesDaily] = useState(0);
     const [schoolsDaily, setSchoolsDaily] = useState(0);
+
     const [bachelorsPublished, setBachelorsPublished] = useState(0);
     const [bachelorsReview, setBachelorsReview] = useState(0);
     const [mastersPublished, setMastersPublished] = useState(0);
     const [mastersReview, setMastersReview] = useState(0);
     const [doctoratesPublished, setDoctoratesPublished] = useState(0);
     const [doctoratesReview, setDoctoratesReview] = useState(0);
+    const [coursesRejected, setCoursesRejected] = useState(0);
     const [schoolsPublished, setSchoolsPublished] = useState(0);
     const [schoolsReview, setSchoolsReview] = useState(0);
-    const [activeEntryChart, setActiveEntryChart] = useState("Courses");
+    const [schoolsRejected, setSchoolsRejected] = useState(0);
+
     const [coursesPublishedTotal, setCoursesPublishedTotal] = useState(0);
     const [schoolsPublishedTotal, setSchoolsPublishedTotal] = useState(0);
+
+    const [activeEntryChart, setActiveEntryChart] = useState("Courses");
 
     let location = useLocation();
     let navigate = useNavigate();
@@ -56,8 +63,10 @@ const Dashboard = () => {
                     "total_masters_review",
                     "total_doctorates_published",
                     "total_doctorates_review",
+                    "total_courses_rejected",
                     "total_schools_published",
                     "total_schools_review",
+                    "total_schools_rejected",
                     "total_courses_published_db",
                     "total_schools_published_db",
                 ]
@@ -86,8 +95,10 @@ const Dashboard = () => {
                     setMastersReview(result["total_masters_review"]);
                     setDoctoratesPublished(result["total_doctorates_published"]);
                     setDoctoratesReview(result["total_doctorates_review"]);
+                    setCoursesRejected(result["total_courses_rejected"]);
                     setSchoolsPublished(result["total_schools_published"]);
                     setSchoolsReview(result["total_schools_review"]);
+                    setSchoolsRejected(result["total_schools_rejected"]);
                     setCoursesPublishedTotal(result["total_courses_published_db"]);
                     setSchoolsPublishedTotal(result["total_schools_published_db"]);
                 }
@@ -123,18 +134,41 @@ const Dashboard = () => {
                   <div className="col-sm-7">
                     <div className="card-body">
                       <h5 className="card-title text-primary">
-                        Welcome {user.first_name}!
+                        Welcome {user.first_name} &#128526;
                       </h5>
-                      <p className="mb-4">
-                        You have
-                        <span className="fw-bold"> 0 </span>
-                        unread notifications. Check your notifications for
-                        important information.
-                      </p>
 
-                      <a href="/" className="btn btn-sm btn-outline-primary">
-                        View Notifications
-                      </a>
+                      <AutoChanger
+                        elements={[
+                          <>
+                            <p className="mb-4">
+                              You have
+                              <span className="text-info">
+                                <span className="fw-bold">&nbsp;{coursesRejected}&nbsp;</span>
+                                Rejected Courses.&nbsp;
+                              </span>
+                              Review courses rejected by your supervisor.
+                            </p>
+                            <Link to="#" className="btn btn-sm btn-outline-info">
+                              View Rejected Courses
+                            </Link>
+                          </>,
+                          <>
+                            <p className="mb-4">
+                              You have
+                              <span className="text-warning">
+                                <span className="fw-bold">&nbsp;{schoolsRejected}&nbsp;</span>
+                                Rejected Schools.&nbsp;
+                              </span>
+                              Review schools rejected by your supervisor.
+                            </p>
+                            <Link to="#" className="btn btn-sm btn-outline-warning">
+                              View Rejected Schools
+                            </Link>
+                          </>
+                        ]}
+                        frequency={5000}
+                      />
+
                     </div>
                   </div>
                   <div className="col-sm-5 text-center text-sm-left">
