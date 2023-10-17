@@ -6,6 +6,7 @@ import courseService from '../../services/api/courseService';
 import config from '../../config';
 import EntryTable from '../common/EntryTable';
 import Spinner from '../common/Spinner';
+import TabPane from '../common/TabPane';
 
 
 const ListCourses = () => {
@@ -155,47 +156,17 @@ const ListCourses = () => {
                     }
                 </div>
 
-                <div className="nav-align-top">
-                    <ul className="nav nav-pills mb-3" role="tablist">
-                        <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn active" role="tab" data-bs-toggle="tab" aria-selected="true"
-                                onClick={() => setSearchParams("")}
-                            >
-                                <span className="d-none d-sm-block">All</span>
-                            </button>
-                        </li>
-                        <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
-                                onClick={() => setSearchParams("status=REVIEW")}
-                            >
-                                <span className="d-none d-sm-block">Review</span>
-                            </button>
-                        </li>
-                        <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
-                                onClick={() => setSearchParams("status=APPROVED")}
-                            >
-                                <span className="d-none d-sm-block">Approved</span>
-                            </button>
-                        </li>
-                        <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
-                                onClick={() => setSearchParams("status=REJECTED")}
-                            >
-                                <span className="d-none d-sm-block">Rejected</span>
-                                <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">3</span>
-                            </button>
-                        </li>
-                        <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
-                                onClick={() => setSearchParams("status=PUBLISHED")}
-                            >
-                                <span className="d-none d-sm-block">Published</span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
+                <TabPane
+                    setSearchParams={setSearchParams}
+                    tabItems={[
+                        {label: "All", param: ""},
+                        {label: "Review", param: "status=REVIEW"},
+                        {label: "Approved", param: "status=APPROVED"},
+                        {label: "Rejected", param: "status=REJECTED", badge: 5},
+                        {label: "Published", param: "status=PUBLISHED"}
+                    ]}
+                    active="All"
+                />
 
                 <EntryTable 
                     title="courses"
