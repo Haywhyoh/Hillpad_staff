@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+import config from "../../config";
+
+import EntryTable from "../common/EntryTable";
+import Spinner from '../common/Spinner';
+import TabPane from '../common/TabPane';
 
 import useAuth from "../../hooks/useAuth";
+
 import degreeTypeService from "../../services/api/degreeTypeService";
-import config from "../../config";
-import EntryTable from "../common/EntryTable";
+import statsService from '../../services/api/statsService';
+
 
 const ListDegreeTypes = () => {
     
@@ -16,6 +23,9 @@ const ListDegreeTypes = () => {
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [degreeTypesReview, setDegreeTypesReview] = useState(0);
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const pageSize = config.pageSize;
 
@@ -32,15 +42,26 @@ const ListDegreeTypes = () => {
     }
 
     useEffect(() => {
+        const status = searchParams.get("status");
+        
         async function fetchDegreeTypes() {
             try {
-                const pageQuery = `${searchQuery}page=${currentPage}`;
+                setLoading(true);
+                
+                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await degreeTypeService.getDegreeTypeDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
                     setDegreeTypes(response.data.results);
                 }
+
+                const reviewDegreeTypesResponse = await statsService.getAccountEntriesStats(["total_degree_types_review_db"]);
+                if (reviewDegreeTypesResponse.status === 200) {
+                    const result = reviewDegreeTypesResponse.data;
+                    setDegreeTypesReview(result["total_degree_types_review_db"]);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -52,7 +73,7 @@ const ListDegreeTypes = () => {
             setLoading(false);
         }
         fetchDegreeTypes();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
@@ -65,24 +86,16 @@ const ListDegreeTypes = () => {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             )
@@ -159,6 +172,16 @@ const ListDegreeTypes = () => {
                         </Link>
                     }
                 </div>
+
+                <TabPane
+                    setSearchParams={setSearchParams}
+                    tabItems={[
+                        {label: "All", param: ""},
+                        {label: "Review", param: "status=REVIEW", badge: auth.user.role === "ADMIN" ? degreeTypesReview : null},
+                        {label: "Published", param: "status=PUBLISHED"}
+                    ]}
+                    active="All"
+                />
 
                 <EntryTable
                     title="degree types"
