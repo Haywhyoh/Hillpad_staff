@@ -168,7 +168,7 @@ const Dashboard = () => {
                                 </span>
                                 Review courses rejected by your supervisor.
                               </p>
-                              <Link to="#" className="btn btn-sm btn-outline-info">
+                              <Link to="/course?status=REJECTED" className="btn btn-sm btn-outline-info">
                                 View Rejected Courses
                               </Link>
                             </>,
@@ -181,7 +181,7 @@ const Dashboard = () => {
                                 </span>
                                 Review schools rejected by your supervisor.
                               </p>
-                              <Link to="#" className="btn btn-sm btn-outline-warning">
+                              <Link to="/school?status=REJECTED" className="btn btn-sm btn-outline-warning">
                                 View Rejected Schools
                               </Link>
                             </>
