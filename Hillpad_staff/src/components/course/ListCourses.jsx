@@ -3,11 +3,11 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 
 import config from '../../config';
 
-import useAuth from '../../hooks/useAuth';
-
 import EntryTable from '../common/EntryTable';
 import Spinner from '../common/Spinner';
 import TabPane from '../common/TabPane';
+
+import useAuth from '../../hooks/useAuth';
 
 import courseService from '../../services/api/courseService';
 import statsService from '../../services/api/statsService';
@@ -24,7 +24,6 @@ const ListCourses = () => {
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [coursesRejected, setCoursesRejected] = useState(0);
-
 
     const [searchParams, setSearchParams] = useSearchParams();
 
