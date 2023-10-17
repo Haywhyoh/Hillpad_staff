@@ -113,10 +113,16 @@ const Sidebar = () => {
                     </li>
                     <MenuItem entryName="Courses" entryURL="/course" entryIcon="bx-book-open" active={location.pathname === "/course"} />
                     <MenuItem entryName="Schools" entryURL="/school" entryIcon="bxs-school" active={location.pathname === "/school"} />
-                    <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" active={location.pathname === "/discipline"} />
-                    <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" active={location.pathname === "/degree-type"} />
-                    <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" active={location.pathname === "/country"} />
-                    <MenuItem entryName="Currencies" entryURL="/currency" entryIcon="bx-dollar-circle" active={location.pathname === "/currency"} />
+                    {
+                        user.role &&
+                        user.role !== "SPECIALIST" &&
+                        <>
+                            <MenuItem entryName="Disciplines" entryURL="/discipline" entryIcon="bx-cabinet" active={location.pathname === "/discipline"} />
+                            <MenuItem entryName="Degree types" entryURL="/degree-type" entryIcon="bxs-graduation" active={location.pathname === "/degree-type"} />
+                            <MenuItem entryName="Countries" entryURL="/country" entryIcon="bx-globe" active={location.pathname === "/country"} />
+                            <MenuItem entryName="Currencies" entryURL="/currency" entryIcon="bx-dollar-circle" active={location.pathname === "/currency"} />
+                        </>
+                    }
 
 
                     {/* Actions */}
