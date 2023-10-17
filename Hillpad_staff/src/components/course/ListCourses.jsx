@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-import useAuth from '../../hooks/useAuth';
-import courseService from '../../services/api/courseService';
 import config from '../../config';
+
+import useAuth from '../../hooks/useAuth';
+
 import EntryTable from '../common/EntryTable';
 import Spinner from '../common/Spinner';
 import TabPane from '../common/TabPane';
+
+import courseService from '../../services/api/courseService';
+import statsService from '../../services/api/statsService';
 
 
 const ListCourses = () => {
@@ -19,6 +23,8 @@ const ListCourses = () => {
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [coursesRejected, setCoursesRejected] = useState(0);
+
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -51,6 +57,13 @@ const ListCourses = () => {
                     setPages(Math.ceil(dataCount / pageSize));
                     setCourses(response.data.results);
                 }
+
+                const rejectedCoursesResponse = await statsService.getAccountEntriesStats(["total_courses_rejected"]);
+                if (rejectedCoursesResponse.status === 200) {
+                    const result = rejectedCoursesResponse.data;
+                    setCoursesRejected(result["total_courses_rejected"]);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -162,7 +175,7 @@ const ListCourses = () => {
                         {label: "All", param: ""},
                         {label: "Review", param: "status=REVIEW"},
                         {label: "Approved", param: "status=APPROVED"},
-                        {label: "Rejected", param: "status=REJECTED", badge: 5},
+                        {label: "Rejected", param: "status=REJECTED", badge: coursesRejected},
                         {label: "Published", param: "status=PUBLISHED"}
                     ]}
                     active="All"
