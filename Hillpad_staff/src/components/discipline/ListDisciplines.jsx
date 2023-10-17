@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+import config from "../../config";
+
+import EntryTable from "../common/EntryTable";
+import Spinner from '../common/Spinner';
+import TabPane from '../common/TabPane';
 
 import useAuth from "../../hooks/useAuth";
+
 import disciplineService from "../../services/api/disciplineService";
-import config from "../../config";
-import EntryTable from "../common/EntryTable";
+import statsService from '../../services/api/statsService';
 
 
 const ListDisciplines = () => {
@@ -17,6 +23,9 @@ const ListDisciplines = () => {
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [disciplinesReview, setDisciplinesReview] = useState(0);
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const pageSize = config.pageSize;
 
@@ -33,15 +42,26 @@ const ListDisciplines = () => {
     }
 
     useEffect(() => {
+        const status = searchParams.get("status");
+        
         async function fetchDisciplines() {
             try {
-                const pageQuery = `${searchQuery}page=${currentPage}`;
+                setLoading(true);
+                
+                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await disciplineService.getDisciplineDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
                     setDisciplines(response.data.results);
                 }
+
+                const reviewDisciplinesResponse = await statsService.getAccountEntriesStats(["total_disciplines_review_db"]);
+                if (reviewDisciplinesResponse.status === 200) {
+                    const result = reviewDisciplinesResponse.data;
+                    setDisciplinesReview(result["total_disciplines_review_db"]);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -53,7 +73,7 @@ const ListDisciplines = () => {
             setLoading(false);
         }
         fetchDisciplines();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
@@ -66,24 +86,16 @@ const ListDisciplines = () => {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             )
@@ -160,6 +172,16 @@ const ListDisciplines = () => {
                         </Link>
                     }
                 </div>
+
+                <TabPane
+                    setSearchParams={setSearchParams}
+                    tabItems={[
+                        {label: "All", param: ""},
+                        {label: "Review", param: "status=REVIEW", badge: auth.user.role === "ADMIN" ? disciplinesReview : null},
+                        {label: "Published", param: "status=PUBLISHED"}
+                    ]}
+                    active="All"
+                />
 
                 <EntryTable
                     title="disciplines"
