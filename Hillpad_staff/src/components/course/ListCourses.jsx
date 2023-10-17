@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
 import courseService from '../../services/api/courseService';
@@ -19,6 +19,8 @@ const ListCourses = () => {
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const pageSize = config.pageSize;
 
     let location = useLocation();
@@ -33,12 +35,15 @@ const ListCourses = () => {
         "SAVED": "bg-label-secondary"
     }
 
+    
     useEffect(() => {
+        const status = searchParams.get("status");
+
         async function fetchCourses() {
             try {
                 setLoading(true);
 
-                const pageQuery = `${searchQuery}page=${currentPage}`;
+                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -56,7 +61,7 @@ const ListCourses = () => {
             setLoading(false);
         }
         fetchCourses();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
@@ -153,28 +158,38 @@ const ListCourses = () => {
                 <div className="nav-align-top">
                     <ul className="nav nav-pills mb-3" role="tablist">
                         <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn active" role="tab" data-bs-toggle="tab" aria-selected="true">
+                            <button type="button" className="nav-link tab-pill-btn active" role="tab" data-bs-toggle="tab" aria-selected="true"
+                                onClick={() => setSearchParams("")}
+                            >
                                 <span className="d-none d-sm-block">All</span>
                             </button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
+                                onClick={() => setSearchParams("status=REVIEW")}
+                            >
                                 <span className="d-none d-sm-block">Review</span>
                             </button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
+                                onClick={() => setSearchParams("status=APPROVED")}
+                            >
                                 <span className="d-none d-sm-block">Approved</span>
                             </button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
+                                onClick={() => setSearchParams("status=REJECTED")}
+                            >
                                 <span className="d-none d-sm-block">Rejected</span>
                                 <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">3</span>
                             </button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1">
+                            <button type="button" className="nav-link tab-pill-btn" role="tab" data-bs-toggle="tab" aria-selected="false" tabIndex="-1"
+                                onClick={() => setSearchParams("status=PUBLISHED")}
+                            >
                                 <span className="d-none d-sm-block">Published</span>
                             </button>
                         </li>
