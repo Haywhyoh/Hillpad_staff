@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+import config from "../../config";
+
+import EntryTable from "../common/EntryTable";
+import Spinner from '../common/Spinner';
+import TabPane from '../common/TabPane';
 
 import useAuth from "../../hooks/useAuth";
+
 import currencyService from "../../services/api/currencyService";
-import config from "../../config";
-import EntryTable from "../common/EntryTable";
+import statsService from '../../services/api/statsService';
 
 
 const ListCurrencies = () => {
@@ -17,6 +23,9 @@ const ListCurrencies = () => {
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [currenciesReview, setCurrenciesReview] = useState(0);
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const pageSize = config.pageSize;
 
@@ -33,15 +42,26 @@ const ListCurrencies = () => {
     }
 
     useEffect(() => {
+        const status = searchParams.get("status");
+
         async function fetchCurrencies() {
             try {
-                const pageQuery = `${searchQuery}page=${currentPage}`;
+                setLoading(true);
+                
+                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await currencyService.getCurrencyDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
                     setCurrencies(response.data.results);
                 }
+
+                const reviewCurrenciesResponse = await statsService.getAccountEntriesStats(["total_currencies_review_db"]);
+                if (reviewCurrenciesResponse.status === 200) {
+                    const result = reviewCurrenciesResponse.data;
+                    setCurrenciesReview(result["total_currencies_review_db"]);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -53,7 +73,7 @@ const ListCurrencies = () => {
             setLoading(false);
         }
         fetchCurrencies();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
@@ -66,24 +86,16 @@ const ListCurrencies = () => {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             )
@@ -162,6 +174,16 @@ const ListCurrencies = () => {
                         </Link>
                     }
                 </div>
+
+                <TabPane
+                    setSearchParams={setSearchParams}
+                    tabItems={[
+                        {label: "All", param: ""},
+                        {label: "Review", param: "status=REVIEW", badge: auth.user.role === "ADMIN" ? currenciesReview : null},
+                        {label: "Published", param: "status=PUBLISHED"}
+                    ]}
+                    active="All"
+                />
 
                 <EntryTable
                     title="currencies"
