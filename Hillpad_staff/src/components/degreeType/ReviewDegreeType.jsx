@@ -2,11 +2,22 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import DegreeTypeForm from "./DegreeTypeForm";
+import Error405 from "../errorPages/Error405";
+
+import useAuth from "../../hooks/useAuth";
 
 
 function ReviewDegreeType() {
+    const auth = useAuth();
+
     const params = useParams();
     const degreeTypeID = params.degreeTypeID;
+
+    if (auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 import CourseForm from "./CourseForm";
+import Error405 from "../errorPages/Error405";
 
 
 const ReviewCourse = () => {
@@ -19,6 +20,11 @@ const ReviewCourse = () => {
     else if (role === "SUPERVISOR") {
         action = "review";
         title = "Review Course";
+    }
+    else {
+        return (
+            <Error405 />
+        );
     }
 
     return (

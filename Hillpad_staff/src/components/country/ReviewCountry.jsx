@@ -2,11 +2,22 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import CountryForm from "./CountryForm";
+import Error405 from "../errorPages/Error405";
+
+import useAuth from "../../hooks/useAuth";
 
 
 const ReviewCountry = () => {
+    const auth = useAuth();
+
     const params = useParams();
     const countryID = params.countryID;
+
+    if (auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>

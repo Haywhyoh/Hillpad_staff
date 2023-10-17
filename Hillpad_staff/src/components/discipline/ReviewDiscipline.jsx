@@ -2,11 +2,22 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import DisciplineForm from "./DisciplineForm";
+import Error405 from "../errorPages/Error405";
+
+import useAuth from "../../hooks/useAuth";
 
 
 const ReviewDiscipline = () => {
+    const auth = useAuth();
+
     const params = useParams();
     const disciplineID = params.disciplineID;
+
+    if (auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>

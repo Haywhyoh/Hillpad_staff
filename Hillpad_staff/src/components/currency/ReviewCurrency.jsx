@@ -2,11 +2,22 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import CurrencyForm from "./CurrencyForm";
+import Error405 from "../errorPages/Error405";
+
+import useAuth from "../../hooks/useAuth";
 
 
 const ReviewCurrency = () => {
+    const auth = useAuth();
+
     const params = useParams();
     const currencyID = params.currencyID;
+
+    if (auth.user.role !== "ADMIN") {
+        return (
+            <Error405 />
+        );
+    }
 
     return (
         <>
