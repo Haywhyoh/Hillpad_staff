@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+
+import config from '../../config';
+
+import EntryTable from '../common/EntryTable';
+import Spinner from '../common/Spinner';
+import TabPane from '../common/TabPane';
 
 import useAuth from '../../hooks/useAuth';
+
 import countryService from '../../services/api/countryService';
-import config from '../../config';
-import EntryTable from '../common/EntryTable';
+import statsService from '../../services/api/statsService';
 
 
 const ListCountries = () => {
@@ -17,6 +23,9 @@ const ListCountries = () => {
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [countriesReview, setCountriesReview] = useState(0);
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const pageSize = config.pageSize;
 
@@ -43,15 +52,26 @@ const ListCountries = () => {
     }
 
     useEffect(() => {
+        const status = searchParams.get("status");
+        
         async function fetchCountries() {
             try {
-                const pageQuery = `${searchQuery}page=${currentPage}`;
+                setLoading(true);
+                
+                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await countryService.getCountryDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
                     setPages(Math.ceil(dataCount / pageSize));
                     setCountries(response.data.results);
                 }
+
+                const reviewCountriesResponse = await statsService.getAccountEntriesStats(["total_countries_review_db"]);
+                if (reviewCountriesResponse.status === 200) {
+                    const result = reviewCountriesResponse.data;
+                    setCountriesReview(result["total_countries_review_db"]);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -63,7 +83,7 @@ const ListCountries = () => {
             setLoading(false);
         }
         fetchCountries();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
@@ -76,24 +96,16 @@ const ListCountries = () => {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             )
@@ -168,6 +180,16 @@ const ListCountries = () => {
                         </Link>
                     }
                 </div>
+
+                <TabPane
+                    setSearchParams={setSearchParams}
+                    tabItems={[
+                        {label: "All", param: ""},
+                        {label: "Review", param: "status=REVIEW", badge: auth.user.role === "ADMIN" ? countriesReview : null},
+                        {label: "Published", param: "status=PUBLISHED"}
+                    ]}
+                    active="All"
+                />
 
                 <EntryTable
                     title="countries"
