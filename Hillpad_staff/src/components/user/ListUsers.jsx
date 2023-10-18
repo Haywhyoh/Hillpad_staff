@@ -159,7 +159,7 @@ const ListUsers = () => {
 
                 {
                     auth.user &&
-                    auth.user.role === "SUPERVISOR" &&
+                    auth.user.role === "ADMIN" &&
                     <TabPane
                         setSearchParams={setSearchParams}
                         tabItems={[
