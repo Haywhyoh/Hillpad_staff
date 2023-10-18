@@ -31,6 +31,11 @@ const ListUsers = () => {
     let navigate = useNavigate();
     let auth = useAuth();
 
+    const roleClass = {
+        "SPECIALIST": "bg-label-warning",
+        "SUPERVISOR": "bg-label-success",
+        "ADMIN": "bg-label-info",
+    }
 
     useEffect(() => {
         const roleParam = searchParams.get("role");
@@ -116,7 +121,7 @@ const ListUsers = () => {
                                         </Link>
                                     </td>
                                     <td>
-                                        <span className={`badge bg-label-info me-1`}>{user.role}</span>
+                                        <span className={`badge ${roleClass[user.role]} me-1`}>{user.role}</span>
                                     </td>
                             </tr>
                     
