@@ -14,6 +14,7 @@ import CountryRoutes from "./components/country/CountryRoutes.jsx";
 import DisciplineRoutes from './components/discipline/DisciplineRoutes';
 import DegreeTypeRoutes from "./components/degreeType/DegreeTypeRoutes.jsx";
 import CurrencyRoutes from "./components/currency/CurrencyRoutes.jsx";
+import UserRoutes from "./components/user/UserRoutes.jsx";
 
 function ProtectedRoutes() {
     let auth = useAuth();
@@ -55,6 +56,10 @@ function ProtectedRoutes() {
                                 <Route
                                     path="/currency/*"
                                     element={<CurrencyRoutes />}
+                                />
+                                <Route
+                                    path="/user/*"
+                                    element={<UserRoutes />}
                                 />
                                 <Route
                                     path="/notifications"

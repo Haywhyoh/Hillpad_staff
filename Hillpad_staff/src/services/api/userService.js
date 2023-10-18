@@ -3,7 +3,7 @@ import config from "../../config";
 
 const apiEndPoint = `${config.apiBaseURL}/account`;
 
-// School routes
+
 function login(data) {
     const url = `${apiEndPoint}/token`;
     return http.post(url, data);
@@ -12,6 +12,11 @@ function login(data) {
 function logout() {
     const url = `${apiEndPoint}/logout`;
     return http.post(url);
+}
+
+function getUsers(query="") {
+    const url = `${apiEndPoint}/list_staff?${query}`;
+    return http.get(url);
 }
 
 function getUser() {
@@ -28,6 +33,7 @@ function loginState() {
 export default {
     login,
     logout,
+    getUsers,
     getUser,
     loginState
 }
