@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import config from '../../config';
 
 import EntryTable from '../common/EntryTable';
+import Error405 from '../errorPages/Error405';
 import Spinner from '../common/Spinner';
 import TabPane from '../common/TabPane';
 
@@ -63,6 +64,12 @@ const ListUsers = () => {
         }
         fetchUsers();
     }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
+
+    if (auth.user && auth.user.role === "SPECIALIST") {
+        return (
+            <Error405 />
+        );
+    }
 
     const handleSearch = () => {
         setSearchQuery(`first_name=${searchEntry}&`);
@@ -148,17 +155,22 @@ const ListUsers = () => {
                         </Link>
                     }
                 </div>
+                
 
-                <TabPane
-                    setSearchParams={setSearchParams}
-                    tabItems={[
-                        {label: "All", param: ""},
-                        {label: "Specialists", param: "role=SPECIALIST"},
-                        {label: "Supervisors", param: "role=SUPERVISOR"},
-                        {label: "Admins", param: "role=ADMIN"},
-                    ]}
-                    active="All"
-                />
+                {
+                    auth.user &&
+                    auth.user.role === "SUPERVISOR" &&
+                    <TabPane
+                        setSearchParams={setSearchParams}
+                        tabItems={[
+                            {label: "All", param: ""},
+                            {label: "Specialists", param: "role=SPECIALIST"},
+                            {label: "Supervisors", param: "role=SUPERVISOR"},
+                            {label: "Admins", param: "role=ADMIN"},
+                        ]}
+                        active="All"
+                    />
+                }
 
                 <EntryTable 
                     title="staff"
