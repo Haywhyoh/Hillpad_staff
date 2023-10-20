@@ -146,7 +146,7 @@ class DisciplineForm extends Component {
                     (initialResponse.status === 200 && action === "edit")) &&
                     initialResponse.data
                 ) {
-                    const submitResponse = await disciplineService.submitDiscplineDraft(initialResponse.data["id"]);
+                    const submitResponse = await disciplineService.submitDisciplineDraft(initialResponse.data["id"]);
                     if (submitResponse.status === 200 && submitResponse.data) {
                         console.log("Submitted");
                         this.setState({ statusModal: "success" });
