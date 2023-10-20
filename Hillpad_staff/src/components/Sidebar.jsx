@@ -153,6 +153,13 @@ const Sidebar = () => {
                     <li className="menu-header small text-uppercase">
                         <span className="menu-header-text">Account</span>
                     </li>
+                    {
+                        user.role &&
+                        user.role !== "SPECIALIST" &&
+                        <>
+                            <MenuItem entryName="Staff Administration" entryURL="/user" entryIcon="bx-user" active={location.pathname === "/user"} />
+                        </>
+                    }
                     <MenuItem entryName="Notifications" entryURL="/notifications" entryIcon="bx-bell" active={location.pathname === "/notifications"} />
                     <MenuItem entryName="Chat" entryURL="/chat" entryIcon="bx-message-rounded-dots" active={location.pathname === "/chat"} />
 
