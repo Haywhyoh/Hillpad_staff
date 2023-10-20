@@ -14,6 +14,11 @@ function logout() {
     return http.post(url);
 }
 
+function loginState() {
+    const url = `${apiEndPoint}/login-state`;
+    return http.get(url);
+}
+
 function getUsers(query="") {
     const url = `${apiEndPoint}/list_staff?${query}`;
     return http.get(url);
@@ -24,16 +29,28 @@ function getUser() {
     return http.get(url);
 }
 
+function createAdmin(data) {
+    const url = `${apiEndPoint}/register_admin`;
+    return http.post(url, data);
+}
 
-function loginState() {
-    const url = `${apiEndPoint}/login-state`;
-    return http.get(url);
+function createSupervisor(data) {
+    const url = `${apiEndPoint}/register_supervisor`;
+    return http.post(url, data);
+}
+
+function createSpecialist(data) {
+    const url = `${apiEndPoint}/register_specialist`;
+    return http.post(url, data);
 }
 
 export default {
     login,
     logout,
+    loginState,
     getUsers,
     getUser,
-    loginState
+    createAdmin,
+    createSupervisor,
+    createSpecialist,
 }

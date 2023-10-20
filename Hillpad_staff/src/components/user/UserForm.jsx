@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 
 import Input from "../common/form/Input";
 import Select from "../common/form/Select";
+
+import userService from "../../services/api/userService";
 
 
 const UserForm = ({formTitle}) => {
@@ -16,11 +22,24 @@ const UserForm = ({formTitle}) => {
     });
     const [passwordVisible, setPasswordVisible] = useState(false);
 
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [statusModal, setStatusModal] = useState("loading");
+    const [modalRedirect, setModalRedirect] = useState(false);
+
     const staffRoles = [
         {value: "ADMIN", name: "Administrator"},
         {value: "SUPERVISOR", name: "Data Supervisor"},
         {value: "SPECIALIST", name: "Data Specialist"},
     ];
+
+    const mapToUserModel = (data) => {
+        return {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            password: data.password,
+        };
+    };
 
     const validateForm = () => {
         return (formData.firstName === "") ||
@@ -38,9 +57,116 @@ const UserForm = ({formTitle}) => {
         setFormData({...formData, [input.name]: input.value});
     };
 
-    const handleSubmit = () => {
-        console.log("submitted");
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (validateForm()) {
+            console.log("Invalid form");
+            return;
+        }
+
+        setStatusModal("loading");
+        setShowStatusModal(true);
+
+        const data = mapToUserModel(formData);
+        try {
+            let response;
+            if (formData.role === "ADMIN") {
+                response = await userService.createAdmin(data);
+            }
+            else if (formData.role === "SUPERVISOR") {
+                response = await userService.createSupervisor(data);
+            }
+            else if (formData.role === "SPECIALIST") {
+                response = await userService.createSpecialist(data);
+            }
+            else {
+                response = {status: 900};
+            }
+
+            if (response && response.status === 201) {
+                console.log(`${formData.role} created successfully`);
+                setStatusModal("success");
+            }
+            else {
+                console.log("An error occured while trying to create staff account", response.status);
+                setStatusModal("error");
+            }
+        } catch (error) {
+            console.log(error);
+            setStatusModal("error");
+        }
+    };
+
+    const renderModal = () => {
+        if (statusModal === "success") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-check-circle fs-1 text-success mb-3"></span>
+                            <h3>Awesome!</h3>
+                            {
+                                formData.role === "ADMIN" &&
+                                <p>Administrator account created successfully.</p>
+                            }
+                            {
+                                formData.role === "SUPERVISOR" &&
+                                <p>Data Supervisor account created successfully.</p>
+                            }
+                            {
+                                formData.role === "SPECIALIST" &&
+                                <p>Data Specialist account created successfully.</p>
+                            }
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button variant="success" onClick={() => {
+                                    setShowStatusModal(false);
+                                    setModalRedirect(true);
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                    {modalRedirect && <Navigate to="/user" />}
+                </>
+            );
+        }
+        else if (statusModal === "error") {
+            return (
+                <>
+                    <Modal.Body>
+                        <div className="text-center mb-4">
+                            <span className="bx bx-error-circle fs-1 text-danger mb-3"></span>
+                            <h3>Error!</h3>
+                            <p>Staff account creation failed. An error occured.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    setShowStatusModal(false);
+                                }}
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </Modal.Body>
+                </>
+            );
+        }
+        
+        return (
+            <Modal.Body>
+                <Spinner variant="primary" animation="border" role="status" size="lg">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Modal.Body>
+        );
+        // return <div></div>
+
+    };
 
     const renderSubmit = () => {
         return (
@@ -75,7 +201,6 @@ const UserForm = ({formTitle}) => {
                             onChange={handleChange}
                             placeholder="Jane"
                             required={true}
-                            // error={errors.name}
                         />
                         <Input
                             name="lastName"
@@ -84,7 +209,6 @@ const UserForm = ({formTitle}) => {
                             onChange={handleChange}
                             placeholder="Robinson"
                             required={true}
-                            // error={errors.name}
                         />
                         <Input
                             name="email"
@@ -94,7 +218,6 @@ const UserForm = ({formTitle}) => {
                             type="email"
                             placeholder="janerobinson@hillpad.com"
                             required={true}
-                            // error={errors.duration}
                         />
                         <Select
                             name="role"
@@ -160,15 +283,15 @@ const UserForm = ({formTitle}) => {
                 </div>
             </div>
             
-            {/* <Modal
+            <Modal
                 show={showStatusModal}
                 backdrop="static"
                 keyboard={false}
                 dialogClassName="alertModal"
                 centered
             >
-                {this.renderModal()}
-            </Modal>                */}
+                {renderModal()}
+            </Modal>               
         </>
     );
 }
