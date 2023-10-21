@@ -22,7 +22,9 @@ const ListCourses = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
+    const [advancedSearchEntries, setAdvancedSearchEntries] = useState({name: "", school: null});
     const [searchQuery, setSearchQuery] = useState("");
+    const [advancedSearchQuery, setAdvancedSearchQuery] = useState("");
     const [coursesRejected, setCoursesRejected] = useState(0);
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,7 +51,7 @@ const ListCourses = () => {
             try {
                 setLoading(true);
 
-                const pageQuery = `${searchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
+                const pageQuery = `${searchQuery}${advancedSearchQuery}${status ? `status=${status}&` : ""}page=${currentPage}`;
                 const response = await courseService.getCourseDrafts(pageQuery);
                 if (response.status === 200) {
                     setDataCount(response.data.count);
@@ -74,12 +76,17 @@ const ListCourses = () => {
             setLoading(false);
         }
         fetchCourses();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, searchParams]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, advancedSearchQuery, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
         setSearchedEntry(searchEntry);
         setCurrentPage(1); // Reset the current page to 1 so as to avoid 404 queries
+    }
+
+    const handleAdvancedSearch = () => {
+        setAdvancedSearchQuery(`${advancedSearchEntries.name? `name=${advancedSearchEntries.name}&`: ""}${advancedSearchEntries.school? `school=${advancedSearchEntries.school}&`: ""}`);
+        setCurrentPage(1);
     }
 
     const renderCourses = () => {
@@ -188,9 +195,12 @@ const ListCourses = () => {
                     setCurrentPage={setCurrentPage}
                     totalResultCount={dataCount}
                     searchEntry={searchEntry}
+                    advancedSearchEntries={advancedSearchEntries}
                     setSearchEntry={setSearchEntry}
+                    setAdvancedSearchEntries={setAdvancedSearchEntries}
                     searchedEntry={searchedEntry}
                     handleSearch={handleSearch}
+                    handleAdvancedSearch={handleAdvancedSearch}
                     loading={loading}
                     headers={[
                         "Course Name",

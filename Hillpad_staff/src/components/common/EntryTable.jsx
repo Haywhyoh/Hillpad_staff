@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Paginator from "./Paginator";
+import FilterSelect from "./form/FilterSelect";
+
+import schoolService from "../../services/api/schoolService";
+
 
 const EntryTable = ({
         title,
@@ -11,13 +15,37 @@ const EntryTable = ({
         totalResultCount,
         headers,
         searchEntry,
+        advancedSearchEntries="",
         setSearchEntry,
+        setAdvancedSearchEntries="",
         searchedEntry,
         loading,
-        handleSearch
+        handleSearch,
+        handleAdvancedSearch="",
     }) => {
 
     const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+    // const [courseFilter, setCourseFilter] = useState("");
+    // const [schoolFilter, setSchoolFilter] = useState("");
+    const [schoolFilterOptions, setSchoolFilterOptions] = useState([]);
+
+    useEffect(() => {
+        async function fetchSchools() {
+            try {
+                let { data } = await schoolService.getSchools("page_size=1000000");
+                const schools = data.results.map((item) => ({
+                    value: item.id,
+                    name: item.name,
+                }));
+                setSchoolFilterOptions(schools);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+        fetchSchools();
+    });
 
     const validateSearch = () => {
         return searchEntry === "";
@@ -98,21 +126,28 @@ const EntryTable = ({
                     <form
                         onSubmit={async (e) => {
                             e.preventDefault();
+                            handleAdvancedSearch();
                         }}
                     >
                         <div className="col-12 px-4">
                             <div className="row g-3 mb-4">
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Course Name</label>
-                                    <input type="text" className="form-control dt-input dt-full-name" data-column="1" placeholder="Alaric Beslier" data-column-index="0" />
+                                    <input name="name" type="text" value={advancedSearchEntries.name} onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "name": input.value})} className="form-control dt-input dt-full-name" data-column="1" placeholder="Electrical Engineering" data-column-index="0" />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">School</label>
-                                    <input type="text" className="form-control dt-input" data-column="2" placeholder="demo@example.com" data-column-index="1" />
+                                    <FilterSelect 
+                                        name="school"
+                                        value={advancedSearchEntries.school}
+                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "school": input.value})}
+                                        label="School"
+                                        options={schoolFilterOptions}
+                                    />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Country</label>
-                                    <input type="text" className="form-control dt-input" data-column="3" placeholder="Web designer" data-column-index="2" />
+                                    <input type="text" className="form-control dt-input" data-column="3" placeholder="Canada" data-column-index="2" />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Continent</label>
