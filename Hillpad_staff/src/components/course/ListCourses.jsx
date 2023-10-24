@@ -17,6 +17,7 @@ import countryService from "../../services/api/countryService";
 import programmeTypeService from "../../services/api/programmeTypeService";
 import degreeTypeService from "../../services/api/degreeTypeService";
 import disciplineService from "../../services/api/disciplineService";
+import userService from '../../services/api/userService';
 
 
 const ListCourses = () => {
@@ -33,6 +34,7 @@ const ListCourses = () => {
     const [programmeTypeFilterOptions, setProgrammeTypeFilterOptions] = useState([]);
     const [degreeTypeFilterOptions, setDegreeTypeFilterOptions] = useState([]);
     const [disciplineFilterOptions, setDisciplineFilterOptions] = useState([]);
+    const [authorFilterOptions, setAuthorFilterOptions] = useState([]);
     
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
@@ -46,6 +48,7 @@ const ListCourses = () => {
         discipline: "",
         courseFormat: "",
         attendance: "",
+        author: "",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [advancedSearchQuery, setAdvancedSearchQuery] = useState("");
@@ -151,9 +154,21 @@ const ListCourses = () => {
                 if (disciplineResponse.status === 200) {
                     const disciplines = disciplineResponse.data.results.map((item) => ({
                         value: item.id,
-                        name: item .name,
+                        name: item.name,
                     }));
                     setDisciplineFilterOptions(disciplines);
+                }
+
+                // Get Authors (Only for Admins and Supervisors)
+                if (auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR") {
+                    const authorResponse = await userService.getUsers("role=SPECIALIST");
+                    if (authorResponse.status === 200) {
+                        const authors = authorResponse.data.results.map((item) => ({
+                            value: item.id,
+                            name: item.first_name + " " + item.last_name,
+                        }));
+                        setAuthorFilterOptions(authors);
+                    }
                 }
 
             } catch (ex) {
@@ -168,7 +183,7 @@ const ListCourses = () => {
             setLoading(false);
         }
         fetchData();
-    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, advancedSearchQuery, searchParams]);
+    }, [currentPage, dataCount, location, navigate, pageSize, searchQuery, advancedSearchQuery, auth.user, searchParams]);
 
     const handleSearch = () => {
         setSearchQuery(`${searchEntry? `name=${searchEntry}&`: ""}`);
@@ -213,6 +228,10 @@ const ListCourses = () => {
           }${
             advancedSearchEntries.attendance
               ? `attendance=${advancedSearchEntries.attendance}&`
+              : ""
+          }${
+            advancedSearchEntries.author
+              ? `author=${advancedSearchEntries.author}&`
               : ""
           }`
         );
@@ -329,14 +348,18 @@ const ListCourses = () => {
                                         options={attendanceFilterOptions}
                                     />
                                 </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Author</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Status</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
+                                {(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR") &&
+                                    <div className="col-12 col-sm-6 col-lg-4">
+                                        <label className="form-label">Author</label>
+                                        <FilterSelect 
+                                            name="author"
+                                            value={advancedSearchEntries.author}
+                                            onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "author": input.value})}
+                                            label="Author"
+                                            options={authorFilterOptions}
+                                        />
+                                    </div>
+                                }
                             </div>
                             <div className="row">
                                 <div className="col-md-3">
