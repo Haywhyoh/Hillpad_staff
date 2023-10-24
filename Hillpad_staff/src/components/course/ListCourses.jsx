@@ -53,7 +53,16 @@ const ListCourses = () => {
         "REJECTED": "bg-label-danger",
         "REVIEW": "bg-label-warning",
         "SAVED": "bg-label-secondary"
-    }
+    };
+
+    const continentFilterOptions = [
+        {name: "Africa", value: "AF"},
+        {name: "Asia", value: "AS"},
+        {name: "Europe", value: "EU"},
+        {name: "North America", value: "NA"},
+        {name: "South America", value: "SA"},
+        {name: "Oceania", value: "OC"},
+    ];
 
     
     useEffect(() => {
@@ -131,6 +140,10 @@ const ListCourses = () => {
             advancedSearchEntries.country
               ? `country=${advancedSearchEntries.country}&`
               : ""
+          }${
+            advancedSearchEntries.continent
+              ? `continent=${advancedSearchEntries.continent}&`
+              : ""
           }`
         );
         setCurrentPage(1);
@@ -188,7 +201,13 @@ const ListCourses = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Continent</label>
-                                    <input type="text" className="form-control dt-input" data-column="4" placeholder="Balky" data-column-index="3" />
+                                    <FilterSelect 
+                                        name="continent"
+                                        value={advancedSearchEntries.continent}
+                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "continent": input.value})}
+                                        label="Continent"
+                                        options={continentFilterOptions}
+                                    />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Programme Type</label>
