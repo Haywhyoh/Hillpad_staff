@@ -72,7 +72,7 @@ const ListUsers = () => {
     }
 
     const handleSearch = () => {
-        setSearchQuery(`first_name=${searchEntry}&`);
+        setSearchQuery(`search=${searchEntry}&`);
         setSearchedEntry(searchEntry);
         setCurrentPage(1); // Reset the current page to 1 so as to avoid 404 queries
     }
