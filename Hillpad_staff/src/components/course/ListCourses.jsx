@@ -16,6 +16,7 @@ import schoolService from "../../services/api/schoolService";
 import countryService from "../../services/api/countryService";
 import programmeTypeService from "../../services/api/programmeTypeService";
 import degreeTypeService from "../../services/api/degreeTypeService";
+import disciplineService from "../../services/api/disciplineService";
 
 
 const ListCourses = () => {
@@ -31,6 +32,7 @@ const ListCourses = () => {
     const [countryFilterOptions, setCountryFilterOptions] = useState([]);
     const [programmeTypeFilterOptions, setProgrammeTypeFilterOptions] = useState([]);
     const [degreeTypeFilterOptions, setDegreeTypeFilterOptions] = useState([]);
+    const [disciplineFilterOptions, setDisciplineFilterOptions] = useState([]);
     
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
@@ -41,6 +43,7 @@ const ListCourses = () => {
         continent: "",
         programmeType: "",
         degreeType: "",
+        discipline: "",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [advancedSearchQuery, setAdvancedSearchQuery] = useState("");
@@ -132,6 +135,16 @@ const ListCourses = () => {
                     setDegreeTypeFilterOptions(degreeTypes);
                 }
 
+                // Get Disciplines
+                const disciplineResponse = await disciplineService.getDisciplines();
+                if (disciplineResponse.status === 200) {
+                    const disciplines = disciplineResponse.data.results.map((item) => ({
+                        value: item.id,
+                        name: item .name,
+                    }));
+                    setDisciplineFilterOptions(disciplines);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -177,6 +190,10 @@ const ListCourses = () => {
           }${
             advancedSearchEntries.degreeType
               ? `degree_type=${advancedSearchEntries.degreeType}&`
+              : ""
+          }${
+            advancedSearchEntries.discipline
+              ? `discipline_id=${advancedSearchEntries.discipline}&`
               : ""
           }`
         );
@@ -265,7 +282,13 @@ const ListCourses = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Discipline</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
+                                    <FilterSelect 
+                                        name="discipline"
+                                        value={advancedSearchEntries.discipline}
+                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "discipline": input.value})}
+                                        label="Discipline"
+                                        options={disciplineFilterOptions}
+                                    />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Course Format</label>
