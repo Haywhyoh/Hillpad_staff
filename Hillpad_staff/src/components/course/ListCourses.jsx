@@ -14,6 +14,7 @@ import courseService from '../../services/api/courseService';
 import statsService from '../../services/api/statsService';
 import schoolService from "../../services/api/schoolService";
 import countryService from "../../services/api/countryService";
+import programmeTypeService from "../../services/api/programmeTypeService";
 
 
 const ListCourses = () => {
@@ -27,6 +28,7 @@ const ListCourses = () => {
     
     const [schoolFilterOptions, setSchoolFilterOptions] = useState([]);
     const [countryFilterOptions, setCountryFilterOptions] = useState([]);
+    const [programmeTypeFilterOptions, setProgrammeTypeFilterOptions] = useState([]);
     
     const [searchEntry, setSearchEntry] = useState("");
     const [searchedEntry, setSearchedEntry] = useState("");
@@ -34,6 +36,8 @@ const ListCourses = () => {
         name: "",
         school: "",
         country: "",
+        continent: "",
+        programmeType: "",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [advancedSearchQuery, setAdvancedSearchQuery] = useState("");
@@ -64,7 +68,6 @@ const ListCourses = () => {
         {name: "Oceania", value: "OC"},
     ];
 
-    
     useEffect(() => {
         const status = searchParams.get("status");
 
@@ -106,6 +109,16 @@ const ListCourses = () => {
                     setCountryFilterOptions(countries);
                 }
 
+                // Get ProgrammeTypes
+                const programmeTypeResponse = await programmeTypeService.getProgrammeTypes();
+                if (programmeTypeResponse.status === 200) {
+                    const programmeTypes = programmeTypeResponse.data.results.map((item) => ({
+                        value: item.name,
+                        name: item.name,
+                    }));
+                    setProgrammeTypeFilterOptions(programmeTypes);
+                }
+
             } catch (ex) {
                 if (ex.response.status === 401) {
                     navigate("/login", {
@@ -143,6 +156,10 @@ const ListCourses = () => {
           }${
             advancedSearchEntries.continent
               ? `continent=${advancedSearchEntries.continent}&`
+              : ""
+          }${
+            advancedSearchEntries.programmeType
+              ? `programme=${advancedSearchEntries.programmeType}&`
               : ""
           }`
         );
@@ -211,7 +228,13 @@ const ListCourses = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Programme Type</label>
-                                    <input type="text" className="form-control dt-input" data-column="4" placeholder="Balky" data-column-index="3" />
+                                    <FilterSelect 
+                                        name="programme_type"
+                                        value={advancedSearchEntries.programmeType}
+                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "programmeType": input.value})}
+                                        label="Programme Type"
+                                        options={programmeTypeFilterOptions}
+                                    />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Degree Type</label>
