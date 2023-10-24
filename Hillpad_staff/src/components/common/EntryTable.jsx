@@ -1,9 +1,4 @@
-import { useState, useEffect } from "react";
-
 import Paginator from "./Paginator";
-import FilterSelect from "./form/FilterSelect";
-
-import schoolService from "../../services/api/schoolService";
 
 
 const EntryTable = ({
@@ -15,37 +10,13 @@ const EntryTable = ({
         totalResultCount,
         headers,
         searchEntry,
-        advancedSearchEntries="",
         setSearchEntry,
-        setAdvancedSearchEntries="",
         searchedEntry,
         loading,
         handleSearch,
-        handleAdvancedSearch="",
+        renderAdvancedSearch="",
     }) => {
 
-    const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
-
-    // const [courseFilter, setCourseFilter] = useState("");
-    // const [schoolFilter, setSchoolFilter] = useState("");
-    const [schoolFilterOptions, setSchoolFilterOptions] = useState([]);
-
-    useEffect(() => {
-        async function fetchSchools() {
-            try {
-                let { data } = await schoolService.getSchools("ordering=name&page_size=1000000");
-                const schools = data.results.map((item) => ({
-                    value: item.id,
-                    name: item.name,
-                }));
-                setSchoolFilterOptions(schools);
-            }
-            catch (error) {
-                console.error(error);
-            }
-        }
-        fetchSchools();
-    });
 
     const validateSearch = () => {
         return searchEntry === "";
@@ -106,96 +77,8 @@ const EntryTable = ({
                     }
                 </form>
             </div>
-
-            <div className="my-4">
-                <div className="col-12 px-4">
-                    <h5>
-                        Advanced Search
-                        <span className="px-2">
-                            <button
-                                className="btn btn-xs btn-icon"
-                                onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                            >
-                                <i className={`text-primary bx bx-chevron-${showAdvancedSearch ? "up" : "down"}`}></i>
-                            </button>
-                        </span>
-                    </h5>
-                </div>
-                {
-                    showAdvancedSearch &&
-                    <form
-                        onSubmit={async (e) => {
-                            e.preventDefault();
-                            handleAdvancedSearch();
-                        }}
-                    >
-                        <div className="col-12 px-4">
-                            <div className="row g-3 mb-4">
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Course Name</label>
-                                    <input name="name" type="text" value={advancedSearchEntries.name} onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "name": input.value})} className="form-control dt-input dt-full-name" data-column="1" placeholder="Electrical Engineering" data-column-index="0" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">School</label>
-                                    <FilterSelect 
-                                        name="school"
-                                        value={advancedSearchEntries.school}
-                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "school": input.value})}
-                                        label="School"
-                                        options={schoolFilterOptions}
-                                    />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Country</label>
-                                    <input type="text" className="form-control dt-input" data-column="3" placeholder="Canada" data-column-index="2" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Continent</label>
-                                    <input type="text" className="form-control dt-input" data-column="4" placeholder="Balky" data-column-index="3" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Programme Type</label>
-                                    <input type="text" className="form-control dt-input" data-column="4" placeholder="Balky" data-column-index="3" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Degree Type</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Discipline</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Course Format</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Attendance</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Author</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                                <div className="col-12 col-sm-6 col-lg-4">
-                                    <label className="form-label">Status</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-3">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary"
-                                    >
-                                        <i className="bx bx-search-alt-2"></i> Advanced Search
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                }
-            </div>
+            
+            {renderAdvancedSearch && renderAdvancedSearch()}
 
             <div className="px-4 text-end">
                 {!loading &&
