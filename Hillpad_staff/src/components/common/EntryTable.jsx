@@ -33,7 +33,7 @@ const EntryTable = ({
     useEffect(() => {
         async function fetchSchools() {
             try {
-                let { data } = await schoolService.getSchools("page_size=1000000");
+                let { data } = await schoolService.getSchools("ordering=name&page_size=1000000");
                 const schools = data.results.map((item) => ({
                     value: item.id,
                     name: item.name,
