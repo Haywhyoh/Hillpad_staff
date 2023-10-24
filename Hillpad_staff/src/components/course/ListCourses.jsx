@@ -187,11 +187,15 @@ const ListCourses = () => {
 
     const handleSearch = () => {
         setSearchQuery(`${searchEntry? `name=${searchEntry}&`: ""}`);
+        setAdvancedSearchQuery("");
         setSearchedEntry(searchEntry);
         setCurrentPage(1); // Reset the current page to 1 so as to avoid 404 queries
     };
 
     const handleAdvancedSearch = () => {
+        setSearchQuery("");
+        setSearchedEntry("");
+        setSearchEntry("");
         setAdvancedSearchQuery(
           `${
             advancedSearchEntries.name
@@ -242,18 +246,19 @@ const ListCourses = () => {
         return (
             <div className="my-4">
                 <div className="col-12 px-4">
-                    <h5>
+                    <h5 className={`${advancedSearchQuery? "text-danger": ""}`}>
                         Advanced Search
                         <span className="px-2">
                             <button
                                 className="btn btn-xs btn-icon"
                                 onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
                             > 
-                                <i className={`text-primary bx bx-chevron-${showAdvancedSearch ? "up" : "down"}`}></i>
+                                <i className={`${advancedSearchQuery? "text-danger": ""} bx bx-chevron-${showAdvancedSearch ? "up" : "down"}`}></i>
                             </button>
                         </span>
                     </h5>
                 </div>
+                
                 {
                     showAdvancedSearch &&
                     <form
@@ -262,6 +267,32 @@ const ListCourses = () => {
                             handleAdvancedSearch();
                         }}
                     >
+                        {advancedSearchQuery &&
+                            <div className="px-4 row">
+                                <h6>
+                                    <span>
+                                        <button 
+                                            className="btn btn-xs btn-icon"
+                                            onClick={() => setAdvancedSearchEntries({
+                                                name: "",
+                                                school: "",
+                                                country: "",
+                                                continent: "",
+                                                programmeType: "",
+                                                degreeType: "",
+                                                discipline: "",
+                                                courseFormat: "",
+                                                attendance: "",
+                                                author: "",
+                                            })}    
+                                        >
+                                            <i className="bx bx-x text-danger"></i>
+                                        </button>
+                                    </span>
+                                    Clear advanced search filters
+                                </h6>
+                            </div>
+                        }
                         <div className="col-12 px-4">
                             <div className="row g-3 mb-4">
                                 <div className="col-12 col-sm-6 col-lg-4">
