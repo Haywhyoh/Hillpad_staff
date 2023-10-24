@@ -44,6 +44,7 @@ const ListCourses = () => {
         programmeType: "",
         degreeType: "",
         discipline: "",
+        courseFormat: "",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [advancedSearchQuery, setAdvancedSearchQuery] = useState("");
@@ -72,6 +73,10 @@ const ListCourses = () => {
         {name: "North America", value: "NA"},
         {name: "South America", value: "SA"},
         {name: "Oceania", value: "OC"},
+    ];
+    const courseFormatFilterOptions = [
+        {name: "Full-time", value: "FULL"},
+        {name: "Part-time", value: "PART"},
     ];
 
     useEffect(() => {
@@ -195,6 +200,10 @@ const ListCourses = () => {
             advancedSearchEntries.discipline
               ? `discipline_id=${advancedSearchEntries.discipline}&`
               : ""
+          }${
+            advancedSearchEntries.courseFormat
+              ? `course_format=${advancedSearchEntries.courseFormat}&`
+              : ""
           }`
         );
         setCurrentPage(1);
@@ -292,7 +301,13 @@ const ListCourses = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Course Format</label>
-                                    <input type="text" className="form-control dt-input" data-column="6" placeholder="10000" data-column-index="5" />
+                                    <FilterSelect 
+                                        name="course_format"
+                                        value={advancedSearchEntries.courseFormat}
+                                        onChange={({currentTarget: input}) => setAdvancedSearchEntries({...advancedSearchEntries, "courseFormat": input.value})}
+                                        label="Course Format"
+                                        options={courseFormatFilterOptions}
+                                    />
                                 </div>
                                 <div className="col-12 col-sm-6 col-lg-4">
                                     <label className="form-label">Attendance</label>
