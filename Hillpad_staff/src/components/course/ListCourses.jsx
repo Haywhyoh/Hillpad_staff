@@ -419,6 +419,11 @@ const ListCourses = () => {
                     <td className="text-center">
                         <Spinner addClasses="mx-4 my-3" />
                     </td>
+                    {(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR") &&
+                        <td className="text-center">
+                            <Spinner addClasses="mx-4 my-3" />
+                        </td>
+                    }
                     <td className="text-center">
                         <Spinner addClasses="mx-4 my-3" />
                     </td>
@@ -449,6 +454,11 @@ const ListCourses = () => {
                             <td>
                                 {(course.degree_type && "short_name" in course.degree_type) ? course.degree_type.short_name : "-"}
                             </td>
+                            {(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR") &&
+                                <td>
+                                    <span className={`badge bg-label-info me-1`}>{course.author.first_name} {course.author.last_name}</span>
+                                </td>
+                            }
                             <td>
                                 <span className={`badge ${statusClass[course.status]} me-1`}>{course.status}</span>
                             </td>
@@ -520,13 +530,22 @@ const ListCourses = () => {
                     handleSearch={handleSearch}
                     renderAdvancedSearch={renderAdvancedSearch}
                     loading={loading}
-                    headers={[
-                        "Course Name",
-                        "School",
-                        "Degree",
-                        "Status",
-                        "Actions"
-                    ]}
+                    headers={(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR")? [
+                            "Course Name",
+                            "School",
+                            "Degree",
+                            "Author",
+                            "Status",
+                            "Actions"
+                        ]:
+                        [
+                            "Course Name",
+                            "School",
+                            "Degree",
+                            "Status",
+                            "Actions"
+                        ]
+                    }
                 />
 
             </div>
