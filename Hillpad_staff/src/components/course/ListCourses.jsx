@@ -537,8 +537,7 @@ const ListCourses = () => {
                             "Author",
                             "Status",
                             "Actions"
-                        ]:
-                        [
+                        ] : [
                             "Course Name",
                             "School",
                             "Degree",

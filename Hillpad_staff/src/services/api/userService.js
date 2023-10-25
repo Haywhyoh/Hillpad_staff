@@ -29,6 +29,11 @@ function getUser() {
     return http.get(url);
 }
 
+function retrieveUser(id) {
+    const url = `${apiEndPoint}/retrieve_staff/${id}`;
+    return http.get(url);
+}
+
 function createAdmin(data) {
     const url = `${apiEndPoint}/register_admin`;
     return http.post(url, data);
@@ -50,6 +55,7 @@ export default {
     loginState,
     getUsers,
     getUser,
+    retrieveUser,
     createAdmin,
     createSupervisor,
     createSpecialist,

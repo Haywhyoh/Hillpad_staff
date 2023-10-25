@@ -224,8 +224,7 @@ const ListSchools = () => {
                             "Author",
                             "Status",
                             "Actions"
-                        ]:
-                        [
+                        ] : [
                             "School",
                             "Country",
                             "Number of Courses",
