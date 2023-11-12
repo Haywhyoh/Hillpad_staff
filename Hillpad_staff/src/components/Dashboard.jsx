@@ -41,6 +41,9 @@ const Dashboard = () => {
     const [schoolsReview, setSchoolsReview] = useState(0);
     const [schoolsRejected, setSchoolsRejected] = useState(0);
 
+    const [coursesDailyTotal, setCoursesDailyTotal] = useState(0);
+    const [schoolsDailyTotal, setSchoolsDailyTotal] = useState(0);
+
     const [coursesReviewTotal, setCoursesReviewTotal] = useState(0);
     const [schoolsReviewTotal, setSchoolsReviewTotal] = useState(0);
     const [countriesReviewTotal, setCountriesReviewTotal] = useState(0);
@@ -73,6 +76,9 @@ const Dashboard = () => {
                     "total_schools_published",
                     "total_schools_review",
                     "total_schools_rejected",
+
+                    "daily_courses_added_db",
+                    "daily_schools_added_db",
 
                     "total_courses_review_db",
                     "total_schools_review_db",
@@ -112,6 +118,9 @@ const Dashboard = () => {
                     setSchoolsPublished(result["total_schools_published"]);
                     setSchoolsReview(result["total_schools_review"]);
                     setSchoolsRejected(result["total_schools_rejected"]);
+
+                    setCoursesDailyTotal(result["daily_courses_added_db"]);
+                    setSchoolsDailyTotal(result["daily_schools_added_db"]);
 
                     setCoursesReviewTotal(result["total_courses_review_db"]);
                     setSchoolsReviewTotal(result["total_schools_review_db"]);
@@ -314,7 +323,8 @@ const Dashboard = () => {
                       </small>
                       <h3 className="mb-0">
                         {loading && <Spinner />}
-                        {!loading && coursesDaily}
+                        {!loading && user.role === "SPECIALIST" && coursesDaily}
+                        {!loading && (user.role === "SUPERVISOR" || user.role === "ADMIN") && coursesDailyTotal}
                       </h3>
                     </div>
                     <div>
@@ -323,7 +333,8 @@ const Dashboard = () => {
                       </small>
                       <h3 className="mb-0">
                         {loading && <Spinner />}
-                        {!loading && schoolsDaily}
+                        {!loading && user.role === "SPECIALIST" && schoolsDaily}
+                        {!loading && (user.role === "SUPERVISOR" || user.role === "ADMIN") && schoolsDailyTotal}
                       </h3>
                     </div>
                   </div>
@@ -417,7 +428,7 @@ const Dashboard = () => {
                   <div className="card">
                     <div className="card-body">
                       <a
-                        href="{% url 'staff_courses_listing' %}"
+                        href="/"
                         className="stretched-link"
                       >
                         <div className="card-title d-flex align-items-start justify-content-between">
