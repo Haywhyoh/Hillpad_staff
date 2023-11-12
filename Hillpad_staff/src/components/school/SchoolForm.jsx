@@ -41,6 +41,7 @@ class SchoolForm extends Component {
         showStatusModal: false,
         statusModal: "loading",
         modalRedirect: false,
+        redirectURL: "/school",
 
         school: {},
         bannerURL: "",
@@ -331,7 +332,6 @@ class SchoolForm extends Component {
 
     renderModal = () => {
         const { action } = this.props;
-        let redirectURL = "/school";
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -363,9 +363,9 @@ class SchoolForm extends Component {
                                     this.setState({ showStatusModal: false });
                                     this.setState({ modalRedirect: true });
                                     if (action === "publish" || action === "review") {
-                                        redirectURL = "/school/reviews";
+                                        this.setState({ redirectURL: "/school/reviews" });
                                     } else {
-                                        redirectURL = "/school"
+                                        this.setState({ redirectURL: "/school" });
                                     }
                                 }}
                             >
@@ -373,7 +373,7 @@ class SchoolForm extends Component {
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to={redirectURL} />}
+                    {this.state.modalRedirect && <Navigate to={this.state.redirectURL} />}
                 </>
             );
         }
@@ -430,14 +430,18 @@ class SchoolForm extends Component {
                                 onClick={() => {
                                     this.setState({ showStatusModal: false });
                                     this.setState({ modalRedirect: true });
-                                    redirectURL = "/school";
+                                    if (action === "publish" || action === "review") {
+                                        this.setState({ redirectURL: "/school/reviews" });
+                                    } else {
+                                        this.setState({ redirectURL: "/school" });
+                                    }
                                 }}
                             >
                                 OK
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to={redirectURL} />}
+                    {this.state.modalRedirect && <Navigate to={this.state.redirectURL} />}
                 </>
             );
         }
