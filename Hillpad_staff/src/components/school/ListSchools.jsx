@@ -95,9 +95,9 @@ const ListSchools = () => {
                             <Spinner addClasses="mx-4 my-3" />
                         </td>
                     }
-                    <td className="text-center">
+                    {/* <td className="text-center">
                         <Spinner addClasses="mx-4 my-3" />
-                    </td>
+                    </td> */}
                     <td className="text-center">
                         <Spinner addClasses="mx-4 my-3" />
                     </td>
@@ -124,9 +124,9 @@ const ListSchools = () => {
                                 </strong>
                             </td>
                             <td>{(school.country && "name" in school.country) ? school.country.name : "-"}</td>
-                            <td>
-                                12,765
-                            </td>
+                            {/* <td>
+                                -
+                            </td> */}
                             {(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR") &&
                                 <td>
                                     <span className={`badge bg-label-info me-1`}>
@@ -220,14 +220,14 @@ const ListSchools = () => {
                     headers={(auth.user.role === "ADMIN" || auth.user.role === "SUPERVISOR")? [
                             "School",
                             "Country",
-                            "Number of Courses",
+                            // "Number of Courses",
                             "Author",
                             "Status",
                             "Actions"
                         ] : [
                             "School",
                             "Country",
-                            "Number of Courses",
+                            // "Number of Courses",
                             "Status",
                             "Actions"
                         ]
