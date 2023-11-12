@@ -331,6 +331,7 @@ class SchoolForm extends Component {
 
     renderModal = () => {
         const { action } = this.props;
+        let redirectURL = "/school";
         if (this.state.statusModal === "success") {
             return (
                 <>
@@ -361,13 +362,18 @@ class SchoolForm extends Component {
                             <Button variant="success" onClick={() => {
                                     this.setState({ showStatusModal: false });
                                     this.setState({ modalRedirect: true });
+                                    if (action === "publish" || action === "review") {
+                                        redirectURL = "/school/reviews";
+                                    } else {
+                                        redirectURL = "/school"
+                                    }
                                 }}
                             >
                                 OK
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/school" />}
+                    {this.state.modalRedirect && <Navigate to={redirectURL} />}
                 </>
             );
         }
@@ -424,13 +430,14 @@ class SchoolForm extends Component {
                                 onClick={() => {
                                     this.setState({ showStatusModal: false });
                                     this.setState({ modalRedirect: true });
+                                    redirectURL = "/school";
                                 }}
                             >
                                 OK
                             </Button>
                         </div>
                     </Modal.Body>
-                    {this.state.modalRedirect && <Navigate to="/school" />}
+                    {this.state.modalRedirect && <Navigate to={redirectURL} />}
                 </>
             );
         }
