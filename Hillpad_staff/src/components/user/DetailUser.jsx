@@ -72,7 +72,8 @@ const DetailUser = () => {
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <h4 className="py-3 mb-4">
-                    Staff Management - {loading? <Spinner size="sm" addClasses="mx-2" /> : user.first_name + " " + user.last_name}
+                    Staff Management -&nbsp;
+                    <span className="text-info">{loading? <Spinner size="sm" addClasses="mx-2" /> : user.first_name + " " + user.last_name}</span>
                 </h4>
 
                 <div className="row align-items-center">    

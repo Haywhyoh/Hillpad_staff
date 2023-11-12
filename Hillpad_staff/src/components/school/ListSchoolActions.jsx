@@ -1,15 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import useAuth from '../../hooks/useAuth';
-import schoolService from '../../services/api/schoolService';
 import config from '../../config';
-import Error405 from "../errorPages/Error405";
+
 import EntryTable from '../common/EntryTable';
+import Spinner from '../common/Spinner';
+import Error405 from "../errorPages/Error405";
+
+import useAuth from '../../hooks/useAuth';
+
+import schoolService from '../../services/api/schoolService';
 
 
 const ListSchoolActions = () => {
     
+    let location = useLocation();
+    let navigate = useNavigate();
+    let auth = useAuth();
+
     const [schools, setSchools] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataCount, setDataCount] = useState(0);
@@ -19,11 +27,10 @@ const ListSchoolActions = () => {
     const [searchedEntry, setSearchedEntry] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [approvedSchools, setApprovedSchools] = useState([]);
+
     const pageSize = config.pageSize;
 
-    let location = useLocation();
-    let navigate = useNavigate();
-    let auth = useAuth();
 
     useEffect(() => {
         async function fetchSchools() {
@@ -60,35 +67,49 @@ const ListSchoolActions = () => {
         );
     }
 
+    const publishAll = async () => {
+        try {
+            const approvedResponse = await schoolService.getSchoolDraftsApproved();
+            if (approvedResponse.status === 200) {
+                setApprovedSchools(approvedResponse.data.results);
+                // this.setState({ statusModal: "success" });
+                let published = 0;
+                for (let schoolID of approvedSchools) {
+                    const response = await schoolService.publishSchoolDraft(schoolID);
+                    if (response.status === 200) {
+                        published += 1;
+                        // this.setState({ statusModal: "success" });
+                        console.log(`Published: ${published}/${approvedSchools.length}`);
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            this.setState({ statusModal: "error" });
+        }
+    };
+
     const handleSearch = () => {
         setSearchQuery(`name=${searchEntry}&`);
         setSearchedEntry(searchEntry);
         setCurrentPage(1); // Reset the current page to 1 so as to avoid 404 queries
-    }
+    };
 
     const renderSchools = () => {
         if (loading) {
             return (
                 <tr>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                     <td className="text-center">
-                        <div className="mx-4 my-3 spinner-border text-warning" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner addClasses="mx-4 my-3" />
                     </td>
                 </tr>
             )
@@ -127,13 +148,26 @@ const ListSchoolActions = () => {
                 </>
             )
         }
-    }
+    };
 
     return (
         <>
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="fw-bold py-3 mb-4">School Reviews</h4>
+                    <h4 className="fw-bold py-3 mb-4">
+                        School Reviews
+                    </h4>
+                    {   
+                        auth.user &&
+                        auth.user.role === "ADMIN" &&
+                        <button
+                            type="button"
+                            className="btn btn-danger mb-4"
+                            onClick={publishAll}
+                        >
+                            <span className="tf-icons bx bx-book-reader"></span>&nbsp; Publish All
+                        </button>
+                    }
                 </div>
 
                 <EntryTable

@@ -4,8 +4,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import config from '../../config';
 
 import EntryTable from '../common/EntryTable';
-import Error405 from "../errorPages/Error405";
 import Spinner from '../common/Spinner';
+import Error405 from "../errorPages/Error405";
 
 import useAuth from '../../hooks/useAuth';
 
@@ -15,6 +15,8 @@ import courseService from '../../services/api/courseService';
 const ListCourseActions = () => {
 
     let auth = useAuth();
+    let location = useLocation();
+    let navigate = useNavigate();
     
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,8 +31,6 @@ const ListCourseActions = () => {
     
     const pageSize = config.pageSize;
     
-    let location = useLocation();
-    let navigate = useNavigate();
 
     useEffect(() => {
         async function fetchCourses() {

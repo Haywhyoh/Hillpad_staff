@@ -20,6 +20,11 @@ function getSchoolDrafts(query="") {
     return http.get(url);
 }
 
+function getSchoolDraftsApproved() {
+    const url = `${apiEndPoint}/list_approved`;
+    return http.get(url);
+}
+
 function getSchoolDraft(id) {
     const url = `${apiEndPoint}/detail_draft/${id}`;
     return http.get(url);
@@ -60,6 +65,7 @@ export default {
     getSchools,
     getSchool,
     getSchoolDrafts,
+    getSchoolDraftsApproved,
     getSchoolDraft,
     createSchoolDraft,
     updateSchoolDraft,
