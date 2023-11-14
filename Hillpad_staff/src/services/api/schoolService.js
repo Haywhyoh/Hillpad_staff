@@ -50,6 +50,11 @@ function rejectSchoolDraft(id, data) {
     return http.put(url, data);
 }
 
+function rejectApprovedSchoolDraft(id, data) {
+    const url = `${apiEndPoint}/reject_approved_draft/${id}`;
+    return http.put(url, data);
+}
+
 function approveSchoolDraft(id, data={}) {
     const url = `${apiEndPoint}/approve_draft/${id}`;
     return http.put(url, data);
@@ -71,6 +76,7 @@ export default {
     updateSchoolDraft,
     submitSchoolDraft,
     rejectSchoolDraft,
+    rejectApprovedSchoolDraft,
     approveSchoolDraft,
     publishSchoolDraft
 }

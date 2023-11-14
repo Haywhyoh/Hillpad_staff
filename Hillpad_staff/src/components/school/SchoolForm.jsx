@@ -48,6 +48,7 @@ class SchoolForm extends Component {
         logoURL: "",
 
         reviewAction: "",
+        adminReviewAction: "",
         rejectReason: "",
     };
 
@@ -238,11 +239,21 @@ class SchoolForm extends Component {
         }
         else if (action === "publish") {
             try {
-                const response = await schoolService.publishSchoolDraft(this.props.schoolID);
-                if (response.status === 200) {
-                    console.log("Published");
-                    this.setState({ statusModal: "success" });
+                if (this.state.adminReviewAction === "publish") {
+                    const response = await schoolService.publishSchoolDraft(this.props.schoolID);
+                    if (response.status === 200) {
+                        console.log("Published");
+                        this.setState({ statusModal: "success" });
+                    }
+                } else if (this.state.adminReviewAction === "reject") {
+                    const data = { reject_reason: this.state.rejectReason };
+                    const response = await schoolService.rejectApprovedSchoolDraft(this.props.schoolID, data);
+                    if (response.status === 200) {
+                        console.log("Rejected");
+                        this.setState({ statusModal: "success" });
+                    }
                 }
+
             } catch (error) {
                 console.log(error);
                 this.setState({ statusModal: "error" });
@@ -341,7 +352,13 @@ class SchoolForm extends Component {
                             <h3>Awesome!</h3>
                             {
                                 action === "publish" &&
+                                this.state.adminReviewAction === "publish" &&
                                 <p>School has been published.</p>
+                            }
+                            {
+                                action === "publish" &&
+                                this.state.adminReviewAction === "reject" &&
+                                <p>School has been rejected.</p>
                             }
                             {
                                 action === "review" &&
@@ -492,7 +509,22 @@ class SchoolForm extends Component {
                     <div className="mt-4 text-end">
                         <button
                             type="submit"
+                            className="btn btn-danger me-2"
+                            disabled={this.validateRejection()}
+                            onClick={() => {
+                                    this.setState({ adminReviewAction: "reject" });
+                                }
+                            }
+                        >
+                            Reject
+                        </button>
+                        <button
+                            type="submit"
                             className="btn btn-success"
+                            onClick={() => {
+                                this.setState({ adminReviewAction: "publish" });
+                                }
+                            }
                         >
                             Publish
                         </button>
@@ -708,7 +740,7 @@ class SchoolForm extends Component {
                             />
 
                             {
-                                action === "review" &&
+                                (action === "review" || action === "publish") &&
                                 <TextArea 
                                     name="rejectReason"
                                     label="Reason for rejection"
