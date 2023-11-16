@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -43,6 +43,8 @@ class SchoolForm extends Component {
         modalRedirect: false,
         redirectURL: "/school",
 
+        showConfirmModal: false,
+
         school: {},
         bannerURL: "",
         logoURL: "",
@@ -51,6 +53,8 @@ class SchoolForm extends Component {
         adminReviewAction: "",
         rejectReason: "",
     };
+
+    formRef = React.createRef();
 
     options = {
         institutionType: [
@@ -202,8 +206,8 @@ class SchoolForm extends Component {
     };
 
     handleSubmit = async (e) => {
-        e.preventDefault();
-        
+        if (e) e.preventDefault();
+
         const errors = this.validateForm();
         this.setState({ errors: errors || {} });
 
@@ -316,6 +320,13 @@ class SchoolForm extends Component {
         formattedFormData.append("video", data.video);
 
         return formattedFormData;
+    };
+
+    handleConfirm = (confirm) => {
+        if (confirm) {
+            this.handleSubmit();
+        }
+        this.setState({ showConfirmModal: false });
     };
 
     handleChange = ({ currentTarget: input }) => {
@@ -473,6 +484,51 @@ class SchoolForm extends Component {
 
     };
 
+    renderConfirmModal = () => {
+        const { action } = this.props;
+        return (
+            <>
+                <Modal.Body>
+                    <div className="text-center mb-4">
+                        <span className="bx bx-bell fs-1 text-success mb-3"></span>
+                        {
+                            action === "publish" &&
+                            this.state.adminReviewAction === "publish" &&
+                            <h5>Are you sure you want to <span className="text-success">PUBLISH</span> this school entry?</h5>
+                        }
+                        {
+                            action === "publish" &&
+                            this.state.adminReviewAction === "reject" &&
+                            <h5>Are you sure you want to <span className="text-danger">REJECT</span> this school entry?</h5>
+                        }
+                        {
+                            action === "review" &&
+                            this.state.reviewAction === "approve" &&
+                            <h5>Are you sure you want to <span className="text-success">APPROVE</span> this school entry?</h5>
+                        }
+                        {
+                            action === "review" &&
+                            this.state.reviewAction === "reject" &&
+                            <h5>Are you sure you want to <span className="text-danger">REJECT</span> this school entry?</h5>
+                        }
+                        {
+                            (action === "create" || action === "edit") &&
+                            <h5>Are you sure you want to <span className="text-primary">SUBMIT</span> this school entry?</h5>
+                        }
+                    </div>
+                    <div className="d-flex justify-content-center mt-4">
+                        <Button variant="danger" className="me-2" onClick={() => this.handleConfirm(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="success" onClick={() => this.handleConfirm(true)}>
+                            Confirm
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </>
+        );
+    };
+
     renderSubmit = () => {
         const { action } = this.props;
         if (action === "review") {
@@ -480,10 +536,11 @@ class SchoolForm extends Component {
                 <>
                     <div className="mt-4 text-end">
                         <button
-                            type="submit"
+                            type="button"
                             className="btn btn-danger me-2"
                             disabled={this.validateRejection()}
                             onClick={() => {
+                                    this.setState({ showConfirmModal: true });
                                     this.setState({ reviewAction: "reject" });
                                 }
                             }
@@ -491,9 +548,10 @@ class SchoolForm extends Component {
                             Reject
                         </button>
                         <button
-                            type="submit"
+                            type="button"
                             className="btn btn-success"
                             onClick={() => {
+                                    this.setState({ showConfirmModal: true });
                                     this.setState({ reviewAction: "approve" });
                                 }
                             }
@@ -508,10 +566,11 @@ class SchoolForm extends Component {
                 <>
                     <div className="mt-4 text-end">
                         <button
-                            type="submit"
+                            type="button"
                             className="btn btn-danger me-2"
                             disabled={this.validateRejection()}
                             onClick={() => {
+                                    this.setState({ showConfirmModal: true });
                                     this.setState({ adminReviewAction: "reject" });
                                 }
                             }
@@ -519,10 +578,11 @@ class SchoolForm extends Component {
                             Reject
                         </button>
                         <button
-                            type="submit"
+                            type="button"
                             className="btn btn-success"
                             onClick={() => {
-                                this.setState({ adminReviewAction: "publish" });
+                                    this.setState({ showConfirmModal: true });
+                                    this.setState({ adminReviewAction: "publish" });
                                 }
                             }
                         >
@@ -543,8 +603,11 @@ class SchoolForm extends Component {
                         </button> */}
                         <button
                             disabled={this.validateForm()}
-                            type="submit"
+                            type="button"
                             className="btn btn-primary"
+                            onClick={() => {
+                                this.setState({ showConfirmModal: true });
+                            }}
                         >
                             Submit
                         </button>
@@ -556,7 +619,7 @@ class SchoolForm extends Component {
 
     render() {
         const { formTitle, action } = this.props;
-        const { formData, errors, countries, showStatusModal, bannerURL, logoURL, rejectReason } = this.state;
+        const { formData, errors, countries, showStatusModal, showConfirmModal, bannerURL, logoURL, rejectReason } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -577,7 +640,7 @@ class SchoolForm extends Component {
                     }
 
                     <div className="card-body">
-                        <form onSubmit={this.handleSubmit}>
+                        <form ref={this.formRef} onSubmit={this.handleSubmit}>
                             <Input
                                 name="name"
                                 label="Name of school"
@@ -764,6 +827,16 @@ class SchoolForm extends Component {
                     centered
                 >
                     {this.renderModal()}
+                </Modal>
+
+                <Modal
+                    show={showConfirmModal}
+                    backdrop="static"
+                    keyboard={false}
+                    dialogClassName="modal-sm"
+                    centered
+                >
+                    {this.renderConfirmModal()}
                 </Modal>
             </>
         );
