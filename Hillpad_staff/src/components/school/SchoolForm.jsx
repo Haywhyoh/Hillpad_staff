@@ -53,7 +53,7 @@ class SchoolForm extends Component {
         adminReviewAction: "",
         rejectReason: "",
 
-        schoolExists: false,
+        schoolExists: null,
     };
 
     formRef = React.createRef();
