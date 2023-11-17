@@ -52,6 +52,8 @@ class SchoolForm extends Component {
         reviewAction: "",
         adminReviewAction: "",
         rejectReason: "",
+
+        schoolExists: false,
     };
 
     formRef = React.createRef();
@@ -204,6 +206,20 @@ class SchoolForm extends Component {
         const { rejectReason } = this.state;
         return rejectReason.trim() === "";
     };
+
+    validateSchoolExists = async () => {
+        const { name } = this.state.formData;
+        try {
+            const response = await schoolService.getSchools(`name=${name}`);
+            if (response.status === 200 && response.data.count > 0) {
+                this.setState({ schoolExists: true });
+            } else {
+                this.setState({ schoolExists: false });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     handleSubmit = async (e) => {
         if (e) e.preventDefault();
@@ -619,7 +635,7 @@ class SchoolForm extends Component {
 
     render() {
         const { formTitle, action } = this.props;
-        const { formData, errors, countries, showStatusModal, showConfirmModal, bannerURL, logoURL, rejectReason } = this.state;
+        const { formData, errors, countries, showStatusModal, showConfirmModal, bannerURL, logoURL, rejectReason, schoolExists } = this.state;
         return (
             <>
                 <div className="card mb-4">
@@ -650,6 +666,18 @@ class SchoolForm extends Component {
                                 required={true}
                                 error={errors.name}
                             />
+
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={this.validateSchoolExists}
+                            >
+                                Check
+                            </button>
+
+                            {schoolExists === true && <div className="text-danger">School exists</div>}
+                            {schoolExists === false && <div className="text-success">✔</div>}
+
                             <QuillEditor
                                 name="about"
                                 label="About"
